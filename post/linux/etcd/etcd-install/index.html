@@ -1,0 +1,976 @@
+<!doctype html><html lang=zh-cn>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>etcd安装配置笔记 - 新生代搬运工</title>
+<meta name=renderer content="webkit">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta http-equiv=cache-control content="no-transform">
+<meta http-equiv=cache-control content="no-siteapp">
+<meta name=theme-color content="#f8f5ec">
+<meta name=msapplication-navbutton-color content="#f8f5ec">
+<meta name=apple-mobile-web-app-capable content="yes">
+<meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec">
+<meta name=author content="Net Cc"><meta name=description content="通过二进制方式安装最新版的etcd，并做高可用集群配置"><meta name=keywords content="etcd,etcd配置,etcd集群,k8s集群">
+<meta name=generator content="Hugo 0.88.1 with theme even">
+<link rel=canonical href=https://www.net-cc.com/post/linux/etcd/etcd-install/>
+<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
+<link rel=manifest href=/manifest.json>
+<link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5>
+<link href=/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css rel=stylesheet>
+<link href=/lib/fancybox/jquery.fancybox-3.1.20.min.css rel=stylesheet>
+<meta property="og:title" content="etcd安装配置笔记">
+<meta property="og:description" content="通过二进制方式安装最新版的etcd，并做高可用集群配置">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.net-cc.com/post/linux/etcd/etcd-install/"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2020-09-06T19:42:47+08:00">
+<meta property="article:modified_time" content="2021-09-07T21:37:59+08:00">
+<meta itemprop=name content="etcd安装配置笔记">
+<meta itemprop=description content="通过二进制方式安装最新版的etcd，并做高可用集群配置"><meta itemprop=datePublished content="2020-09-06T19:42:47+08:00">
+<meta itemprop=dateModified content="2021-09-07T21:37:59+08:00">
+<meta itemprop=wordCount content="2051">
+<meta itemprop=keywords content="k8s,etcd,"><meta name=twitter:card content="summary">
+<meta name=twitter:title content="etcd安装配置笔记">
+<meta name=twitter:description content="通过二进制方式安装最新版的etcd，并做高可用集群配置"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]-->
+</head>
+<body>
+<div id=mobile-navbar class=mobile-navbar>
+<div class=mobile-header-logo>
+<a href=/ class=logo>新生代搬运工</a>
+</div>
+<div class=mobile-navbar-icon>
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+<nav id=mobile-menu class="mobile-menu slideout-menu">
+<ul class=mobile-menu-list>
+<a href=/>
+<li class=mobile-menu-item>主页</li>
+</a><a href=/post/>
+<li class=mobile-menu-item>归档</li>
+</a><a href=/tags/>
+<li class=mobile-menu-item>标签</li>
+</a><a href=/categories/>
+<li class=mobile-menu-item>类别</li>
+</a><a href=/about/>
+<li class=mobile-menu-item>关于</li>
+</a>
+</ul>
+</nav>
+<div class=container id=mobile-panel>
+<header id=header class=header>
+<div class=logo-wrapper>
+<a href=/ class=logo>新生代搬运工</a>
+</div>
+<nav class=site-navbar>
+<ul id=menu class=menu>
+<li class=menu-item>
+<a class=menu-item-link href=/>主页</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/post/>归档</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/tags/>标签</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/categories/>类别</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/about/>关于</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=main class=main>
+<div class=content-wrapper>
+<div id=content class=content>
+<article class=post>
+<header class=post-header>
+<h1 class=post-title>etcd安装配置笔记</h1>
+<div class=post-meta>
+<span class=post-time> 2020年09月06日 </span>
+<div class=post-category>
+<a href=/categories/k8s/> k8s </a>
+</div>
+<span class=more-meta> 约 2051 字 </span>
+<span class=more-meta> 预计阅读 5 分钟 </span>
+</div>
+</header>
+<div class=post-toc id=post-toc>
+<h2 class=post-toc-title>文章目录</h2>
+<div class=post-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#节点信息>节点信息</a>
+<ul>
+<li><a href=#节点初始化>节点初始化</a></li>
+</ul>
+</li>
+<li><a href=#pki证书管理>PKI证书管理</a>
+<ul>
+<li><a href=#etcd-ca>etcd-ca</a></li>
+<li><a href=#etcd-server-证书>etcd-server 证书</a></li>
+<li><a href=#etcd-client-证书>etcd-client 证书</a></li>
+<li><a href=#复制证书到各节点>复制证书到各节点</a></li>
+</ul>
+</li>
+<li><a href=#安装etcd>安装etcd</a>
+<ul>
+<li><a href=#下载etcd二进制文件>下载etcd二进制文件</a></li>
+<li><a href=#添加system服务>添加system服务</a></li>
+</ul>
+</li>
+<li><a href=#初始集群>初始集群</a>
+<ul>
+<li><a href=#添加配置文件>添加配置文件</a></li>
+<li><a href=#启动etcd服务>启动ETCD服务</a></li>
+<li><a href=#测试etcd>测试etcd</a></li>
+</ul>
+</li>
+<li><a href=#动态添加集群成员>动态添加集群成员</a>
+<ul>
+<li><a href=#添加集群成员>添加集群成员</a></li>
+<li><a href=#修改配置文件>修改配置文件</a></li>
+<li><a href=#启动新节点>启动新节点</a></li>
+<li><a href=#测试etcd-1>测试etcd</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+<div class=post-content>
+<p>通过二进制方式安装最新版的etcd，并做高可用集群配置</p>
+<h1 id=节点信息>节点信息</h1>
+<table>
+<thead>
+<tr>
+<th>IP地址</th>
+<th>主机名称</th>
+<th>DNS记录</th>
+<th>类型</th>
+<th>系统</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.122.10</td>
+<td>node1</td>
+<td>node1</td>
+<td>etcd</td>
+<td>centos7</td>
+</tr>
+<tr>
+<td>192.168.122.11</td>
+<td>node2</td>
+<td>node2</td>
+<td>etcd</td>
+<td>centos7</td>
+</tr>
+<tr>
+<td>192.168.122.12</td>
+<td>node3</td>
+<td>node3</td>
+<td>etcd</td>
+<td>centos8</td>
+</tr>
+</tbody>
+</table>
+<h2 id=节点初始化>节点初始化</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 创建用户和目录</span>
+groupadd -r etcd
+<span class=c1># -k MAIL_DIR=/dev/null参数不创建此用户的mail目录</span>
+useradd  -s /sbin/nologin -d /var/lib/etcd -g etcd -c <span class=s2>&#34;etcd user&#34;</span> -r -K <span class=nv>MAIL_DIR</span><span class=o>=</span>/dev/null etcd
+mkdir -p /opt/etcd/<span class=o>{</span>ssl,etc,log,bin,data<span class=o>}</span>
+<span class=c1># 开通防火墙端口</span>
+firewall-cmd --add-service<span class=o>=</span>etcd-server --permanent
+firewall-cmd --add-service<span class=o>=</span>etcd-client --permanent
+firewall-cmd --reload
+</code></pre></td></tr></table>
+</div>
+</div><h1 id=pki证书管理>PKI证书管理</h1>
+<p><strong>注意：证书我是在node3上进行生成管理的</strong></p>
+<p>使用openssl生成证书，可以参考: <a href=/post/linux/openssl/ title=openssl证书管理>openssl证书管理</a></p>
+<p>需要这些证书</p>
+<table>
+<thead>
+<tr>
+<th>默认 CN</th>
+<th>父级 CA</th>
+<th>O (位于 Subject 中)</th>
+<th>类型</th>
+<th>主机 (SAN)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>etcd-server</td>
+<td>etcd-ca</td>
+<td></td>
+<td>server, client</td>
+<td>&lt;主机名称>, &lt;IP地址>, localhost, 127.0.0.1</td>
+</tr>
+<tr>
+<td>etcd-client</td>
+<td>etcd-ca</td>
+<td>system:masters</td>
+<td>client</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id=etcd-ca>etcd-ca</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>mkdir -p ~/ca/etcd-ca/<span class=o>{</span>etcd-server,etcd-client<span class=o>}</span>
+<span class=nb>cd</span> ~/ca/etcd-ca
+openssl genrsa -aes256 -out etcd-ca.key <span class=m>4096</span> <span class=c1># 对key使用了aes256进行加密，所以需要输入密码</span>
+
+<span class=c1># etcd-ca的证书</span>
+openssl req -extensions v3_ca <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=etcd-ca/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-new -x509 -days <span class=m>14500</span> -sha256 <span class=se>\
+</span><span class=se></span>-key etcd-ca.key -out etcd-ca.crt
+
+<span class=c1># 创建证书签名用到的配置文件</span>
+cat &gt; etcd-ca.conf<span class=s>&lt;&lt;EOF
+</span><span class=s># 用来对服务端证书签名
+</span><span class=s>[ req_server ]
+</span><span class=s>subjectKeyIdentifier = hash
+</span><span class=s>basicConstraints = CA:FALSE
+</span><span class=s>authorityKeyIdentifier = keyid,issuer:always
+</span><span class=s>keyUsage = critical, digitalSignature, keyEncipherment
+</span><span class=s>extendedKeyUsage = clientAuth, serverAuth
+</span><span class=s>subjectAltName = @alt_names
+</span><span class=s># etcd客户端的IP地址和dns记录（SAN）
+</span><span class=s>[ alt_names ]
+</span><span class=s>DNS.1 = node1
+</span><span class=s>DNS.2 = node2
+</span><span class=s>DNS.3 = node3
+</span><span class=s>DNS.4 = localhost
+</span><span class=s>IP.1 = 192.168.122.10
+</span><span class=s>IP.2 = 192.168.122.12
+</span><span class=s>IP.3 = 192.168.122.13
+</span><span class=s>IP.4 = 127.0.0.1
+</span><span class=s># 用来对客户端证书签名
+</span><span class=s>[ req_client ]
+</span><span class=s>subjectKeyIdentifier = hash
+</span><span class=s>basicConstraints = CA:FALSE
+</span><span class=s>authorityKeyIdentifier = keyid,issuer:always
+</span><span class=s>keyUsage = critical, digitalSignature, keyEncipherment
+</span><span class=s>extendedKeyUsage = clientAuth
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=etcd-server-证书>etcd-server 证书</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/etcd-ca/etcd-server
+
+<span class=c1># 创建密钥，不要加密，不然程序无法解析</span>
+openssl genrsa -out etcd-server.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=etcd-server/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key etcd-server.key -out etcd-server.csr
+
+<span class=c1># 使用etcd-ca进行签名获取带有SAN扩展的证书</span>
+openssl x509 -in etcd-server.csr -out etcd-server.crt <span class=se>\
+</span><span class=se></span>-CA ../etcd-ca.crt -CAkey ../etcd-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-extfile ../etcd-ca.conf -extensions req_server <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span>
+
+<span class=c1># 更改证书权限</span>
+rm -rf etcd-server.csr
+chmod <span class=m>444</span> etcd-server.crt
+chmod <span class=m>400</span> etcd-server.key
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=etcd-client-证书>etcd-client 证书</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/etcd-ca/etcd-client
+<span class=c1># 创建密钥</span>
+openssl genrsa -out etcd-client.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=system:masters/OU=net-cc.com/CN=etcd-client/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key etcd-client.key -out etcd-client.csr
+
+<span class=c1># 使用etcd-ca进行签名</span>
+openssl x509 -in etcd-client.csr -out etcd-client.crt <span class=se>\
+</span><span class=se></span>-CA ../etcd-ca.crt -CAkey ../etcd-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-extfile ../etcd-ca.conf -extensions req_client <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> 
+
+rm -f etcd-client.csr
+chmod <span class=m>444</span> etcd-client.crt
+chmod <span class=m>400</span> etcd-client.key
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=复制证书到各节点>复制证书到各节点</h2>
+<ul>
+<li>
+<p>etcd-server节点：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/etcd-ca/etcd-server
+cp ../etcd-ca.crt etcd-server.crt etcd-server.key /opt/etcd/ssl/
+scp ../etcd-ca.crt etcd-server.crt etcd-server.key root@node1:/opt/etcd/ssl/
+scp ../etcd-ca.crt etcd-server.crt etcd-server.key root@node2:/opt/etcd/ssl/
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>etcd-client节点</p>
+<p>证书密钥文件到需要使用etcd的程序的证书密钥目录内（如K8S），以便访问etcd服务的时候调用即可: <code>etcd-ca.crt，etcd-client.crt，etcd-client.key</code></p>
+<p>可以先复制到~/.pki目录，方便etcdctl客户端程序调用</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/etcd-ca/etcd-client
+mkdir -p ~/.pki
+cp ../etcd-ca.crt etcd-client.crt etcd-client.key ~/.pki/
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h1 id=安装etcd>安装etcd</h1>
+<p>三个节点上都要先安装etcd，然后在根据节点主机名称、ip地址来修改配置文件</p>
+<h2 id=下载etcd二进制文件>下载etcd二进制文件</h2>
+<p>在node3上下载二进制文件，然后传到其他节点上</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># etcd的版本</span>
+<span class=nv>ETCD_VER</span><span class=o>=</span>v3.4.13
+<span class=c1># 通过github下载</span>
+<span class=nv>GITHUB_URL</span><span class=o>=</span>https://github.com/etcd-io/etcd/releases/download
+<span class=nv>DOWNLOAD_URL</span><span class=o>=</span><span class=si>${</span><span class=nv>GITHUB_URL</span><span class=si>}</span>
+rm -f /tmp/etcd-<span class=si>${</span><span class=nv>ETCD_VER</span><span class=si>}</span>-linux-amd64.tar.gz
+rm -rf /tmp/etcd-download-test <span class=o>&amp;&amp;</span> mkdir -p /tmp/etcd-download-test
+curl -L <span class=si>${</span><span class=nv>DOWNLOAD_URL</span><span class=si>}</span>/<span class=si>${</span><span class=nv>ETCD_VER</span><span class=si>}</span>/etcd-<span class=si>${</span><span class=nv>ETCD_VER</span><span class=si>}</span>-linux-amd64.tar.gz -o /tmp/etcd-<span class=si>${</span><span class=nv>ETCD_VER</span><span class=si>}</span>-linux-amd64.tar.gz
+tar xzvf /tmp/etcd-<span class=si>${</span><span class=nv>ETCD_VER</span><span class=si>}</span>-linux-amd64.tar.gz -C /tmp/etcd-download-test --strip-components<span class=o>=</span><span class=m>1</span>
+<span class=c1># 复制到程序目录</span>
+cp /tmp/etcd-download-test/etcd* /opt/etcd/bin/
+<span class=c1># 传到其他节点</span>
+scp /tmp/etcd-download-test/etcd* root@node1:/opt/etcd/bin/
+scp /tmp/etcd-download-test/etcd* root@node2:/opt/etcd/bin/
+<span class=c1># 清理</span>
+rm -rf /tmp/etcd-download-test/
+rm -f /tmp/etcd-<span class=si>${</span><span class=nv>ETCD_VER</span><span class=si>}</span>-linux-amd64.tar.gz
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=添加system服务>添加system服务</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /usr/lib/systemd/system/etcd.service<span class=s>&lt;&lt;EOF
+</span><span class=s>[Unit]
+</span><span class=s>Description=Etcd Server
+</span><span class=s>After=network.target
+</span><span class=s>After=network-online.target
+</span><span class=s>Wants=network-online.target
+</span><span class=s>
+</span><span class=s>[Service]
+</span><span class=s>WorkingDirectory=/opt/etcd/data
+</span><span class=s>EnvironmentFile=/opt/etcd/etc/config
+</span><span class=s>User=etcd
+</span><span class=s># set GOMAXPROCS to number of processors
+</span><span class=s>ExecStart=/opt/etcd/bin/etcd 
+</span><span class=s>Restart=on-failure
+</span><span class=s>RestartSec=5
+</span><span class=s>LimitNOFILE=65536
+</span><span class=s>
+</span><span class=s>[Install]
+</span><span class=s>WantedBy=multi-user.target
+</span><span class=s>EOF</span>
+
+<span class=c1># 配置etcd的配置文件位置</span>
+<span class=nb>echo</span> <span class=s1>&#39;ETCD_CONFIG_FILE=&#34;/opt/etcd/etc/etcd.conf&#34;&#39;</span> &gt; /opt/etcd/etc/config
+
+<span class=c1># 复制到node1</span>
+scp /usr/lib/systemd/system/etcd.service root@node1:/usr/lib/systemd/system/etcd.service
+scp /opt/etcd/etc/config root@node1:/opt/etcd/etc/config
+<span class=c1># 复制到node2</span>
+scp /usr/lib/systemd/system/etcd.service root@node2:/usr/lib/systemd/system/etcd.service
+scp /opt/etcd/etc/config root@node2:/opt/etcd/etc/config
+</code></pre></td></tr></table>
+</div>
+</div><h1 id=初始集群>初始集群</h1>
+<p>我是先使用node1和node3创建初始集群，然后在动态添加node2节点</p>
+<h2 id=添加配置文件>添加配置文件</h2>
+<p>以下配置文件中选项的官方描述：<a href=https://etcd.io/docs/v3.4.0/op-guide/configuration/>https://etcd.io/docs/v3.4.0/op-guide/configuration/</a></p>
+<ul>
+<li>
+<p>node1配置文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /opt/etcd/etc/etcd.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>name: &#39;node1&#39;
+</span><span class=s>data-dir: &#39;&#39;
+</span><span class=s>wal-dir: &#39;&#39;
+</span><span class=s>listen-peer-urls: https://192.168.122.10:2380
+</span><span class=s>listen-client-urls: https://192.168.122.10:2379,https://127.0.0.1:2379
+</span><span class=s>initial-advertise-peer-urls: https://node1:2380
+</span><span class=s>advertise-client-urls: https://node1:2379
+</span><span class=s>initial-cluster: node1=https://node1:2380,node3=https://node3:2380
+</span><span class=s>initial-cluster-token: &#39;k8s&#39;
+</span><span class=s>initial-cluster-state: &#39;new&#39;
+</span><span class=s>enable-v2: true
+</span><span class=s>enable-pprof: true
+</span><span class=s>debug: false
+</span><span class=s>logger: zap
+</span><span class=s># 客户端到服务器端通讯
+</span><span class=s>client-transport-security:
+</span><span class=s>    cert-file: /opt/etcd/ssl/etcd-server.crt
+</span><span class=s>    key-file: /opt/etcd/ssl/etcd-server.key
+</span><span class=s>    client-cert-auth: true
+</span><span class=s>    trusted-ca-file: /opt/etcd/ssl/etcd-ca.crt
+</span><span class=s>    auto-tls: false
+</span><span class=s># 对等通讯 (服务器到服务器/集群)
+</span><span class=s>peer-transport-security:
+</span><span class=s>    cert-file: /opt/etcd/ssl/etcd-server.crt
+</span><span class=s>    key-file: /opt/etcd/ssl/etcd-server.key
+</span><span class=s>    client-cert-auth: true
+</span><span class=s>    trusted-ca-file: /opt/etcd/ssl/etcd-ca.crt
+</span><span class=s>    auto-tls: false
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>node3配置文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /opt/etcd/etc/etcd.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>name: &#39;node3&#39;
+</span><span class=s>data-dir: &#39;&#39;
+</span><span class=s>wal-dir: &#39;&#39;
+</span><span class=s>listen-peer-urls: https://192.168.122.12:2380
+</span><span class=s>listen-client-urls: https://192.168.122.12:2379,https://127.0.0.1:2379
+</span><span class=s>initial-advertise-peer-urls: https://node3:2380
+</span><span class=s>advertise-client-urls: https://node3:2379
+</span><span class=s>initial-cluster: node1=https://node1:2380,node3=https://node3:2380
+</span><span class=s>initial-cluster-token: &#39;k8s&#39;
+</span><span class=s>initial-cluster-state: &#39;new&#39;
+</span><span class=s>enable-v2: true
+</span><span class=s>enable-pprof: true
+</span><span class=s>debug: false
+</span><span class=s>logger: zap
+</span><span class=s># 客户端到服务器端通讯
+</span><span class=s>client-transport-security:
+</span><span class=s>    cert-file: /opt/etcd/ssl/etcd-server.crt
+</span><span class=s>    key-file: /opt/etcd/ssl/etcd-server.key
+</span><span class=s>    client-cert-auth: true
+</span><span class=s>    trusted-ca-file: /opt/etcd/ssl/etcd-ca.crt
+</span><span class=s>    auto-tls: false
+</span><span class=s># 对等通讯 (服务器到服务器/集群)
+</span><span class=s>peer-transport-security:
+</span><span class=s>    cert-file: /opt/etcd/ssl/etcd-server.crt
+</span><span class=s>    key-file: /opt/etcd/ssl/etcd-server.key
+</span><span class=s>    client-cert-auth: true
+</span><span class=s>    trusted-ca-file: /opt/etcd/ssl/etcd-ca.crt
+</span><span class=s>    auto-tls: false
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=启动etcd服务>启动ETCD服务</h2>
+<p>先启动node1，然后在启动node3，每个节点的目录权限别忘记更改</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 设置权限</span>
+chown etcd:etcd -R /opt/etcd/<span class=o>{</span>data,etc,log,ssl<span class=o>}</span>
+chmod <span class=m>700</span> /opt/etcd/data
+restorecon -R /opt/etcd
+
+<span class=c1># 启动服务</span>
+systemctl daemon-reload
+systemctl start etcd.service
+systemctl <span class=nb>enable</span> etcd.service
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=测试etcd>测试etcd</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>
+<span class=c1># 由于参数太多，所以添加etcdctl参数环境变量</span>
+cat &gt;&gt; ~/.bashrc<span class=s>&lt;&lt;EOF
+</span><span class=s>export ETCDCTL_API=3
+</span><span class=s>export ETCDCTL_CACERT=$HOME/.pki/etcd-ca.crt
+</span><span class=s>export ETCDCTL_CERT=$HOME/.pki/etcd-client.crt
+</span><span class=s>export ETCDCTL_KEY=$HOME/.pki/etcd-client.key
+</span><span class=s>export ETCDCTL_ENDPOINTS=https://node1:2379,https://node3:2379,https://node2:2379
+</span><span class=s>
+</span><span class=s>PATH=$PATH:$HOME/bin:/opt/etcd/bin
+</span><span class=s>export PATH
+</span><span class=s>EOF</span>
+<span class=nb>source</span> ~/.bashrc
+etcdctl endpoint health --write-out<span class=o>=</span>table
+</code></pre></td></tr></table>
+</div>
+</div><h1 id=动态添加集群成员>动态添加集群成员</h1>
+<p>前边已经配置了两个成员的etcd集群，etcd集群成员少于三个没有冗余性的，下边我们动态添加一个成员</p>
+<h2 id=添加集群成员>添加集群成员</h2>
+<p>在已经安装etcd集群的节点（node3）通过etcdctl客户端动态添加节点</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>etcdctl member add node2  --peer-urls<span class=o>=</span>https://node2:2380
+
+<span class=c1># 以上命令执行成功会返回新集群的配置参数，如下，记录下来，等会修改集群配置</span>
+<span class=nv>ETCD_NAME</span><span class=o>=</span><span class=s2>&#34;node2&#34;</span>
+<span class=nv>ETCD_INITIAL_CLUSTER</span><span class=o>=</span><span class=s2>&#34;node1=https://node1:2380,node2=https://node2:2380,node3=https://node3:2380&#34;</span>
+<span class=nv>ETCD_INITIAL_ADVERTISE_PEER_URLS</span><span class=o>=</span><span class=s2>&#34;https://node2:2380&#34;</span>
+<span class=nv>ETCD_INITIAL_CLUSTER_STATE</span><span class=o>=</span><span class=s2>&#34;existing&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=修改配置文件>修改配置文件</h2>
+<blockquote>
+<p>根据上边命令回显，node2添加配置如下</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /opt/etcd/etc/etcd.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>name: &#39;node2&#39;
+</span><span class=s>data-dir: &#39;&#39;
+</span><span class=s>wal-dir: &#39;&#39;
+</span><span class=s>listen-peer-urls: https://192.168.122.11:2380
+</span><span class=s>listen-client-urls: https://192.168.122.11:2379,https://127.0.0.1:2379
+</span><span class=s>initial-advertise-peer-urls: https://node2:2380
+</span><span class=s>advertise-client-urls: https://node2:2379
+</span><span class=s>initial-cluster: node1=https://node1:2380,node2=https://node2:2380,node3=https://node3:2380
+</span><span class=s>initial-cluster-token: &#39;k8s&#39;
+</span><span class=s>initial-cluster-state: &#39;existing&#39;
+</span><span class=s>enable-v2: true
+</span><span class=s>enable-pprof: true
+</span><span class=s>debug: false
+</span><span class=s>logger: zap
+</span><span class=s>client-transport-security:
+</span><span class=s>    cert-file: /opt/etcd/ssl/etcd-server.crt
+</span><span class=s>    key-file: /opt/etcd/ssl/etcd-server.key
+</span><span class=s>    client-cert-auth: true
+</span><span class=s>    trusted-ca-file: /opt/etcd/ssl/etcd-ca.crt
+</span><span class=s>    auto-tls: false
+</span><span class=s>peer-transport-security:
+</span><span class=s>    cert-file: /opt/etcd/ssl/etcd-server.crt
+</span><span class=s>    key-file: /opt/etcd/ssl/etcd-server.key
+</span><span class=s>    client-cert-auth: true
+</span><span class=s>    trusted-ca-file: /opt/etcd/ssl/etcd-ca.crt
+</span><span class=s>    auto-tls: false
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=启动新节点>启动新节点</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 设置目录用户组</span>
+chown etcd:etcd -R /opt/etcd
+chmod <span class=m>700</span> /opt/etcd/data
+restorecon -R /opt/etcd
+
+<span class=c1># 启动服务</span>
+systemctl daemon-reload
+systemctl start etcd.service
+systemctl <span class=nb>enable</span> etcd.service
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=测试etcd-1>测试etcd</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>etcdctl endpoint health --write-out<span class=o>=</span>table
+</code></pre></td></tr></table>
+</div>
+</div>
+</div>
+<div class=post-copyright>
+<p class=copyright-item>
+<span class=item-title>文章作者</span>
+<span class=item-content>Net Cc</span>
+</p>
+<p class=copyright-item>
+<span class=item-title>上次更新</span>
+<span class=item-content>
+2021年09月07日
+<a href=/commit/c2e9e7dba7ca1f946ddb0b47b0e2581e6d5b4605 title="first commit">(c2e9e7d)</a>
+</span>
+</p>
+<p class=copyright-item>
+<span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span>
+</p>
+</div>
+<div class=post-reward>
+<input type=checkbox name=reward id=reward hidden>
+<label class=reward-button for=reward>赞赏支持</label>
+<div class=qr-code>
+<label class=qr-code-image for=reward>
+<img class=image src=/qr-code/wechat-qr-code.png>
+<span>微信打赏</span>
+</label>
+<label class=qr-code-image for=reward>
+<img class=image src=/qr-code/alipay-qr-code.png>
+<span>支付宝打赏</span>
+</label>
+</div>
+</div><footer class=post-footer>
+<div class=post-tags>
+<a href=/tags/k8s/>k8s</a>
+<a href=/tags/etcd/>etcd</a>
+</div>
+<nav class=post-nav>
+<a class=prev href=/post/linux/kubernetes/k8s-install/>
+<i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">二进制方式安装K8S</span>
+<span class="prev-text nav-mobile">上一篇</span>
+</a>
+<a class=next href=/post/linux/openssl/>
+<span class="next-text nav-default">openssl证书管理</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i>
+</a>
+</nav>
+</footer>
+</article>
+</div>
+</div>
+</main>
+<footer id=footer class=footer>
+<div class=social-links>
+<a href=mailto:361276131@qq.com class="iconfont icon-email" title=email></a>
+<a href=https://github.com/zccing class="iconfont icon-github" title=github></a>
+<a href=https://www.net-cc.com/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a>
+</div>
+<div class=copyright>
+<span class=power-by>
+由 <a class=hexo-link href=https://gohugo.io>Hugo</a> 强力驱动
+</span>
+<span class=division>|</span>
+<span class=theme-info>
+主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a>
+</span>
+<span class=copyright-year>
+&copy;
+2020-10-1 -
+2021<span class=heart><i class="iconfont icon-heart"></i></span><span>cc</span>
+</span>
+</div>
+</footer>
+<div class=back-to-top id=back-to-top>
+<i class="iconfont icon-up"></i>
+</div>
+</div>
+<script type=text/javascript src=/lib/jquery/jquery-3.2.1.min.js></script>
+<script type=text/javascript src=/lib/slideout/slideout-1.0.1.min.js></script>
+<script type=text/javascript src=/lib/fancybox/jquery.fancybox-3.1.20.min.js></script>
+<script type=text/javascript src=/lib/timeago/timeago-3.0.2.min.js></script>
+<script type=text/javascript src=/lib/timeago/timeago.locales-3.0.2.min.js></script>
+<script>var languageCode="zh-cn".replace(/-/g,'_').replace(/_(.*)/,function(b,a){return b.replace(a,a.toUpperCase())});timeago().render(document.querySelectorAll('.timeago'),languageCode),timeago.cancel()</script>
+<script type=text/javascript src=/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js></script>
+<script id=baidu_analytics>var _hmt=_hmt||[];(function(){var a,b;if(window.location.hostname==='localhost')return;a=document.createElement("script"),a.async=!0,a.src="https://hm.baidu.com/hm.js?05cbf3784f8cd2db4b54d582060e8a18",b=document.getElementsByTagName("script")[0],b.parentNode.insertBefore(a,b)})()</script>
+</body>
+</html>

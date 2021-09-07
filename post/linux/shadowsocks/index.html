@@ -1,0 +1,855 @@
+<!doctype html><html lang=zh-cn>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>shadowsocks笔记 - 新生代搬运工</title>
+<meta name=renderer content="webkit">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta http-equiv=cache-control content="no-transform">
+<meta http-equiv=cache-control content="no-siteapp">
+<meta name=theme-color content="#f8f5ec">
+<meta name=msapplication-navbutton-color content="#f8f5ec">
+<meta name=apple-mobile-web-app-capable content="yes">
+<meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec">
+<meta name=author content="cc"><meta name=description content="通过二进制方式安装ss，用来做国际优化"><meta name=keywords content="shadowsocks,ss,小飞机">
+<meta name=generator content="Hugo 0.88.1 with theme even">
+<link rel=canonical href=https://www.net-cc.com/post/linux/shadowsocks/>
+<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
+<link rel=manifest href=/manifest.json>
+<link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5>
+<link href=/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css rel=stylesheet>
+<link href=/lib/fancybox/jquery.fancybox-3.1.20.min.css rel=stylesheet>
+<meta property="og:title" content="shadowsocks笔记">
+<meta property="og:description" content="通过二进制方式安装ss，用来做国际优化">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.net-cc.com/post/linux/shadowsocks/"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2020-08-30T01:37:56+08:00">
+<meta property="article:modified_time" content="2021-09-07T21:37:59+08:00">
+<meta itemprop=name content="shadowsocks笔记">
+<meta itemprop=description content="通过二进制方式安装ss，用来做国际优化"><meta itemprop=datePublished content="2020-08-30T01:37:56+08:00">
+<meta itemprop=dateModified content="2021-09-07T21:37:59+08:00">
+<meta itemprop=wordCount content="2662">
+<meta itemprop=keywords content="linux,"><meta name=twitter:card content="summary">
+<meta name=twitter:title content="shadowsocks笔记">
+<meta name=twitter:description content="通过二进制方式安装ss，用来做国际优化"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]-->
+</head>
+<body>
+<div id=mobile-navbar class=mobile-navbar>
+<div class=mobile-header-logo>
+<a href=/ class=logo>新生代搬运工</a>
+</div>
+<div class=mobile-navbar-icon>
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+<nav id=mobile-menu class="mobile-menu slideout-menu">
+<ul class=mobile-menu-list>
+<a href=/>
+<li class=mobile-menu-item>主页</li>
+</a><a href=/post/>
+<li class=mobile-menu-item>归档</li>
+</a><a href=/tags/>
+<li class=mobile-menu-item>标签</li>
+</a><a href=/categories/>
+<li class=mobile-menu-item>类别</li>
+</a><a href=/about/>
+<li class=mobile-menu-item>关于</li>
+</a>
+</ul>
+</nav>
+<div class=container id=mobile-panel>
+<header id=header class=header>
+<div class=logo-wrapper>
+<a href=/ class=logo>新生代搬运工</a>
+</div>
+<nav class=site-navbar>
+<ul id=menu class=menu>
+<li class=menu-item>
+<a class=menu-item-link href=/>主页</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/post/>归档</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/tags/>标签</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/categories/>类别</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/about/>关于</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=main class=main>
+<div class=content-wrapper>
+<div id=content class=content>
+<article class=post>
+<header class=post-header>
+<h1 class=post-title>shadowsocks笔记</h1>
+<div class=post-meta>
+<span class=post-time> 2020年08月30日 </span>
+<div class=post-category>
+<a href=/categories/linux/> linux </a>
+</div>
+<span class=more-meta> 约 2662 字 </span>
+<span class=more-meta> 预计阅读 6 分钟 </span>
+</div>
+</header>
+<div class=post-toc id=post-toc>
+<h2 class=post-toc-title>文章目录</h2>
+<div class="post-toc-content always-active">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#shadowsocks笔记>shadowsocks笔记</a>
+<ul>
+<li><a href=#安装shadowsocks-libev服务端>安装shadowsocks-libev服务端</a></li>
+<li><a href=#安装shadowsocks客户端>安装shadowsocks客户端</a></li>
+<li><a href=#安装shadowsocks-manager>安装shadowsocks-manager</a></li>
+<li><a href=#安装配置kcptun>安装配置KCPtun</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+<div class=post-content>
+<p>通过二进制方式安装ss，在阿里云香港购买一台服务器，用来做国际优化</p>
+<h1 id=shadowsocks笔记>shadowsocks笔记</h1>
+<h2 id=安装shadowsocks-libev服务端>安装shadowsocks-libev服务端</h2>
+<ul>
+<li>
+<p>存储库安装</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> /etc/yum.repos.d/
+wget https://copr.fedorainfracloud.org/coprs/librehat/shadowsocks/repo/epel-7/librehat-shadowsocks-epel-7.repo
+yum check
+yum install epel-release -y
+yum install shadowsocks-libev -y
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>编译安装</p>
+<ul>
+<li>
+<p>安装需要的lib库</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>yum install epel-release -y
+yum install gcc make pcre-devel mbedtls-devel libsodium-devel c-ares-devel libev-devel libnetfilter_conntrack-devel libnetfilter_conntrack -y
+<span class=c1># 如果要安装文档的还需要以下几个依赖</span>
+yum install gettext autoconf libtool automeke xmlto -y
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>下载软件，解压缩</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> /usr/local/src
+wget https://github.com/shadowsocks/shadowsocks-libev/releases/download/v3.2.3/shadowsocks-libev-3.2.3.tar.gz
+tar -xvf shadowsocks-libev-3.2.3.tar.gz
+<span class=nb>cd</span> shadowsocks-libev-3.2.3
+mkdir /opt/shadowsocks-libev
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>编译安装</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>./configure --prefix<span class=o>=</span>/opt/shadowsocks-libev/ <span class=se>\
+</span><span class=se></span>--disable-documentation
+make
+make install
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>添加系统服务</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> /usr/local/src/shadowsocks-libev-3.2.3
+cp rpm/SOURCES/systemd/shadowsocks-libev.service /usr/lib/systemd/system/
+cp rpm/SOURCES/systemd/shadowsocks-libev.default /etc/sysconfig/shadowsocks-libev
+
+<span class=c1># 编辑服务文件，修改`/usr/bin/`为`/opt/shadowsocks-libev/`</span>
+sed -i <span class=s1>&#39;s/\/usr\/bin\//\/opt\/shadowsocks-libev\/bin\//g&#39;</span> /usr/lib/systemd/system/shadowsocks-libev.service
+
+<span class=c1># 开机启动服务</span>
+systemctl daemon-reload
+systemctl <span class=nb>enable</span> shadowsocks-libev.service
+
+<span class=c1># 这里启动服务会失败，因为没有配置文件</span>
+systemctl start shadowsocks-libev.service
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>docker安装</p>
+<blockquote>
+<p>参考<code>docker hub</code>上的介绍</p>
+</blockquote>
+</li>
+<li>
+<p>配置</p>
+<ul>
+<li>
+<p>编辑配置文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 添加配置文件</span>
+cat &gt; /etc/shadowsocks-libev/config.json <span class=s>&lt;&lt;EOF
+</span><span class=s>{
+</span><span class=s>  &#34;server&#34;:[&#34;[::0]&#34;,&#34;0.0.0.0&#34;],
+</span><span class=s>  &#34;server_port&#34;:19438,
+</span><span class=s>  &#34;local_port&#34;:1081,
+</span><span class=s>  &#34;password&#34;:&#34;cc951021\$ps&#34;,
+</span><span class=s>  &#34;timeout&#34;:60,
+</span><span class=s>  &#34;method&#34;:&#34;chacha20-ietf-poly1305&#34;
+</span><span class=s>}
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>优化</p>
+<blockquote>
+<p>参照这一篇文章进行优化<a href=https://shadowsocks.org/en/config/advanced.html>shadowsocks advanced config</a></p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /etc/sysctl.d/98-shadowsocks.conf <span class=s>&lt;&lt;EOF
+</span><span class=s># max open files
+</span><span class=s>fs.file-max = 51200
+</span><span class=s># max read buffer
+</span><span class=s>net.core.rmem_max = 67108864
+</span><span class=s># max write buffer
+</span><span class=s>net.core.wmem_max = 67108864
+</span><span class=s># default read buffer
+</span><span class=s>net.core.rmem_default = 65536
+</span><span class=s># default write buffer
+</span><span class=s>net.core.wmem_default = 65536
+</span><span class=s># max processor input queue
+</span><span class=s>net.core.netdev_max_backlog = 4096
+</span><span class=s># max backlog
+</span><span class=s>net.core.somaxconn = 4096
+</span><span class=s># resist SYN flood attacks
+</span><span class=s>net.ipv4.tcp_syncookies = 1
+</span><span class=s># reuse timewait sockets when safe
+</span><span class=s>net.ipv4.tcp_tw_reuse = 1
+</span><span class=s># turn off fast timewait sockets recycling
+</span><span class=s>net.ipv4.tcp_tw_recycle = 0
+</span><span class=s># short FIN timeout
+</span><span class=s>net.ipv4.tcp_fin_timeout = 30
+</span><span class=s># short keepalive time
+</span><span class=s>net.ipv4.tcp_keepalive_time = 1200
+</span><span class=s># outbound port range
+</span><span class=s>net.ipv4.ip_local_port_range = 10000 65000
+</span><span class=s># max SYN backlog
+</span><span class=s>net.ipv4.tcp_max_syn_backlog = 4096
+</span><span class=s># max timewait sockets held by system simultaneously
+</span><span class=s>net.ipv4.tcp_max_tw_buckets = 5000
+</span><span class=s># turn on TCP Fast Open on both client and server side
+</span><span class=s>net.ipv4.tcp_fastopen = 3
+</span><span class=s># TCP receive buffer
+</span><span class=s>net.ipv4.tcp_rmem = 4096 87380 67108864
+</span><span class=s># TCP write buffer
+</span><span class=s>net.ipv4.tcp_wmem = 4096 65536 67108864
+</span><span class=s># turn on path MTU discovery
+</span><span class=s>net.ipv4.tcp_mtu_probing = 1
+</span><span class=s># for high-latency network
+</span><span class=s>net.ipv4.tcp_congestion_control = hybla
+</span><span class=s># for low-latency network, use cubic instead
+</span><span class=s># net.ipv4.tcp_congestion_control = cubic
+</span><span class=s>EOF</span>
+
+
+sysctl -p /etc/sysctl.d/98-shadowsocks.conf
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<h2 id=安装shadowsocks客户端>安装shadowsocks客户端</h2>
+<ul>
+<li>
+<p>安卓</p>
+<blockquote>
+<p>google play商店下载
+<a href=https://github.com/shadowsocks/shadowsocks-android/releases>备用下载地址</a></p>
+</blockquote>
+</li>
+<li>
+<p>ios</p>
+<blockquote>
+<p>商店下载</p>
+</blockquote>
+</li>
+<li>
+<p>linux</p>
+<blockquote>
+<p>linux的安装步骤和安装服务端一样
+也可以安装<code>shadowsocks-qt5</code>版本，不过我感觉<code>libev</code>版本配合<code>chrome</code>的<code>SwitchyOmega</code>插件挺好用的</p>
+</blockquote>
+<ul>
+<li>
+<p>安装后的配置</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /etc/shadowsocks-libev/config.json &lt;&lt;EOF
+<span class=o>{</span>
+  <span class=s2>&#34;server&#34;</span>:<span class=o>[</span><span class=s2>&#34;service-ip&#34;</span><span class=o>]</span>,
+  <span class=s2>&#34;server_port&#34;</span>:server-port,
+  <span class=s2>&#34;local_port&#34;</span>:1081,
+  <span class=s2>&#34;password&#34;</span>:<span class=s2>&#34;server-passwd&#34;</span>,
+  <span class=s2>&#34;timeout&#34;</span>:60,
+  <span class=s2>&#34;method&#34;</span>:<span class=s2>&#34;server加密算法&#34;</span>
+<span class=o>}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>添加系统服务</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cp rpm/SOURCES/systemd/shadowsocks-libev-local.service /usr/lib/systemd/system/
+sed -i <span class=s1>&#39;s/\/usr\/bin\//\/opt\/shadowsocks-libev\/bin\//g&#39;</span> /usr/lib/systemd/system/shadowsocks-libev-local.service
+<span class=c1># 开机启动服务</span>
+systemctl daemon-reload
+systemctl <span class=nb>enable</span> shadowsocks-libev-local.service
+systemctl start shadowsocks-libev-local.servic
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>windows</p>
+<blockquote>
+<p><a href=https://github.com/shadowsocks/shadowsocks-windows/releases>下载地址</a></p>
+</blockquote>
+</li>
+<li>
+<p>macOS</p>
+<blockquote>
+<p><a href=https://github.com/shadowsocks/ShadowsocksX-NG/releases>下载地址</a></p>
+</blockquote>
+</li>
+</ul>
+<h2 id=安装shadowsocks-manager>安装shadowsocks-manager</h2>
+<blockquote>
+<p><code>shadowsocks-manager</code>是<code>shadowsocks-libev</code>的管理工具，需要先安装<code>shadowsocks-libev</code>服务端然后启用<code>shadowsocks-libev</code>的<code>API</code>和<code>shadowsocks-manager</code>对接</p>
+</blockquote>
+<ul>
+<li>
+<p>安装<code>nodejs</code></p>
+<blockquote>
+<p>需要<code>nodejs 10.x</code>版本
+安装方法参考<a href=/post/linux/nodejs/>nodejs安装</a></p>
+</blockquote>
+</li>
+<li>
+<p>安装<code>sqlite</code></p>
+<blockquote>
+<p><code>sqlite</code>一般都自带的无需安装</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>yum install sqlite
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>安装<code>shadowsocks-manager</code></p>
+<ul>
+<li>
+<p>拓扑</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>+-------------+    +-------------+       +------+
+<span class=p>|</span> Shadowsocks <span class=p>|</span>    <span class=p>|</span> Shadowsocks <span class=p>|</span>  ...  <span class=p>|</span>      <span class=p>|</span>
+<span class=p>|</span> manager API <span class=p>|</span>    <span class=p>|</span> manager API <span class=p>|</span>       <span class=p>|</span>      <span class=p>|</span>
++-------------+    +-------------+       +------+
+      <span class=p>|</span>                 <span class=p>|</span>                  <span class=p>|</span>
+      <span class=p>|</span>                 <span class=p>|</span>                  <span class=p>|</span>
++-------------+    +-------------+       +------+
+<span class=p>|</span> ssmgr       <span class=p>|</span>    <span class=p>|</span> ssmgr       <span class=p>|</span>  ...  <span class=p>|</span>      <span class=p>|</span>
+<span class=p>|</span> with <span class=nb>type</span> s <span class=p>|</span>    <span class=p>|</span> with <span class=nb>type</span> s <span class=p>|</span>       <span class=p>|</span>      <span class=p>|</span>
++-------------+    +-------------+       +------+
+      <span class=p>|</span>                 <span class=p>|</span>                  <span class=p>|</span>
+      +------------+----+--------  ...  ---+
+                    <span class=p>|</span>
+                    <span class=p>|</span>
+            +---------------+
+            <span class=p>|</span> ssmgr plugins <span class=p>|</span>
+            <span class=p>|</span>  with <span class=nb>type</span> m  <span class=p>|</span>
+            +---------------+
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>从源代码安装</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>git clone https://github.com/shadowsocks/shadowsocks-manager.git
+<span class=nb>cd</span> shadowsocks-manager
+npm i -g
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>从NPM安装</p>
+<blockquote>
+<p>升级前请做好备份,请勿跨版本升级，例如<code>0.21.0</code>可以升级到<code>0.22.x</code>，但不能直接升级到<code>0.23.x</code>
+通过NPM安装的可执行文件(ssmgr):<code>/opt/nodejs/bin</code>,程序文件:<code>ib/node_modules/shadowsocks-manager/</code></p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>npm i -g shadowsocks-manager
+or
+npm i -g shadowsocks-manager --unsafe-perm
+<span class=c1># 升级 a.b.c为版本号</span>
+npm i -g shadowsocks-manager@a.b.c
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>配置<code>shadowsocks-manager</code></p>
+<ul>
+<li>
+<p>创建配置文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; <span class=nv>$HOME</span>/.ssmgr/default.yml <span class=s>&lt;&lt;EOF
+</span><span class=s>type: s
+</span><span class=s>shadowsocks:
+</span><span class=s>  address: 127.0.0.1:6001
+</span><span class=s>manager:
+</span><span class=s>  address: webgui的ip地址:59418
+</span><span class=s>  password: &#39;951021@cc&#39;
+</span><span class=s>db: &#39;db.sqlite&#39;
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>启动节点</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>pm2 --name <span class=s2>&#34;node&#34;</span> -f start ssmgr -x -- -c <span class=nv>$HOME</span>/.ssmgr/default.yml -r libev:chacha20-ietf-poly1305
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>配置<code>webgui</code></p>
+<blockquote>
+<p>每个节点都需要按照以上进行配置，web只需要在一个节点上配置就好了，简单来说是<code>web页面</code>利用<code>shadowsocks-manager</code>的<code>webgui</code>扩展通过每个节点的<code>ssmgr</code>(&lsquo;shadowsocks-manager&rsquo;)程序调用<code>shadowsocks</code>的<code>API</code>控制<code>shadowsocks</code>的</p>
+</blockquote>
+<ul>
+<li>
+<p>创建配置文件</p>
+<blockquote>
+<p>在<code>$HOME/.ssmgr</code>目录下创建一个<code>web.yml</code>文件，内容如下</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>m</span><span class=w>
+</span><span class=w></span><span class=nt>manager</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>address</span><span class=p>:</span><span class=w> </span><span class=m>127.0.0.1</span><span class=p>:</span><span class=m>59418</span><span class=w>
+</span><span class=w>  </span><span class=nt>password</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;951021@cc&#39;</span><span class=w>
+</span><span class=w>  </span><span class=c># 这部分的端口和密码需要跟上一步 manager 参数里的保持一致，以连接 type s 部分监听的 tcp 端口</span><span class=w>
+</span><span class=w></span><span class=nt>plugins</span><span class=p>:</span><span class=w>
+</span><span class=w>  </span><span class=nt>flowSaver</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>user</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>account</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>macAccount</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>group</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>  </span><span class=nt>email</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>    </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;smtp&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>username</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;username&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;password&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;smtp.your-email.com&#39;</span><span class=w>
+</span><span class=w>    </span><span class=c># 这部分的邮箱和密码是用于发送注册验证邮件，重置密码邮件</span><span class=w>
+</span><span class=w>  </span><span class=nt>webgui</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>    </span><span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;0.0.0.0&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;80&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>site</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;http://yourwebsite.com&#39;</span><span class=w>
+</span><span class=w>    </span><span class=c># cdn: &#39;http://xxx.com&#39; # 静态资源cdn地址，可省略</span><span class=w>
+</span><span class=w>    </span><span class=c># icon: &#39;icon.png&#39; # 自定义首页图标，默认路径在 ~/.ssmgr 可省略</span><span class=w>
+</span><span class=w>    </span><span class=c># skin: &#39;default&#39; # 首页皮肤，可省略</span><span class=w>
+</span><span class=w>    </span><span class=c># googleAnalytics: &#39;UA-xxxxxxxx-x&#39; # Google Analytics ID，可省略</span><span class=w>
+</span><span class=w>    </span><span class=nt>gcmSenderId</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;456102641793&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>gcmAPIKey</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;AAAAGzzdqrE:XXXXXXXXXXXXXX&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>webgui_telegram</span><span class=p>:</span><span class=w> </span><span class=l>// telegram 机器人的配置，可省略</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>    </span><span class=nt>token</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;191374681:AAw6oaVPR4nnY7T4CtW78QX-Xy2Q5WD3wmZ&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>alipay</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=c># 如果不使用支付宝，这段可以去掉</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>    </span><span class=nt>appid</span><span class=p>:</span><span class=w> </span><span class=m>2015012108272442</span><span class=w>
+</span><span class=w>    </span><span class=nt>notifyUrl</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;http://yourwebsite.com/api/user/alipay/callback&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>merchantPrivateKey</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;xxxxxxxxxxxx&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>alipayPublicKey</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;xxxxxxxxxxx&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>gatewayUrl</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://openapi.alipay.com/gateway.do&#39;</span><span class=w>
+</span><span class=w>  </span><span class=nt>paypal</span><span class=p>:</span><span class=w>
+</span><span class=w>    </span><span class=c># 如果不使用paypal，这段可以去掉</span><span class=w>
+</span><span class=w>    </span><span class=nt>use</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=w>    </span><span class=nt>mode</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;live&#39;</span><span class=w> </span><span class=c># sandbox or live</span><span class=w>
+</span><span class=w>    </span><span class=nt>client_id</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;At9xcGd1t5L6OrICKNnp2g9&#39;</span><span class=w>
+</span><span class=w>    </span><span class=nt>client_secret</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;EP40s6pQAZmqp_G_nrU9kKY4XaZph&#39;</span><span class=w>
+</span><span class=w>
+</span><span class=w></span><span class=nt>db</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;webgui.sqlite&#39;</span><span class=w>
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>启动<code>web</code></p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>pm2 --name <span class=s2>&#34;web&#34;</span> -f start ssmgr -x -- -c <span class=nv>$HOME</span>/.ssmgr/web.yml
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<h2 id=安装配置kcptun>安装配置KCPtun</h2>
+<blockquote>
+<p>加速tcp传输，但会造成双倍流量，不建议，流量贵～～～</p>
+</blockquote>
+</div>
+<div class=post-copyright>
+<p class=copyright-item>
+<span class=item-title>文章作者</span>
+<span class=item-content>cc</span>
+</p>
+<p class=copyright-item>
+<span class=item-title>上次更新</span>
+<span class=item-content>
+2021年09月07日
+<a href=/commit/c2e9e7dba7ca1f946ddb0b47b0e2581e6d5b4605 title="first commit">(c2e9e7d)</a>
+</span>
+</p>
+<p class=copyright-item>
+<span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span>
+</p>
+</div>
+<div class=post-reward>
+<input type=checkbox name=reward id=reward hidden>
+<label class=reward-button for=reward>赞赏支持</label>
+<div class=qr-code>
+<label class=qr-code-image for=reward>
+<img class=image src=/qr-code/wechat-qr-code.png>
+<span>微信打赏</span>
+</label>
+<label class=qr-code-image for=reward>
+<img class=image src=/qr-code/alipay-qr-code.png>
+<span>支付宝打赏</span>
+</label>
+</div>
+</div><footer class=post-footer>
+<div class=post-tags>
+<a href=/tags/linux/>linux</a>
+</div>
+<nav class=post-nav>
+<a class=prev href=/post/linux/selinux/>
+<i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">selinux的学习记录</span>
+<span class="prev-text nav-mobile">上一篇</span>
+</a>
+<a class=next href=/post/linux/mysql/>
+<span class="next-text nav-default">安装mysql</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i>
+</a>
+</nav>
+</footer>
+</article>
+</div>
+</div>
+</main>
+<footer id=footer class=footer>
+<div class=social-links>
+<a href=mailto:361276131@qq.com class="iconfont icon-email" title=email></a>
+<a href=https://github.com/zccing class="iconfont icon-github" title=github></a>
+<a href=https://www.net-cc.com/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a>
+</div>
+<div class=copyright>
+<span class=power-by>
+由 <a class=hexo-link href=https://gohugo.io>Hugo</a> 强力驱动
+</span>
+<span class=division>|</span>
+<span class=theme-info>
+主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a>
+</span>
+<span class=copyright-year>
+&copy;
+2020-10-1 -
+2021<span class=heart><i class="iconfont icon-heart"></i></span><span>cc</span>
+</span>
+</div>
+</footer>
+<div class=back-to-top id=back-to-top>
+<i class="iconfont icon-up"></i>
+</div>
+</div>
+<script type=text/javascript src=/lib/jquery/jquery-3.2.1.min.js></script>
+<script type=text/javascript src=/lib/slideout/slideout-1.0.1.min.js></script>
+<script type=text/javascript src=/lib/fancybox/jquery.fancybox-3.1.20.min.js></script>
+<script type=text/javascript src=/lib/timeago/timeago-3.0.2.min.js></script>
+<script type=text/javascript src=/lib/timeago/timeago.locales-3.0.2.min.js></script>
+<script>var languageCode="zh-cn".replace(/-/g,'_').replace(/_(.*)/,function(b,a){return b.replace(a,a.toUpperCase())});timeago().render(document.querySelectorAll('.timeago'),languageCode),timeago.cancel()</script>
+<script type=text/javascript src=/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js></script>
+<script id=baidu_analytics>var _hmt=_hmt||[];(function(){var a,b;if(window.location.hostname==='localhost')return;a=document.createElement("script"),a.async=!0,a.src="https://hm.baidu.com/hm.js?05cbf3784f8cd2db4b54d582060e8a18",b=document.getElementsByTagName("script")[0],b.parentNode.insertBefore(a,b)})()</script>
+</body>
+</html>
