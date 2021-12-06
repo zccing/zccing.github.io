@@ -1,0 +1,629 @@
+<!doctype html><html lang=zh-cn>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="noodp">
+<meta http-equiv=x-ua-compatible content="IE=edge, chrome=1">
+<title>iptbales学习笔记 - 晨曦</title><meta name=Description content="本文介绍了通过iptables来配置linux防火墙,最新的centos8 已经不适用此文档"><meta property="og:title" content="iptbales学习笔记">
+<meta property="og:description" content="本文介绍了通过iptables来配置linux防火墙,最新的centos8 已经不适用此文档">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.net-cc.com/firewall/"><meta property="og:image" content="https://www.net-cc.com/images/logo.png"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2020-08-30T01:37:56+08:00">
+<meta property="article:modified_time" content="2021-12-06T15:32:36+00:00">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.net-cc.com/images/logo.png">
+<meta name=twitter:title content="iptbales学习笔记">
+<meta name=twitter:description content="本文介绍了通过iptables来配置linux防火墙,最新的centos8 已经不适用此文档">
+<meta name=application-name content="晨曦">
+<meta name=apple-mobile-web-app-title content="晨曦"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.net-cc.com/firewall/><link rel=prev href=https://www.net-cc.com/libvirt-kvm/><link rel=next href=https://www.net-cc.com/docker-install/><link rel=alternate href=/firewall/index.xml type=application/rss+xml title=晨曦>
+<link rel=feed href=/firewall/index.xml type=application/rss+xml title=晨曦><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"iptbales学习笔记","inLanguage":"zh-cn","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.net-cc.com\/firewall\/"},"image":["https:\/\/www.net-cc.com\/images"],"genre":"posts","keywords":"linux","wordcount":551,"url":"https:\/\/www.net-cc.com\/firewall\/","datePublished":"2020-08-30T01:37:56+08:00","dateModified":"2021-12-06T15:32:36+00:00","publisher":{"@type":"Organization","name":"cc","logo":"https:\/\/www.net-cc.com"},"author":{"@type":"Person","name":"cc"},"description":"本文介绍了通过iptables来配置linux防火墙,最新的centos8 已经不适用此文档"}</script></head>
+<body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script>
+<div id=mask></div><div class=wrapper><header class=desktop id=header-desktop>
+<div class=header-wrapper>
+<div class=header-title>
+<a href=/ title=晨曦><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>晨曦</a>
+</div>
+<div class=menu>
+<div class=menu-inner><a class=menu-item href=/posts/> 所有文章 </a><a class=menu-item href=/tags/> 标签 </a><a class=menu-item href=/categories/> 分类 </a><a class=menu-item href=/about/ title=关于> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容 id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索>
+<i class="fas fa-search fa-fw"></i>
+</a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空>
+<i class="fas fa-times-circle fa-fw"></i>
+</a>
+<span class="search-button search-loading" id=search-loading-desktop>
+<i class="fas fa-spinner fa-fw fa-spin"></i>
+</span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a>
+</div>
+</div>
+</div>
+</header><header class=mobile id=header-mobile>
+<div class=header-container>
+<div class=header-wrapper>
+<div class=header-title>
+<a href=/ title=晨曦><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>晨曦</a>
+</div>
+<div class=menu-toggle id=menu-toggle-mobile>
+<span></span><span></span><span></span>
+</div>
+</div>
+<div class=menu id=menu-mobile><div class=search-wrapper>
+<div class="search mobile" id=search-mobile>
+<input type=text placeholder=搜索文章标题或内容 id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索>
+<i class="fas fa-search fa-fw"></i>
+</a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空>
+<i class="fas fa-times-circle fa-fw"></i>
+</a>
+<span class="search-button search-loading" id=search-loading-mobile>
+<i class="fas fa-spinner fa-fw fa-spin"></i>
+</span>
+</div>
+<a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>
+取消
+</a>
+</div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title=关于>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a></div>
+</div>
+</header>
+<div class="search-dropdown desktop">
+<div id=search-dropdown-desktop></div>
+</div>
+<div class="search-dropdown mobile">
+<div id=search-dropdown-mobile></div>
+</div>
+<main class=main>
+<div class=container><div class=toc id=toc-auto>
+<h2 class=toc-title>目录</h2>
+<div class=toc-content id=toc-content-auto></div>
+</div><article class="page single"><h1 class="single-title animated flipInX">iptbales学习笔记</h1><div class=post-meta>
+<div class=post-meta-line><span class=post-author><a href=https://www.net-cc.com title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>cc</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/linux/><i class="far fa-folder fa-fw"></i>linux</a></span></div>
+<div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-08-30>2020-08-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 551 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+</div><div class="details toc" id=toc-static kept>
+<div class="details-summary toc-title">
+<span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span>
+</div>
+<div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents>
+<ul>
+<li><a href=#iptables介绍>iptables介绍</a>
+<ul>
+<li><a href=#iptables命令>iptables命令</a></li>
+</ul>
+</li>
+</ul>
+</nav></div>
+</div><div class=content id=content><p>本文介绍了通过iptables来配置linux防火墙,最新的centos8 已经不适用此文档</p>
+<h1 id=iptbales配置>iptbales配置</h1>
+<h2 id=iptables介绍>iptables介绍</h2>
+<blockquote>
+<p>包过滤型的防火墙，隔离工具；工作于主机或网络边缘，对于进出本主机或本网络的报文根据事先定义的检查规则作匹配检测，对于能够被规则匹配到的报文作出相应处理的组件；
+<code>iptables</code> 的底层是用内核的<code>netfilter</code> 来进行包过滤的</p>
+</blockquote>
+<ul>
+<li>
+<p><code>netfilter hook function</code>:</p>
+<ul>
+<li><code>prerouting</code></li>
+<li><code>input</code></li>
+<li><code>output</code></li>
+<li><code>forward</code></li>
+<li><code>postrouting</code></li>
+</ul>
+</li>
+<li>
+<p>链（内置）：<code>PREROUTING</code>、<code>INPUT</code>、<code>FORWARD</code>、<code>INPUT</code>、<code>POSTROUTING</code></p>
+</li>
+<li>
+<p>功能：</p>
+<ul>
+<li><code>filter</code>：过滤，防火墙；</li>
+<li><code>nat</code>: <code>network address translation</code>；用于修改源IP或目标IP，也可以改端口；</li>
+<li><code>mangle</code>: 拆解报文，做出修改，并重新封装起来；</li>
+<li><code>raw</code>: 关闭nat表上启用的连接追踪机制；</li>
+</ul>
+</li>
+<li>
+<p>功能&lt;&ndash;链：</p>
+<ul>
+<li><code>raw</code>：<code>PREROUTING</code>， <code>OUTPUT</code></li>
+<li><code>mangle</code>：<code>PREROUTING</code>，<code>INPUT</code>，<code>FORWARD</code>，<code>OUTPUT</code>，<code>POSTROUTING</code></li>
+<li><code>nat</code>：<code>PREROUTING</code>，<code>[INPUT]OUTPUT</code>，<code>POSTROUTING</code></li>
+<li><code>filter</code>：<code>INPUT</code>，<code>FORWARD</code>，<code>OUTPUT</code></li>
+</ul>
+</li>
+<li>
+<p>报文流向：</p>
+<ul>
+<li>流入本机：<code>PREROUTING</code> &ndash;> <code>INPUT</code></li>
+<li>由本机流出：<code>OUTPUT</code> &ndash;> <code>POSTROUTING</code></li>
+<li>转发：<code>PREROUTING</code> &ndash;> <code>FORWARD</code> &ndash;> <code>POSTROUTING</code></li>
+</ul>
+</li>
+<li>
+<p>路由功能发生的时刻：</p>
+<ul>
+<li>报文进入本机后：
+判断目标主机是？</li>
+<li>报文离开本机之前：
+判断经由哪个接口送往下一站？</li>
+</ul>
+</li>
+<li>
+<p>规则</p>
+<ul>
+<li>组成部分：根据规则匹配条件来尝试匹配报文，一旦匹配成功，就由规则定义的处理动作作出处理；
+<ul>
+<li>匹配条件：
+<ul>
+<li>基本匹配条件：内建</li>
+<li>扩展匹配条件：由扩展模块定义；</li>
+</ul>
+</li>
+<li>处理动作：
+<ul>
+<li>基本处理动作：内建</li>
+<li>扩展处理动作：由扩展模块定义；</li>
+<li>自定义处理机制：自定义链</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>iptables的链：内置链和自定义链
+<ul>
+<li>内置链：对应于hook function</li>
+<li>自定义链接：用于内置链的扩展和补充，可实现更灵活的规则管理机制；</li>
+</ul>
+</li>
+<li>添加规则时的考量点：
+<ul>
+<li>要实现哪种功能：判断添加到哪个表上；</li>
+<li>报文流经的路径：判断添加到哪个链上；</li>
+<li>链：链上的规则次序，即为检查的次序；因此，隐含一定的应用法则：
+<ul>
+<li>同类规则（访问同一应用），匹配范围小的放上面；</li>
+<li>不同类的规则（访问不同应用），匹配到报文频率较大的放在上面；</li>
+<li>将那些可由一条规则描述的多个规则合并起来；</li>
+<li>设置默认策略；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id=iptables命令>iptables命令</h3>
+<blockquote>
+<p>高度模块化，由诸多扩展模块实现其检查条件或处理动作的定义；模块位置<code>/usr/lib64/xtables/</code>，
+<code>IPv6</code>模块<code>libip6t_</code>开头，<code>IPv4</code>模块<code>libipt_</code>, <code>libxt_</code>开头</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>iptables <span class=o>[</span>-t table<span class=o>]</span> <span class=o>{</span>-A<span class=p>|</span>-C<span class=p>|</span>-D<span class=o>}</span> chain rule-specification
+iptables <span class=o>[</span>-t table<span class=o>]</span> -I chain <span class=o>[</span>rulenum<span class=o>]</span> rule-specification
+iptables <span class=o>[</span>-t table<span class=o>]</span> -R chain rulenum rule-specification
+iptables <span class=o>[</span>-t table<span class=o>]</span> -D chain rulenum
+iptables <span class=o>[</span>-t table<span class=o>]</span> -S <span class=o>[</span>chain <span class=o>[</span>rulenum<span class=o>]]</span>
+iptables <span class=o>[</span>-t table<span class=o>]</span> <span class=o>{</span>-F<span class=p>|</span>-L<span class=p>|</span>-Z<span class=o>}</span> <span class=o>[</span>chain <span class=o>[</span>rulenum<span class=o>]]</span> <span class=o>[</span>options...<span class=o>]</span>
+iptables <span class=o>[</span>-t table<span class=o>]</span> -N chain
+iptables <span class=o>[</span>-t table<span class=o>]</span> -X  <span class=o>[</span>chain<span class=o>]</span>
+iptables <span class=o>[</span>-t table<span class=o>]</span> -P chain target
+iptables <span class=o>[</span>-t table<span class=o>]</span> -E old-chain-name new-chain-name
+rule-specification <span class=o>=</span> <span class=o>[</span>matches...<span class=o>]</span>  <span class=o>[</span>target<span class=o>]</span>
+<span class=nv>match</span> <span class=o>=</span> -m matchname <span class=o>[</span>per-match-options<span class=o>]</span>
+<span class=nv>target</span> <span class=o>=</span> -j targetname <span class=o>[</span>per-target-options<span class=o>]</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>规则格式：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>iptables <span class=o>[</span>-t table<span class=o>]</span> COMMAND chain <span class=o>[</span>PARAMETERS<span class=o>]</span> <span class=o>[</span>-m matchname <span class=o>[</span>per-match-options<span class=o>]]</span> -j targetname <span class=o>[</span>per-target-options<span class=o>]</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p><code>-t table</code>:
+raw, mangle, nat, [filter]</p>
+</li>
+<li>
+<p><code>COMMAND</code>:</p>
+<ul>
+<li>
+<p>链管理:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>-N：new, 自定义一条新的规则链；
+-X： delete，删除自定义的规则链；
+    注意：仅能删除 用户自定义的 引用计数为0的 空的 链；
+-P：Policy，设置默认策略；对filter表中的链而言，其默认策略有：
+    ACCEPT：接受
+    DROP：丢弃
+    REJECT：拒绝
+-E：重命名自定义链；引用计数不为0的自定义链不能够被重命名，也不能被删除；
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>规则管理:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>-A：append，追加；
+-I：insert, 插入，要指明位置，省略时表示第一条；
+-D：delete，删除；
+    <span class=o>(</span>1<span class=o>)</span> 指明规则序号；
+    <span class=o>(</span>2<span class=o>)</span> 指明规则本身；
+-R：replace，替换指定链上的指定规则；
+-F：flush，清空指定的规则链；
+-Z：zero，置零；
+    iptables的每条规则都有两个计数器：
+        <span class=o>(</span>1<span class=o>)</span> 匹配到的报文的个数；
+        <span class=o>(</span>2<span class=o>)</span> 匹配到的所有报文的大小之和；
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>查看</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>-L：list, 列出指定鏈上的所有规则；
+-n：numberic，以数字格式显示地址和端口号；
+-v：verbose，详细信息；
+    -vv, -vvv
+-x：exactly，显示计数器结果的精确值；
+--line-numbers：显示规则的序号；
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p><code>chain</code>：</p>
+<ul>
+<li>内置链
+PREROUTING，INPUT，FORWARD，OUTPUT，POSTROUTING</li>
+<li>自定义链</li>
+</ul>
+</li>
+<li>
+<p>匹配条件：</p>
+<ul>
+<li>
+<p>基本匹配条件(<code>PARAMETERS</code>)：</p>
+<blockquote>
+<p>无需加载任何模块，由iptables/netfilter自行提供；
+<code>[!]</code>取反</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=o>[</span>!<span class=o>]</span> -s, --source  address<span class=o>[</span>/mask<span class=o>][</span>,...<span class=o>]</span>：检查报文中的源IP地址是否符合此处指定的地址或范围；
+<span class=o>[</span>!<span class=o>]</span> -d, --destination address<span class=o>[</span>/mask<span class=o>][</span>,...<span class=o>]</span>：检查报文中的目标IP地址是否符合此处指定的地址或范围；所有地址：0.0.0.0/0
+<span class=o>[</span>!<span class=o>]</span> -p, --protocol protocol: tcp, udp, udplite, icmp, icmpv6,esp, ah, sctp, mh or  <span class=o>[</span>all<span class=o>]</span>
+<span class=o>[</span>!<span class=o>]</span> -i, --in-interface name：数据报文流入的接口；只能应用于数据报文流入的环节，只能应用于PREROUTING，INPUT和FORWARD链；
+<span class=o>[</span>!<span class=o>]</span> -o, --out-interface name：数据报文流出的接口；只能应用于数据报文流出的环节，只能应用于FORWARD、OUTPUT和POSTROUTING链；
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>扩展匹配(<code>matchname</code>)</p>
+<ul>
+<li>
+<p>隐式扩展</p>
+<blockquote>
+<p>在使用-p选项指明了特定的协议时，无需再同时使用-m选项指明扩展模块的扩展机制；</p>
+</blockquote>
+<ul>
+<li>
+<p><code>tcp</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=o>[</span>!<span class=o>]</span> --source-port, --sport port<span class=o>[</span>:port<span class=o>]</span>：匹配报文的源端口；可以是端口范围；
+<span class=o>[</span>!<span class=o>]</span> --destination-port,--dport port<span class=o>[</span>:port<span class=o>]</span>：匹配报文的目标端口；可以是端口范围；
+<span class=o>[</span>!<span class=o>]</span> --tcp-flags  mask  comp
+        mask is the flags which we should examine,  written as a comma-separated list，例如 SYN,ACK,FIN,RST
+        comp is a comma-separated list  of  flags  which must be set，例如SYN
+        例如：“--tcp-flags  SYN,ACK,FIN,RST  SYN”表示，要检查的标志位为SYN,ACK,FIN,RST四个，其中SYN必须为1，余下的必须为0；
+<span class=o>[</span>!<span class=o>]</span> --syn：用于匹配第一次握手，相当于”--tcp-flags  SYN,ACK,FIN,RST  SYN“；
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>udp</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=o>[</span>!<span class=o>]</span> --source-port, --sport port<span class=o>[</span>:port<span class=o>]</span>：匹配报文的源端口；可以是端口范围；
+<span class=o>[</span>!<span class=o>]</span> --destination-port,--dport port<span class=o>[</span>:port<span class=o>]</span>：匹配报文的目标端口；可以是端口范围；
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>icmp</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=o>[</span>!<span class=o>]</span> --icmp-type <span class=o>{</span>type<span class=o>[</span>/code<span class=o>]</span><span class=p>|</span>typename<span class=o>}</span>
+    echo-request：8/0
+    echo-reply：0/0
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>显式扩展</p>
+<blockquote>
+<p>必须使用-m选项指明要调用的扩展模块的扩展机制；</p>
+</blockquote>
+<ul>
+<li>
+<p><code>multiport</code>:</p>
+<blockquote>
+<p>以离散或连续的 方式定义多端口匹配条件，最多15个；</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=o>[</span>!<span class=o>]</span> --source-ports,--sports port<span class=o>[</span>,port<span class=p>|</span>,port:port<span class=o>]</span>...：指定多个源端口；
+<span class=o>[</span>!<span class=o>]</span> --destination-ports,--dports port<span class=o>[</span>,port<span class=p>|</span>,port:port<span class=o>]</span>...：指定多个目标端口；
+$ sudo iptables -I INPUT  -d 172.16.0.7 -p tcp -m multiport --dports 22,80,139,445,3306 -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>iprange</code>:</p>
+<blockquote>
+<p>以连续地址块的方式来指明多IP地址匹配条件；</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=o>[</span>!<span class=o>]</span> --src-range from<span class=o>[</span>-to<span class=o>]</span>
+<span class=o>[</span>!<span class=o>]</span> --dst-range from<span class=o>[</span>-to<span class=o>]</span>
+$ sudo iptables -I INPUT -d 172.16.0.7 -p tcp -m multiport --dports 22,80,139,445,3306 -m iprange --src-range 172.16.0.61-172.16.0.70 -j REJECT
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>time</code>:</p>
+<blockquote>
+<p>如果数据包到达时间/日期在给定范围内，则匹配。</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>--timestart hh:mm<span class=o>[</span>:ss<span class=o>]</span>
+--timestop hh:mm<span class=o>[</span>:ss<span class=o>]</span>
+<span class=o>[</span>!<span class=o>]</span> --weekdays day<span class=o>[</span>,day...<span class=o>]</span>
+<span class=o>[</span>!<span class=o>]</span> --monthdays day<span class=o>[</span>,day...<span class=o>]</span>
+--datestart YYYY<span class=o>[</span>-MM<span class=o>[</span>-DD<span class=o>[</span>Thh<span class=o>[</span>:mm<span class=o>[</span>:ss<span class=o>]]]]]</span>
+--datestop YYYY<span class=o>[</span>-MM<span class=o>[</span>-DD<span class=o>[</span>Thh<span class=o>[</span>:mm<span class=o>[</span>:ss<span class=o>]]]]]</span>
+--kerneltz：使用内核配置的时区而非默认的UTC；
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>string</code>:</p>
+<blockquote>
+<p>此模块使用某种模式匹配策略来匹配给定的字符串, 只对明文编码的字符串可以匹配</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>--algo <span class=o>{</span>bm<span class=p>|</span>kmp<span class=o>}</span>             <span class=c1># 检测模式</span>
+<span class=o>[</span>!<span class=o>]</span> --string pattern        <span class=c1># 字符串</span>
+<span class=o>[</span>!<span class=o>]</span> --hex-string pattern    <span class=c1># 字符串hex</span>
+--from offset               <span class=c1># 从数据包的那里开始检测</span>
+--to offset                 <span class=c1># 到数据包的那里检测结束</span>
+$ sudo iptables -I OUTPUT -m string --algo bm --string <span class=s2>&#34;gay&#34;</span> -j REJECT
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>connlimit</code>:</p>
+<blockquote>
+<p>允许您限制每个客户端IP地址（或客户端地址块）到服务器的并行连接数。</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>--connlimit-upto n      <span class=c1># 上限，小于等于N</span>
+--connlimit-above n     <span class=c1># 下限，大于N</span>
+$ sudo iptables -I INPUT -d 172.16.0.7 -p tcp --syn --dport <span class=m>22</span> -m connlimit --connlimit-above <span class=m>2</span> -j REJECT
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>limit</code>:</p>
+<blockquote>
+<p>该模块使用令牌桶过滤器以有限的速率匹配。
+限制本机某tcp服务接收新请求的速率：&ndash;syn, -m limit</p>
+</blockquote>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 限制每(秒|分钟|小时|天）可以生成多少个令牌</span>
+--limit rate<span class=o>[</span>/second<span class=p>|</span>/minute<span class=p>|</span>/hour<span class=p>|</span>/day<span class=o>]</span>
+<span class=c1># 令牌桶最大可以存放多少个令牌（一个令牌代表一个数据包）</span>
+--limit-burst number
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>state</code>:</p>
+</li>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>处理动作：
+<ul>
+<li><code>-j targetname [per-target-options]</code>
+<ul>
+<li>简单<code>target</code>：
+<code>ACCEPT</code>, <code>DROP</code>, <code>REJECT</code></li>
+<li>扩展<code>target</code>：</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul></div><div class=post-footer id=post-footer>
+<div class=post-info>
+<div class=post-info-line>
+<div class=post-info-mod>
+<span>更新于 2021-12-06&nbsp;<a class=git-hash href=https://github.com/zccing/zccing.github.io/commit/f7e90a527baa175295a870d6f1a4035200a3dc6c target=_blank title="commit by Cc(alex_zjf@163.com) f7e90a527baa175295a870d6f1a4035200a3dc6c: 更换成LoveIt模板">
+<i class="fas fa-hashtag fa-fw"></i>f7e90a5</a></span>
+</div>
+<div class=post-info-license></div>
+</div>
+<div class=post-info-line>
+<div class=post-info-md></div>
+<div class=post-info-share>
+<span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.net-cc.com/firewall/ data-title=iptbales学习笔记><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.net-cc.com/firewall/ data-title=iptbales学习笔记><i class="fab fa-evernote fa-fw"></i></a></span>
+</div>
+</div>
+</div>
+<div class=post-info-more>
+<section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/linux/>linux</a></section>
+<section>
+<span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span>
+</section>
+</div>
+<div class=post-nav><a href=/libvirt-kvm/ class=prev rel=prev title="KVM libvirt学习笔记"><i class="fas fa-angle-left fa-fw"></i>KVM libvirt学习笔记</a>
+<a href=/docker-install/ class=next rel=next title=centos安装docker>centos安装docker<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+</main><footer class=footer>
+<div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.89.4">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://www.net-cc.com target=_blank>cc</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br>
+<span class=icp><a rel=备案查询 href=https://beian.miit.gov.cn/ target=_blank>豫ICP备2021035180号</a></span></div>
+</div>
+</footer></div>
+<div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部>
+<i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论>
+<i class="fas fa-comment fa-fw"></i>
+</a>
+</div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/katex/copy-tex.min.css><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js></script><script type=text/javascript src=/lib/katex/auto-render.min.js></script><script type=text/javascript src=/lib/katex/copy-tex.min.js></script><script type=text/javascript src=/lib/katex/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.js></script></body>
+</html>

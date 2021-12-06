@@ -1,0 +1,516 @@
+<!doctype html><html lang=zh-cn>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="noodp">
+<meta http-equiv=x-ua-compatible content="IE=edge, chrome=1">
+<title>selinux的学习记录 - 晨曦</title><meta name=Description content="记录了selinux的运行方式，如果查看权限拒绝，如何放行等等"><meta property="og:title" content="selinux的学习记录">
+<meta property="og:description" content="记录了selinux的运行方式，如果查看权限拒绝，如何放行等等">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.net-cc.com/selinux/"><meta property="og:image" content="https://www.net-cc.com/images/logo.png"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2020-08-30T01:37:56+08:00">
+<meta property="article:modified_time" content="2021-12-06T15:32:36+00:00">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.net-cc.com/images/logo.png">
+<meta name=twitter:title content="selinux的学习记录">
+<meta name=twitter:description content="记录了selinux的运行方式，如果查看权限拒绝，如何放行等等">
+<meta name=application-name content="晨曦">
+<meta name=apple-mobile-web-app-title content="晨曦"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.net-cc.com/selinux/><link rel=prev href=https://www.net-cc.com/shadowsocks/><link rel=next href=https://www.net-cc.com/openvpn/><link rel=alternate href=/selinux/index.xml type=application/rss+xml title=晨曦>
+<link rel=feed href=/selinux/index.xml type=application/rss+xml title=晨曦><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"selinux的学习记录","inLanguage":"zh-cn","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.net-cc.com\/selinux\/"},"image":["https:\/\/www.net-cc.com\/images"],"genre":"posts","keywords":"linux","wordcount":559,"url":"https:\/\/www.net-cc.com\/selinux\/","datePublished":"2020-08-30T01:37:56+08:00","dateModified":"2021-12-06T15:32:36+00:00","publisher":{"@type":"Organization","name":"cc","logo":"https:\/\/www.net-cc.com"},"author":{"@type":"Person","name":"cc"},"description":"记录了selinux的运行方式，如果查看权限拒绝，如何放行等等"}</script></head>
+<body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script>
+<div id=mask></div><div class=wrapper><header class=desktop id=header-desktop>
+<div class=header-wrapper>
+<div class=header-title>
+<a href=/ title=晨曦><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>晨曦</a>
+</div>
+<div class=menu>
+<div class=menu-inner><a class=menu-item href=/posts/> 所有文章 </a><a class=menu-item href=/tags/> 标签 </a><a class=menu-item href=/categories/> 分类 </a><a class=menu-item href=/about/ title=关于> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容 id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索>
+<i class="fas fa-search fa-fw"></i>
+</a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空>
+<i class="fas fa-times-circle fa-fw"></i>
+</a>
+<span class="search-button search-loading" id=search-loading-desktop>
+<i class="fas fa-spinner fa-fw fa-spin"></i>
+</span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a>
+</div>
+</div>
+</div>
+</header><header class=mobile id=header-mobile>
+<div class=header-container>
+<div class=header-wrapper>
+<div class=header-title>
+<a href=/ title=晨曦><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>晨曦</a>
+</div>
+<div class=menu-toggle id=menu-toggle-mobile>
+<span></span><span></span><span></span>
+</div>
+</div>
+<div class=menu id=menu-mobile><div class=search-wrapper>
+<div class="search mobile" id=search-mobile>
+<input type=text placeholder=搜索文章标题或内容 id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索>
+<i class="fas fa-search fa-fw"></i>
+</a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空>
+<i class="fas fa-times-circle fa-fw"></i>
+</a>
+<span class="search-button search-loading" id=search-loading-mobile>
+<i class="fas fa-spinner fa-fw fa-spin"></i>
+</span>
+</div>
+<a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>
+取消
+</a>
+</div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title=关于>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a></div>
+</div>
+</header>
+<div class="search-dropdown desktop">
+<div id=search-dropdown-desktop></div>
+</div>
+<div class="search-dropdown mobile">
+<div id=search-dropdown-mobile></div>
+</div>
+<main class=main>
+<div class=container><div class=toc id=toc-auto>
+<h2 class=toc-title>目录</h2>
+<div class=toc-content id=toc-content-auto></div>
+</div><article class="page single"><h1 class="single-title animated flipInX">selinux的学习记录</h1><div class=post-meta>
+<div class=post-meta-line><span class=post-author><a href=https://www.net-cc.com title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>cc</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/linux/><i class="far fa-folder fa-fw"></i>linux</a></span></div>
+<div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-08-30>2020-08-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 559 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+</div><div class="details toc" id=toc-static kept>
+<div class="details-summary toc-title">
+<span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span>
+</div>
+<div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents>
+<ul>
+<li><a href=#运行模式>运行模式</a></li>
+<li><a href=#更改安全上下文>更改安全上下文</a></li>
+<li><a href=#查看selinux规则>查看Selinux规则</a></li>
+<li><a href=#查看添加selinux模块>查看/添加Selinux模块</a></li>
+<li><a href=#查看修改bool值>查看/修改bool值</a></li>
+<li><a href=#查看分析selinux日志并解决问题>查看/分析Selinux日志，并解决问题</a></li>
+</ul>
+</nav></div>
+</div><div class=content id=content><p>记录了selinux的运行方式，如果查看权限拒绝，如何放行等等</p>
+<h1 id=selinux的学习记录>selinux的学习记录</h1>
+<h2 id=运行模式>运行模式</h2>
+<blockquote>
+<p>强制访问控制（Mandatory Access Control，MAC）：通过<code>selinux</code>的默认规则来控制进程的权限</p>
+<p>自主访问控制系统（Discretionary Access Control，DAC）：通过<code>user</code>、<code>group</code>、<code>rwx</code>来控制不同用户对不同文件的读写执行权限，<code>root</code>用户不受到限制，特殊权限<code>SetUID</code>可以使普通用户以<code>root</code>权限执行拥护<code>SetUID</code>权限的程序</p>
+<p>开启<code>selinux</code>后必须同时满足<code>MAC</code>和<code>DAC</code>规则才可以正确运行程序</p>
+</blockquote>
+<ul>
+<li>
+<p>主体(Subject):
+访问文件或目录资源的进程</p>
+</li>
+<li>
+<p>目标(Object):
+需要访问的文件或目录资源</p>
+</li>
+<li>
+<p>策略(Policy):</p>
+<blockquote>
+<p>通过<code>cat /etc/sysconfig/selinux</code>来查看<code>selinux</code>的状态和默认策略</p>
+</blockquote>
+<p>Selinux默认定义了三个策略，规则都已经在这三个策略中写好了，默认只要调用策略就可以正常使用了。这两个默认策略如下：</p>
+<ul>
+<li><code>targeted</code>：这是 SELinux 的默认策略，这个策略主要是限制网络服务的，对本机系统的限制极少。我们使用这个策略已经足够了。</li>
+<li><code>mls</code>: 完整的SELinux 限制，限制方面较为严格。</li>
+<li><code>minimum</code>：由<code>target</code>修订而来，仅针对选择的程序来保护！</li>
+</ul>
+</li>
+<li>
+<p>安全上下文(Security Context): 每个进程、目录和文件都有自己的安全上下文，进程能否访问目录/文件，需要判断两者的安全上下文是否匹配，然后进行比较，符合就通过，不符合就<code>AVC</code>拒绝</p>
+</li>
+</ul>
+<p><figure><a class=lightgallery href=/image/linux/selinux%e8%bf%90%e8%a1%8c%e6%a8%a1%e5%bc%8f.jpg title=selnux运行模式 data-thumbnail=/image/linux/selinux运行模式.jpg data-sub-html="<h2>selinux运行模式图示</h2><p>selnux运行模式</p>">
+<img class=lazyload src=/svg/loading.min.svg data-src=/image/linux/selinux%e8%bf%90%e8%a1%8c%e6%a8%a1%e5%bc%8f.jpg data-srcset="/image/linux/selinux%e8%bf%90%e8%a1%8c%e6%a8%a1%e5%bc%8f.jpg, /image/linux/selinux%e8%bf%90%e8%a1%8c%e6%a8%a1%e5%bc%8f.jpg 1.5x, /image/linux/selinux%e8%bf%90%e8%a1%8c%e6%a8%a1%e5%bc%8f.jpg 2x" data-sizes=auto alt=/image/linux/selinux运行模式.jpg>
+</a><figcaption class=image-caption>selinux运行模式图示</figcaption>
+</figure></p>
+<p>主体的访问请求首先和<code>Selinux</code>中定义好的策略进行匹配，如果进程符合策略中定义的规则，就把进程的安全上下文和目标的安全上下文进行匹配，如果失败则访问拒绝，并通过<code>AVC</code>（<code>Access Vector Cache</code>，访问向量缓存，主要用于记录所有和 SELinux 相关的访问统计信息)生成拒绝访问信息，如果安全上下文匹配，则通过<code>Selinux</code>控制</p>
+<h2 id=更改安全上下文>更改安全上下文</h2>
+<ul>
+<li>
+<p>查看文件的安全上下文：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 查看文件的安全上下文</span>
+ls -Z
+<span class=c1># 查看进程的安全上下文</span>
+ps -auxZ
+</code></pre></td></tr></table>
+</div>
+</div><p>如上所是的<code>root:object_r:user_home_t</code>对应为：身份识别(Identify):角色(role):类型(type)</p>
+</li>
+<li>
+<p><code>restorecon</code>:
+恢复目录或者程序的默认安全上下文</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>sudo restorecon -Rv -f /var/sshd
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>chcon</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>sudo chcon -R -t ssh_home_t ~/.ssh/authorized_keys
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>semanage</code>:
+添加到默认规则里，以后使用<code>restorecon</code>即可恢复，不会存在下载就没有了</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 查看文件安全上下文的默认类型</span>
+$ sudo semanage fcontext -l
+
+<span class=c1># 更改文件安全上下文的默认类型</span>
+$ sudo semanage fcontext -a -t public_content_t <span class=s2>&#34;/srv/samba(/.*)?&#34;</span>
+restorecon -Rv /srv/samba*
+$ sudo ls -Zd /srv/samba
+drwxr-xr-x  root root system_u:object_r:public_content_t /srv/samba/
+
+<span class=c1># 查看网络端口限制</span>
+$ sudo semanage port -l <span class=p>|</span> grep ssh
+ssh_port_t                     tcp      <span class=m>22</span>
+$ sudo semanage port -a -t ssh_port_t -p tcp <span class=m>3322</span>
+$ sudo semanage port -l <span class=p>|</span> grep ssh
+ssh_port_t                     tcp      3322, <span class=m>22</span>
+
+<span class=c1># 其他参数请通过 `semanage --help` 或 `man semanage` 查看</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=查看selinux规则>查看Selinux规则</h2>
+<ul>
+<li>
+<p><code>sesearch</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 查看类型为 inetd_t 的selinux规则</span>
+sesearch -A -t inetd_t
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>seinfo</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 查看所有的类型</span>
+seinfo -b
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=查看添加selinux模块>查看/添加Selinux模块</h2>
+<blockquote>
+<p><code>SELinux</code>策略是一系列的模块化规则集合，安装时它会基于已经安装的服务自动探测并启用相关模块。系统立即可操作。然而，如果一个服务是在 SELinux 策略之后安装的，就要手动启用相应模块了。semodule 命令可以实现该目的。还必须用 semanage 命令，定义每个用户可用的角色。</p>
+</blockquote>
+<ul>
+<li>
+<p><code>semanage</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 查看所有模块</span>
+semanage module -l
+<span class=c1># 禁用一个模块</span>
+semanage module --disable unconfined
+<span class=c1># 安装一个模块</span>
+semanage module -a myapache
+<span class=c1># 查看其他参数</span>
+semanage module --help
+man semanage module
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>semodule</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># Install or replace a base policy package.</span>
+semodule -b base.pp
+<span class=c1># Install or replace a non-base policy package.</span>
+semodule -i httpd.pp
+<span class=c1># Install or replace all non-base modules in the current directory.</span>
+<span class=c1># This syntax can be used with -i/u/r/E, but no other option can be entered after the module names</span>
+semodule -i *.pp
+<span class=c1># Install or replace all modules in the current directory.</span>
+ls *.pp <span class=p>|</span> grep -Ev <span class=s2>&#34;base.pp|enableaudit.pp&#34;</span> <span class=p>|</span> xargs /usr/sbin/semodule -b base.pp -i
+<span class=c1># List non-base modules.</span>
+semodule -l
+<span class=c1># List all modules including priorities</span>
+semodule -lfull
+<span class=c1># Remove a module at priority 100</span>
+semodule -X <span class=m>100</span> -r wireshark
+<span class=c1># Turn on all AVC Messages for which SELinux currently is &#34;dontaudit&#34;ing.</span>
+semodule -DB
+<span class=c1># Turn &#34;dontaudit&#34; rules back on.</span>
+semodule -B
+<span class=c1># Disable a module (all instances of given module across priorities will be disabled).</span>
+semodule -d alsa
+<span class=c1># Install a module at a specific priority.</span>
+semodule -X <span class=m>100</span> -i alsa.pp
+<span class=c1># List all modules.</span>
+semodule --list<span class=o>=</span>full
+<span class=c1># Set an alternate path for the policy root</span>
+semodule -B -p <span class=s2>&#34;/tmp&#34;</span>
+<span class=c1># Set an alternate path for the policy store root</span>
+semodule -B -S <span class=s2>&#34;/tmp/var/lib/selinux&#34;</span>
+<span class=c1># Write the HLL version of puppet and the CIL version of wireshark</span>
+<span class=c1># modules at priority 400 to the current working directory</span>
+semodule -X <span class=m>400</span> --hll -E puppet --cil -E wireshark
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=查看修改bool值>查看/修改bool值</h2>
+<ul>
+<li>
+<p><code>getsebool</code> or <code>setatus</code></p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 查看所有bool</span>
+getsebool -a
+sestatus -b
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>sesearch</code>
+查看一个<code>bool</code>包含的<code>selinux</code>规则</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 查看 httpd_can_network_connect_db 布尔值包含的selinux规则</span>
+sesearch -A -b httpd_can_network_connect_db
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>setsebool</code></p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 允许vsvtp匿名用户写入权限：</span>
+setsebool -P <span class=nv>allow_ftpd_anon_write</span><span class=o>=</span><span class=m>1</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=查看分析selinux日志并解决问题>查看/分析Selinux日志，并解决问题</h2>
+<ul>
+<li>
+<p>启用<code>auditd</code>服务</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>sudo dnf install audit
+sudo systemctl <span class=nb>enable</span> auditd
+sudo systemctl start auditd
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>查看<code>audit</code>日志</p>
+<ul>
+<li>
+<p><code>audit2why</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 查看本次启动所有关于selinux拒绝的信息，并给出解决方案，不过大部分没有0.0,并且不准确或者解决方案的权限过大</span>
+sudo audit2why -b
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>audit2allow</code>:</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 详细查看selinux的avc拒绝信息</span>
+sudo audit2allow -b
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>制作<code>selinux</code>模块,并安装</p>
+<p>如果不能通过修改<code>bool</code>值、文件安全上下文等来解决问题，可以通过<code>audit2allow</code>命令生成<code>selinux</code>模块并加载，来解决问题</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 利用`audit2allow`生成`selinux`模块</span>
+sudo audit2allwo -b -M <span class=nb>local</span>
+<span class=c1># 倒入`local`模块</span>
+sudo semodule -i local.pp
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul></div><div class=post-footer id=post-footer>
+<div class=post-info>
+<div class=post-info-line>
+<div class=post-info-mod>
+<span>更新于 2021-12-06&nbsp;<a class=git-hash href=https://github.com/zccing/zccing.github.io/commit/f7e90a527baa175295a870d6f1a4035200a3dc6c target=_blank title="commit by Cc(alex_zjf@163.com) f7e90a527baa175295a870d6f1a4035200a3dc6c: 更换成LoveIt模板">
+<i class="fas fa-hashtag fa-fw"></i>f7e90a5</a></span>
+</div>
+<div class=post-info-license></div>
+</div>
+<div class=post-info-line>
+<div class=post-info-md></div>
+<div class=post-info-share>
+<span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.net-cc.com/selinux/ data-title=selinux的学习记录><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.net-cc.com/selinux/ data-title=selinux的学习记录><i class="fab fa-evernote fa-fw"></i></a></span>
+</div>
+</div>
+</div>
+<div class=post-info-more>
+<section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/linux/>linux</a></section>
+<section>
+<span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span>
+</section>
+</div>
+<div class=post-nav><a href=/shadowsocks/ class=prev rel=prev title=shadowsocks笔记><i class="fas fa-angle-left fa-fw"></i>shadowsocks笔记</a>
+<a href=/openvpn/ class=next rel=next title=openvpn安装配置记录>openvpn安装配置记录<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+</main><footer class=footer>
+<div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.89.4">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://www.net-cc.com target=_blank>cc</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br>
+<span class=icp><a rel=备案查询 href=https://beian.miit.gov.cn/ target=_blank>豫ICP备2021035180号</a></span></div>
+</div>
+</footer></div>
+<div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部>
+<i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论>
+<i class="fas fa-comment fa-fw"></i>
+</a>
+</div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/katex/copy-tex.min.css><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js></script><script type=text/javascript src=/lib/katex/auto-render.min.js></script><script type=text/javascript src=/lib/katex/copy-tex.min.js></script><script type=text/javascript src=/lib/katex/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.js></script></body>
+</html>

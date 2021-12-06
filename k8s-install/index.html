@@ -1,0 +1,3317 @@
+<!doctype html><html lang=zh-cn>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="noodp">
+<meta http-equiv=x-ua-compatible content="IE=edge, chrome=1">
+<title>二进制方式安装K8S - 晨曦</title><meta name=Description content="通过二进制方式安装k8s高可用集群"><meta property="og:title" content="二进制方式安装K8S">
+<meta property="og:description" content="通过二进制方式安装k8s高可用集群">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.net-cc.com/k8s-install/"><meta property="og:image" content="https://www.net-cc.com/images/logo.png"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2020-09-20T01:37:56+08:00">
+<meta property="article:modified_time" content="2021-12-06T15:32:36+00:00">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.net-cc.com/images/logo.png">
+<meta name=twitter:title content="二进制方式安装K8S">
+<meta name=twitter:description content="通过二进制方式安装k8s高可用集群">
+<meta name=application-name content="晨曦">
+<meta name=apple-mobile-web-app-title content="晨曦"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.net-cc.com/k8s-install/><link rel=prev href=https://www.net-cc.com/etcd-install/><link rel=alternate href=/k8s-install/index.xml type=application/rss+xml title=晨曦>
+<link rel=feed href=/k8s-install/index.xml type=application/rss+xml title=晨曦><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"二进制方式安装K8S","inLanguage":"zh-cn","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.net-cc.com\/k8s-install\/"},"image":["https:\/\/www.net-cc.com\/images"],"genre":"posts","keywords":"linux, k8s, 容器","wordcount":4275,"url":"https:\/\/www.net-cc.com\/k8s-install\/","datePublished":"2020-09-20T01:37:56+08:00","dateModified":"2021-12-06T15:32:36+00:00","publisher":{"@type":"Organization","name":"cc","logo":"https:\/\/www.net-cc.com"},"author":{"@type":"Person","name":"cc"},"description":"通过二进制方式安装k8s高可用集群"}</script></head>
+<body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script>
+<div id=mask></div><div class=wrapper><header class=desktop id=header-desktop>
+<div class=header-wrapper>
+<div class=header-title>
+<a href=/ title=晨曦><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>晨曦</a>
+</div>
+<div class=menu>
+<div class=menu-inner><a class=menu-item href=/posts/> 所有文章 </a><a class=menu-item href=/tags/> 标签 </a><a class=menu-item href=/categories/> 分类 </a><a class=menu-item href=/about/ title=关于> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容 id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索>
+<i class="fas fa-search fa-fw"></i>
+</a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空>
+<i class="fas fa-times-circle fa-fw"></i>
+</a>
+<span class="search-button search-loading" id=search-loading-desktop>
+<i class="fas fa-spinner fa-fw fa-spin"></i>
+</span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a>
+</div>
+</div>
+</div>
+</header><header class=mobile id=header-mobile>
+<div class=header-container>
+<div class=header-wrapper>
+<div class=header-title>
+<a href=/ title=晨曦><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>晨曦</a>
+</div>
+<div class=menu-toggle id=menu-toggle-mobile>
+<span></span><span></span><span></span>
+</div>
+</div>
+<div class=menu id=menu-mobile><div class=search-wrapper>
+<div class="search mobile" id=search-mobile>
+<input type=text placeholder=搜索文章标题或内容 id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索>
+<i class="fas fa-search fa-fw"></i>
+</a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空>
+<i class="fas fa-times-circle fa-fw"></i>
+</a>
+<span class="search-button search-loading" id=search-loading-mobile>
+<i class="fas fa-spinner fa-fw fa-spin"></i>
+</span>
+</div>
+<a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>
+取消
+</a>
+</div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title=关于>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a></div>
+</div>
+</header>
+<div class="search-dropdown desktop">
+<div id=search-dropdown-desktop></div>
+</div>
+<div class="search-dropdown mobile">
+<div id=search-dropdown-mobile></div>
+</div>
+<main class=main>
+<div class=container><div class=toc id=toc-auto>
+<h2 class=toc-title>目录</h2>
+<div class=toc-content id=toc-content-auto></div>
+</div><article class="page single"><h1 class="single-title animated flipInX">二进制方式安装K8S</h1><div class=post-meta>
+<div class=post-meta-line><span class=post-author><a href=https://www.net-cc.com title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>cc</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/linux/><i class="far fa-folder fa-fw"></i>linux</a>&nbsp;<a href=/categories/k8s/><i class="far fa-folder fa-fw"></i>K8S</a></span></div>
+<div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-09-20>2020-09-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 4275 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 21 分钟&nbsp;</div>
+</div><div class="details toc" id=toc-static kept>
+<div class="details-summary toc-title">
+<span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span>
+</div>
+<div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents>
+<ul>
+<li><a href=#初始化节点>初始化节点</a></li>
+</ul>
+<ul>
+<li><a href=#创建ca>创建CA</a></li>
+<li><a href=#server证书>Server证书</a></li>
+<li><a href=#用户证书>用户证书</a></li>
+<li><a href=#复制证书到各节点>复制证书到各节点</a></li>
+</ul>
+<ul>
+<li><a href=#下载程序>下载程序</a></li>
+<li><a href=#部署api-server>部署API Server</a>
+<ul>
+<li><a href=#systemd服务>systemd服务</a></li>
+<li><a href=#配置文件>配置文件</a></li>
+</ul>
+</li>
+<li><a href=#部署controller-manager>部署Controller Manager</a>
+<ul>
+<li><a href=#systemd服务-1>systemd服务</a></li>
+<li><a href=#配置文件-1>配置文件</a></li>
+</ul>
+</li>
+<li><a href=#部署scheduler>部署scheduler</a>
+<ul>
+<li><a href=#systemd服务-2>systemd服务</a></li>
+<li><a href=#配置文件-2>配置文件</a></li>
+</ul>
+</li>
+<li><a href=#文件权限>文件权限</a></li>
+<li><a href=#启动服务>启动服务</a></li>
+<li><a href=#生成scheduler配置文件>生成scheduler配置文件</a></li>
+<li><a href=#查看集群状态>查看集群状态</a></li>
+<li><a href=#授权apiserver访问kubelet>授权APIserver访问kubelet</a></li>
+<li><a href=#授权kubelet创建csr>授权kubelet创建csr</a></li>
+</ul>
+<ul>
+<li><a href=#安装docker>安装docker</a></li>
+<li><a href=#下载程序文件>下载程序文件</a></li>
+<li><a href=#部署kubeletnode1>部署kubelet(node1)</a>
+<ul>
+<li><a href=#systemd服务-3>systemd服务</a></li>
+<li><a href=#配置文件-3>配置文件</a></li>
+<li><a href=#安装一些需要用到的工具>安装一些需要用到的工具</a></li>
+</ul>
+</li>
+<li><a href=#部署kubeletnode2>部署kubelet(node2)</a>
+<ul>
+<li><a href=#systemd服务-4>systemd服务</a></li>
+<li><a href=#配置文件-4>配置文件</a></li>
+<li><a href=#启动服务-1>启动服务</a></li>
+<li><a href=#批准kubelet证书申请并加入集群>批准kubelet证书申请并加入集群</a></li>
+<li><a href=#安装一些需要用到的工具-1>安装一些需要用到的工具</a></li>
+</ul>
+</li>
+<li><a href=#部署kube-proxy>部署kube-proxy</a>
+<ul>
+<li><a href=#systemd服务-5>systemd服务</a></li>
+<li><a href=#配置文件-5>配置文件</a></li>
+</ul>
+</li>
+<li><a href=#文件权限-1>文件权限</a></li>
+<li><a href=#启动服务-2>启动服务</a></li>
+</ul>
+<ul>
+<li><a href=#部署nginx>部署nginx</a></li>
+<li><a href=#部署keepalived>部署keepalived</a></li>
+<li><a href=#测试>测试</a></li>
+<li><a href=#修改所有worker-node连接lb-vip>修改所有Worker Node连接LB VIP</a></li>
+</ul>
+</nav></div>
+</div><div class=content id=content><p>部署一套完整的Kubernetes高可用集群（二进制，最新版V1.19.1）</p>
+<h1 id=节点信息>节点信息</h1>
+<table>
+<thead>
+<tr>
+<th>IP地址</th>
+<th>主机名称</th>
+<th>DNS记录</th>
+<th>类型</th>
+<th>系统</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.122.10</td>
+<td>node1</td>
+<td>node1</td>
+<td>Worker Node/etcd</td>
+<td>centos7</td>
+</tr>
+<tr>
+<td>192.168.122.11</td>
+<td>node2</td>
+<td>node2</td>
+<td>Worker Node</td>
+<td>centos7</td>
+</tr>
+<tr>
+<td>192.168.122.12</td>
+<td>node3</td>
+<td>node3</td>
+<td>Master Node/etcd/nginx</td>
+<td>centos8</td>
+</tr>
+<tr>
+<td>192.168.122.13</td>
+<td>node4</td>
+<td>node4</td>
+<td>Master Node/etcd/nginx</td>
+<td>centos8</td>
+</tr>
+<tr>
+<td>192.168.122.2</td>
+<td></td>
+<td>k8s.api</td>
+<td>vrrp</td>
+<td></td>
+</tr>
+<tr>
+<td>10.110.0.0/16</td>
+<td></td>
+<td></td>
+<td>k8s service</td>
+<td></td>
+</tr>
+<tr>
+<td>10.120.0.0/16</td>
+<td></td>
+<td></td>
+<td>k8s pod</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>电脑配置较低，这么多虚拟机跑不动，所以这一套高可用集群分两部分实施，先部署一套单Master架构（192.168.122.12），再扩容为多Master架构（上述规划），顺便熟悉下Master扩容流程</p>
+<h2 id=初始化节点>初始化节点</h2>
+<p>尽管主节点中包含etcd端口，但您也可以在外部或自定义端口上托管您自己的etcd集群</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 节点之间免密登录</span>
+ssh-keygen -b <span class=m>2048</span> -t rsa
+ssh-copy-id root@node1
+ssh-copy-id root@node2
+ssh-copy-id root@node3
+ssh-copy-id root@node4
+scp ~/.ssh/id_rsa node1:~/.ssh/
+scp ~/.ssh/id_rsa node2:~/.ssh/
+scp ~/.ssh/id_rsa node3:~/.ssh/
+scp ~/.ssh/id_rsa node4:~/.ssh/
+
+<span class=c1># --------------以下所有节点都要设置-------------------</span>
+<span class=c1># 关闭swap, 我没关，苦逼，内存不够</span>
+swapoff -a  <span class=c1># 临时</span>
+sed -ri <span class=s1>&#39;s/.*swap.*/#&amp;/&#39;</span> /etc/fstab    <span class=c1># 永久</span>
+<span class=c1># 根据规划设置主机名</span>
+hostnamectl set-hostname &lt;hostname&gt;
+<span class=c1># 添加dns解析记录</span>
+cat &gt;&gt; /etc/hosts <span class=s>&lt;&lt; EOF
+</span><span class=s>192.168.122.2  k8s.api
+</span><span class=s>192.168.122.10 node1
+</span><span class=s>192.168.122.11 node2
+</span><span class=s>192.168.122.12 node3
+</span><span class=s>192.168.122.13 node4
+</span><span class=s>EOF</span>
+<span class=c1># 时间同步</span>
+sed -i <span class=s1>&#39;3i server ntp.aliyun.com iburst&#39;</span> /etc/chrony.conf
+systemctl restart chronyd.service
+<span class=c1># 创建程序目录（所有节点）</span>
+mkdir -p /opt/kubernetes/<span class=o>{</span>bin,etc,ssl,logs,data<span class=o>}</span>
+mkdir -p /opt/kubernetes/etc/conf.d
+
+<span class=c1># --------------以下只设置Master Node-------------------</span>
+<span class=c1># 创建用户</span>
+sudo groupadd -r kube
+sudo useradd  -s /sbin/nologin -M -d / -g kube -c <span class=s2>&#34;Kubernetes user&#34;</span> -r -K <span class=nv>MAIL_DIR</span><span class=o>=</span>/dev/null kube
+<span class=c1># 设置防火墙</span>
+firewall-cmd --permanent --add-port<span class=o>=</span>6443/tcp <span class=c1># kube-api 安全端口</span>
+firewall-cmd --permanent --add-port<span class=o>=</span>10250-10252/tcp
+firewall-cmd --reload
+
+<span class=c1># --------------以下只设置Wroker Node-------------------</span>
+<span class=c1># 设置防火墙</span>
+firewall-cmd --permanent --add-port<span class=o>=</span>10250/tcp
+firewall-cmd --permanent --add-port<span class=o>=</span>30000-32767/tcp
+firewall-cmd --permanent --add-port<span class=o>=</span>30000-32767/udp
+firewall-cmd --permanent --service<span class=o>=</span>http
+firewall-cmd --permanent --service<span class=o>=</span>https
+firewall-cmd --reload
+<span class=c1>## briger流量转到iptables模块</span>
+<span class=nb>echo</span> <span class=s2>&#34;br_netfilter&#34;</span> &gt; /etc/modules-load.d/br_netfilter.conf
+<span class=c1>## 生效</span>
+systemctl restart systemd-modules-load.service
+
+<span class=c1># 开启ipvs</span>
+<span class=c1>## 安装ipset,一般默认都有</span>
+yum install ipset -y
+<span class=c1>## 为了方便查看ipvs规则我们要安装ipvsadm(可选)</span>
+yum install ipvsadm -y
+
+<span class=c1># 将桥接的IPv4流量传递到iptables的链（所有Worker Node）</span>
+cat &gt; /etc/sysctl.d/99-kubernetes-cri.conf <span class=s>&lt;&lt;EOF
+</span><span class=s>net.bridge.bridge-nf-call-iptables  = 1
+</span><span class=s>net.ipv4.ip_forward                 = 1
+</span><span class=s>net.bridge.bridge-nf-call-ip6tables = 1
+</span><span class=s>EOF</span>
+sysctl --system  <span class=c1># 生效</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>防火墙放行的端口介绍：</p>
+<table>
+<thead>
+<tr>
+<th>协议</th>
+<th>方向</th>
+<th>港口范围</th>
+<th>目的</th>
+<th>使用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TCP</td>
+<td>入站</td>
+<td>6443*，8080*</td>
+<td>Kubernetes API server</td>
+<td>所有</td>
+</tr>
+<tr>
+<td>TCP</td>
+<td>入站</td>
+<td>2379-2380</td>
+<td>etcd server client API</td>
+<td>etcd</td>
+</tr>
+<tr>
+<td>TCP</td>
+<td>入站</td>
+<td>10250</td>
+<td>Kubelet API</td>
+<td>本机，控制平面组件</td>
+</tr>
+<tr>
+<td>TCP</td>
+<td>入站</td>
+<td>10251</td>
+<td>kube-scheduler</td>
+<td>本机</td>
+</tr>
+<tr>
+<td>TCP</td>
+<td>入站</td>
+<td>10252</td>
+<td>kube-controller-manager</td>
+<td>本机</td>
+</tr>
+<tr>
+<td>TCP</td>
+<td>入站</td>
+<td>30000-32767</td>
+<td>NodePort Services**</td>
+<td>所有node节点</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NodePort Services的默认端口范围。</strong></p>
+<p><strong>使用 * 标记的端口号都可以自定义的，所以您需要保证所自定义的端口是开放的。</strong></p>
+<h1 id=安装etcd集群>安装ETCD集群</h1>
+<p>参考 <a href=/etcd-install/ rel>etcd安装配置</a> , 拷贝客户端证书到kubernetes server节点的<code>/opt/kubernetes/ssl/</code>目录下；</p>
+<p>我的客户端证书：<code>etcd-client.crt</code> <code>etcd-client.key</code> <code>etcd-ca.crt</code></p>
+<h1 id=pki证书管理>PKI证书管理</h1>
+<p>可以参考官方文档：<a href=https://kubernetes.io/zh/docs/setup/best-practices/certificates/ target=_blank rel="noopener noreffer">https://kubernetes.io/zh/docs/setup/best-practices/certificates/</a>来生成证书</p>
+<p><strong>注意： 证书我是在server1（192.168.122.12）上进行生成管理的</strong></p>
+<p><strong>证书的O和CN字段在RBAC授权的时候被认为是<code>组</code>和<code>用户</code>,所以请不要随意更改，不然RBAC预定义角色无法匹配，导致授权失败</strong></p>
+<h2 id=创建ca>创建CA</h2>
+<p>另外还需要获取用于服务账户管理的密钥对，也就是sa.key和sa.pub。</p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>默认 CN</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>kube-ca.crt,key</td>
+<td>kubernetes-ca</td>
+<td>Kubernetes 通用 CA</td>
+</tr>
+<tr>
+<td>front-proxy-ca.crt,key</td>
+<td>kubernetes-front-proxy-ca</td>
+<td>用于 [前端代理][proxy]</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>kubernetes-ca</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>mkdir -p ~/ca/<span class=o>{</span>kube-ca,kube-proxy-ca<span class=o>}</span>
+<span class=nb>cd</span> ~/ca/kube-ca
+openssl genrsa -out kube-ca.key  <span class=m>2048</span>
+
+openssl req -extensions v3_ca <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=kubernetes-ca/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-new -x509 -days <span class=m>14500</span> -sha256 <span class=se>\
+</span><span class=se></span>-key<span class=o>=</span>kube-ca.key -out kube-ca.crt
+
+<span class=c1># 创建证书签名用的配置文件</span>
+cat &gt; kubernetes-ca.conf<span class=s>&lt;&lt;EOF
+</span><span class=s># 用来对服务端证书签名
+</span><span class=s>[ req_server ]
+</span><span class=s>subjectKeyIdentifier = hash
+</span><span class=s>basicConstraints = CA:FALSE
+</span><span class=s>authorityKeyIdentifier = keyid,issuer:always
+</span><span class=s>keyUsage = critical, digitalSignature, keyEncipherment
+</span><span class=s>extendedKeyUsage = clientAuth,serverAuth
+</span><span class=s>subjectAltName = @alt_names
+</span><span class=s>
+</span><span class=s># dns中kubernetes开头的是APIserver需要用到的记录
+</span><span class=s># 要包含所有master节点和负载均衡的IP地址、DNS记录
+</span><span class=s>[ alt_names ]
+</span><span class=s>DNS.1 = kubernetes
+</span><span class=s>DNS.2 = kubernetes.default
+</span><span class=s>DNS.3 = kubernetes.default.svc
+</span><span class=s>DNS.4 = kubernetes.default.svc.cluster
+</span><span class=s>DNS.5 = kubernetes.default.svc.cluster.local
+</span><span class=s>DNS.6 = localhost
+</span><span class=s>DNS.7 = node3
+</span><span class=s>DNS.8 = node4
+</span><span class=s>DNS.9 = k8s.api
+</span><span class=s>IP.1 = 192.168.122.12
+</span><span class=s>IP.2 = 192.168.122.13
+</span><span class=s>IP.3 = 192.168.122.2
+</span><span class=s>IP.4 = 127.0.0.1
+</span><span class=s>IP.5 = 10.110.0.1
+</span><span class=s>
+</span><span class=s># 用来对客户端证书签名
+</span><span class=s>[ req_client ]
+</span><span class=s>subjectKeyIdentifier = hash
+</span><span class=s>basicConstraints = CA:FALSE
+</span><span class=s>authorityKeyIdentifier = keyid,issuer:always
+</span><span class=s>keyUsage = critical, digitalSignature, keyEncipherment
+</span><span class=s>extendedKeyUsage = clientAuth
+</span><span class=s>EOF</span>
+
+<span class=c1># 更改权限</span>
+chmod <span class=m>444</span> kube-ca.crt
+chmod <span class=m>400</span> kube-ca.key
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>kubernetes-front-proxy-ca</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/kube-proxy-ca
+openssl genrsa -out front-proxy-ca.key <span class=m>2048</span>
+
+openssl req -extensions v3_ca <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=kubernetes-front-proxy-ca/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-new -x509 -days <span class=m>14500</span> -sha256 <span class=se>\
+</span><span class=se></span>-key<span class=o>=</span>front-proxy-ca.key -out front-proxy-ca.crt
+
+<span class=c1># 创建证书签名用的配置文件</span>
+cat &gt; front-proxy-ca.conf<span class=s>&lt;&lt;EOF
+</span><span class=s># 用来对客户端证书签名
+</span><span class=s>[ req_client ]
+</span><span class=s>subjectKeyIdentifier = hash
+</span><span class=s>basicConstraints = CA:FALSE
+</span><span class=s>authorityKeyIdentifier = keyid,issuer:always
+</span><span class=s>keyUsage = critical, digitalSignature, keyEncipherment
+</span><span class=s>extendedKeyUsage = clientAuth
+</span><span class=s>EOF</span>
+
+<span class=c1># 更改证书/密钥权限为只读</span>
+chmod <span class=m>444</span> front-proxy-ca.crt
+chmod <span class=m>400</span> front-proxy-ca.key
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=server证书>Server证书</h2>
+<p>两台api server我共用了证书，所以SAN的<code>hostname</code>,<code>host_ip</code>,<code>advertise_ip</code>我写了所有主机的名字;</p>
+<table>
+<thead>
+<tr>
+<th>默认 CN</th>
+<th>父级 CA</th>
+<th>O (位于 Subject 中)</th>
+<th>类型</th>
+<th>主机 (SAN)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>kube-apiserver</td>
+<td>kubernetes-ca</td>
+<td></td>
+<td>server</td>
+<td>[hostname], [Host_IP], [advertise_IP], 注:1</td>
+</tr>
+<tr>
+<td>kube-apiserver-kubelet-client</td>
+<td>kubernetes-ca</td>
+<td>system:masters</td>
+<td>client</td>
+<td></td>
+</tr>
+<tr>
+<td>front-proxy-client</td>
+<td>kubernetes-front-proxy-ca</td>
+<td></td>
+<td>client</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>注1: kubeadm为负载均衡所使用的固定IP或 NS名: kubernetes、kubernetes.default、kubernetes.default.svc、 kubernetes.default.svc.cluster、kubernetes.default.svc.cluster.local</p>
+<ul>
+<li>
+<p>apiserver证书</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>mkdir -p ~/ca/kube-ca/<span class=o>{</span>apiserver,kubeconfig,kubelet<span class=o>}</span>
+<span class=nb>cd</span> ~/ca/kube-ca/apiserver
+
+<span class=c1># 创建密钥</span>
+openssl genrsa -out apiserver.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=kube-apiserver/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key apiserver.key -out apiserver.csr
+
+<span class=c1># 使用kubernetes-ca进行签名获取带有SAN扩展的证书</span>
+openssl x509 -in apiserver.csr -out apiserver.crt <span class=se>\
+</span><span class=se></span>-CA ../kube-ca.crt -CAkey ../kube-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> <span class=se>\
+</span><span class=se></span>-extfile ../kubernetes-ca.conf -extensions req_server
+
+<span class=c1># 权限</span>
+rm -f apiserver.csr
+chmod <span class=m>400</span> apiserver.key
+chmod <span class=m>444</span> apiserver.crt
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>apiserver-kubelet-client证书</p>
+<p>apiserver访问kubelet的证书密钥对（RBAC会针对<code>system:masters</code>用户进行授权）</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/kube-ca/apiserver
+<span class=c1># 创建密钥</span>
+openssl genrsa -out apiserver-kubelet-client.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=system:masters/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key apiserver-kubelet-client.key -out apiserver-kubelet-client.csr
+
+<span class=c1># 使用kubernetes-ca进行签名</span>
+openssl x509 -in apiserver-kubelet-client.csr -out apiserver-kubelet-client.crt <span class=se>\
+</span><span class=se></span>-CA ../kube-ca.crt -CAkey ../kube-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> -extfile ../kubernetes-ca.conf -extensions req_client
+
+rm -f apiserver-kubelet-client.csr
+chmod <span class=m>400</span> apiserver-kubelet-client.key
+chmod <span class=m>444</span> apiserver-kubelet-client.crt
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>kubelet服务证书</p>
+<p>kubelet也启用https了，所以要给他生成一个证书，外部访问kubelet的的程序可以根据kube-ca进行验证kubelet的服务证书，例如安装metrics-server性能指标监控程序的时候，他需要验证kubelet证书</p>
+<p>注意：DNS和IP要写所有的安装kubelet节点的ip和主机名称</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/kube-ca/kubelet
+<span class=c1># 创建密钥</span>
+openssl genrsa -out kubelet.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=kube-kubelet/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key kubelet.key -out kubelet.csr
+
+<span class=c1># 创建证书签名用的配置文件</span>
+cat &gt; kubelet-cert.conf<span class=s>&lt;&lt;EOF
+</span><span class=s># 用来对服务端证书签名
+</span><span class=s>[ req_server ]
+</span><span class=s>subjectKeyIdentifier = hash
+</span><span class=s>basicConstraints = CA:FALSE
+</span><span class=s>authorityKeyIdentifier = keyid,issuer:always
+</span><span class=s>keyUsage = critical, digitalSignature, keyEncipherment
+</span><span class=s>extendedKeyUsage = serverAuth
+</span><span class=s>subjectAltName = @alt_names
+</span><span class=s>
+</span><span class=s># 要包含所有worker节点的IP地址、DNS记录
+</span><span class=s>[ alt_names ]
+</span><span class=s>DNS.1 = localhost
+</span><span class=s>DNS.2 = node1
+</span><span class=s>DNS.3 = node2
+</span><span class=s>IP.1 = 192.168.122.10
+</span><span class=s>IP.2 = 192.168.122.11
+</span><span class=s>IP.3 = 127.0.0.1
+</span><span class=s>EOF</span>
+
+<span class=c1># 使用kubernetes-ca进行签名获取带有SAN扩展的证书</span>
+openssl x509 -in kubelet.csr -out kubelet.crt <span class=se>\
+</span><span class=se></span>-CA ../kube-ca.crt -CAkey ../kube-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> <span class=se>\
+</span><span class=se></span>-extfile kubelet-cert.conf -extensions req_server
+
+<span class=c1># 权限</span>
+rm -f kubelet.csr
+chmod <span class=m>400</span> kubelet.key
+chmod <span class=m>444</span> kubelet.crt
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>front-proxy-client证书</p>
+<p>只有当你运行kube-proxy并要支持<a href=https://kubernetes.io/zh/docs/tasks/extend-kubernetes/setup-extension-api-server/ target=_blank rel="noopener noreffer">扩展API服务器</a>时，才需要front-proxy证书</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>mkdir ~/ca/kube-proxy-ca/front-proxy-client
+<span class=nb>cd</span> ~/ca/kube-proxy-ca/front-proxy-client
+<span class=c1># 创建密钥</span>
+openssl genrsa -out front-proxy-client.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=front-proxy-client/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key front-proxy-client.key -out front-proxy-client.csr 
+
+<span class=c1># 使用中间CA进行签名</span>
+openssl x509 -in front-proxy-client.csr -out front-proxy-client.crt <span class=se>\
+</span><span class=se></span>-CA ../front-proxy-ca.crt -CAkey ../front-proxy-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> -extfile ../front-proxy-ca.conf -extensions req_client
+
+rm -f front-proxy-client.csr
+chmod <span class=m>400</span> front-proxy-client.key
+chmod <span class=m>444</span> front-proxy-client.crt
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>服务账户管理的密钥对</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/kube-ca/apiserver
+openssl genrsa -out sa.key <span class=m>2048</span>
+openssl rsa -in sa.key -pubout -out sa.pub
+chmod <span class=m>400</span> sa.key
+chmod <span class=m>444</span> sa.pub
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=用户证书>用户证书</h2>
+<p>用户证书是kubectl、kubelet、kube-controller-manager、kube-scheduler等程序连接API server时候用到的客户端证书，可以直接写入配置文件，不需要拷贝证书/密钥到节点上，</p>
+<p>使用kubectl创建连接apiserver的配置文件，等配置生成完后复制<code>admin.conf</code>到<code>~/.kube/config</code>, 然后删除<code>KUBECONFIG</code>的环境变量即可恢复kubectl对apiserver的访问</p>
+<ul>
+<li>
+<p>配置文件信息</p>
+<table>
+<thead>
+<tr>
+<th>文件名</th>
+<th>命令</th>
+<th>凭据名称</th>
+<th>默认 CN</th>
+<th>O (位于 Subject 中)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>admin.conf</td>
+<td>kubectl</td>
+<td>default-admin</td>
+<td>kubernetes-admin</td>
+<td>system:masters</td>
+<td>配置集群的管理员</td>
+</tr>
+<tr>
+<td>kubelet.conf</td>
+<td>kubelet</td>
+<td>default-auth</td>
+<td>system:node:[nodeName] （参阅注释）</td>
+<td>system:nodes</td>
+<td>集群中的每个节点都需要一份,配置了连接API Server等的参数</td>
+</tr>
+<tr>
+<td>controller-manager.conf</td>
+<td>kube-controller-manager</td>
+<td>default-controller-manager</td>
+<td>system:kube-controller-manager</td>
+<td></td>
+<td>必需添加到 <code>manifests/kube-controller-manager.yaml</code> 清单中</td>
+</tr>
+<tr>
+<td>scheduler.conf</td>
+<td>kube-scheduler</td>
+<td>default-scheduler</td>
+<td>system:kube-scheduler</td>
+<td></td>
+<td>必需添加到 <code>manifests/kube-scheduler.yaml</code> 清单中</td>
+</tr>
+<tr>
+<td>proxy.conf</td>
+<td>kube-proxy</td>
+<td>default-proxy</td>
+<td>system:kube-proxy</td>
+<td></td>
+<td>集群中的每个节点都需要一份,配置了连接API Server等的参数proxy</td>
+</tr>
+</tbody>
+</table>
+<p>注释：kubelet.conf中[nodeName]的值必须与kubelet向apiserver注册时提供的节点名称的值完全匹配。 有关更多详细信息，请阅读<a href=https://kubernetes.io/zh/docs/reference/access-authn-authz/node/ target=_blank rel="noopener noreffer">节点授权</a>。</p>
+</li>
+<li>
+<p>安装kubectl</p>
+<p>k8s集群管理工具</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> /tmp
+wget https://dl.k8s.io/v1.19.1/kubernetes-client-linux-amd64.tar.gz
+tar -zxf kubernetes-client-linux-amd64.tar.gz
+cp kubernetes/client/bin/kubectl /usr/bin/
+rm -rf kubernetes*
+<span class=c1># kubectl命令补全</span>
+<span class=nb>echo</span> <span class=s1>&#39;eval &#34;$(kubectl completion bash)&#34;&#39;</span> &gt;&gt; ~/.bashrc
+<span class=nb>source</span> ~/.bashrc
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>admin.conf</p>
+<p>kubectl客户端连接apiserver时候使用的配置文件</p>
+<p>kubectl客户端默认调用<code>~/.kube/config</code>的配置文件</p>
+<p>可以通过<code>KUBECONFIG</code>变量来控制</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>mkdir ~/ca/kube-ca/kubeconfig
+<span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+<span class=c1># 创建密钥</span>
+openssl genrsa -out kube-admin.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=system:masters/OU=net-cc.com/CN=kubernetes-admin/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key kube-admin.key -out kube-admin.csr
+
+<span class=c1># 使用中间CA进行签名</span>
+openssl x509 -in kube-admin.csr -out kube-admin.crt <span class=se>\
+</span><span class=se></span>-CA ../kube-ca.crt -CAkey ../kube-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> <span class=se>\
+</span><span class=se></span>-extfile ../kubernetes-ca.conf -extensions req_client
+
+rm -f kube-admin.csr
+chmod <span class=m>400</span> kube-admin.key
+chmod <span class=m>444</span> kube-admin.crt
+
+<span class=c1># 把证书直接写道配置文件中，客户端不用保留证书了，(`--embed-certs`控制)</span>
+<span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span>admin.conf
+kubectl config set-cluster default-cluster --server<span class=o>=</span>https://node3:6443 --certificate-authority ../kube-ca.crt --embed-certs
+kubectl config set-credentials default-admin --client-key kube-admin.key --client-certificate kube-admin.crt --embed-certs
+kubectl config set-context default-system --cluster default-cluster --user default-admin
+kubectl config use-context default-system
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>kubelet.conf</p>
+<p>两个Worker节点，node1我使用手动生成证书的方式</p>
+<p>node2我使用自动签发证书的方式，所以这里未生成证书</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+<span class=nb>export</span> <span class=nv>NODENAME</span><span class=o>=</span>node1
+<span class=c1># 创建密钥</span>
+openssl genrsa -out kube-kubelet-<span class=nv>$NODENAME</span>.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=system:nodes/OU=net-cc.com/CN=system:node:</span><span class=nv>$NODENAME</span><span class=s2>/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key kube-kubelet-<span class=nv>$NODENAME</span>.key -out kube-kubelet-<span class=nv>$NODENAME</span>.csr
+
+<span class=c1># 使用kubernetes-ca进行签名</span>
+openssl x509 -in kube-kubelet-<span class=nv>$NODENAME</span>.csr -out kube-kubelet-<span class=nv>$NODENAME</span>.crt <span class=se>\
+</span><span class=se></span>-CA ../kube-ca.crt -CAkey ../kube-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> <span class=se>\
+</span><span class=se></span>-extfile ../kubernetes-ca.conf -extensions req_client
+
+rm -f kube-kubelet-<span class=nv>$NODENAME</span>.csr
+chmod <span class=m>400</span> kube-kubelet-<span class=nv>$NODENAME</span>.key
+chmod <span class=m>444</span> kube-kubelet-<span class=nv>$NODENAME</span>.crt
+
+<span class=c1># 把证书直接写道配置文件中，客户端不用保留证书了，(`--embed-certs`控制)</span>
+<span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span>kubelet-<span class=nv>$NODENAME</span>.conf
+kubectl config set-cluster default-cluster --server<span class=o>=</span>https://node3:6443 --certificate-authority ../kube-ca.crt --embed-certs
+kubectl config set-credentials default-auth --client-key kube-kubelet-<span class=nv>$NODENAME</span>.key --client-certificate kube-kubelet-<span class=nv>$NODENAME</span>.crt --embed-certs
+kubectl config set-context default-system --cluster default-cluster --user default-auth	
+kubectl config use-context default-system
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>proxy.conf</p>
+<p>所有Worker节点的kube-proxy程序可以共用这一个配置文件，所以生成一次即可</p>
+<p>注意：证书的CN不要变更</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+<span class=c1># 创建密钥</span>
+openssl genrsa -out kube-proxy.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=system:kube-proxy/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key kube-proxy.key -out kube-proxy.csr
+
+<span class=c1># 使用kubernetes-ca进行签名</span>
+openssl x509 -in kube-proxy.csr -out kube-proxy.crt <span class=se>\
+</span><span class=se></span>-CA ../kube-ca.crt -CAkey ../kube-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> <span class=se>\
+</span><span class=se></span>-extfile ../kubernetes-ca.conf -extensions req_client
+
+rm -f kube-proxy.csr
+chmod <span class=m>400</span> kube-proxy.key
+chmod <span class=m>444</span> kube-proxy.crt
+
+<span class=c1># 把证书直接写道配置文件中，客户端不用保留证书了，(`--embed-certs`控制)</span>
+<span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+<span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span>proxy.conf
+kubectl config set-cluster default-cluster --server<span class=o>=</span>https://node3:6443 --certificate-authority ../kube-ca.crt --embed-certs
+kubectl config set-credentials default-proxy --client-key kube-proxy.key --client-certificate kube-proxy.crt --embed-certs
+kubectl config set-context default-system --cluster default-cluster --user default-proxy
+kubectl config use-context default-system
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>controller-manager.conf</p>
+<p>注意：证书的CN不要变更</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+<span class=c1># 创建密钥</span>
+openssl genrsa -out kube-controller-manager.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=system:kube-controller-manager/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key kube-controller-manager.key -out kube-controller-manager.csr
+
+<span class=c1># 使用kubernetes-ca进行签名</span>
+openssl x509 -in kube-controller-manager.csr -out kube-controller-manager.crt <span class=se>\
+</span><span class=se></span>-CA ../kube-ca.crt -CAkey ../kube-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> <span class=se>\
+</span><span class=se></span>-extfile ../kubernetes-ca.conf -extensions req_client
+
+rm -f kube-controller-manager.csr
+chmod <span class=m>400</span> kube-controller-manager.key
+chmod <span class=m>444</span> kube-controller-manager.crt
+
+<span class=c1># 把证书直接写道配置文件中，客户端不用保留证书了，(`--embed-certs`控制)</span>
+<span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+<span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span>controller-manager.conf
+kubectl config set-cluster default-cluster --server<span class=o>=</span>https://localhost:6443 --certificate-authority ../kube-ca.crt --embed-certs
+kubectl config set-credentials default-controller-manager --client-key kube-controller-manager.key --client-certificate kube-controller-manager.crt --embed-certs
+kubectl config set-context default-system --cluster default-cluster --user default-controller-manager
+kubectl config use-context default-system
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>scheduler.conf</p>
+<p>注意：证书的CN不要变更</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+<span class=c1># 创建密钥</span>
+openssl genrsa -out kube-scheduler.key <span class=m>2048</span>
+
+<span class=c1># 创建证书请求文件</span>
+openssl req -new -sha256 <span class=se>\
+</span><span class=se></span>-subj <span class=s2>&#34;/C=CN/ST=ShangHai/L=ShangHai/O=net-cc.com/OU=net-cc.com/CN=system:kube-scheduler/emailAddress=admin@admin.com&#34;</span> <span class=se>\
+</span><span class=se></span>-key kube-scheduler.key -out kube-scheduler.csr
+
+<span class=c1># 使用kubernetes-ca进行签名</span>
+openssl x509 -in kube-scheduler.csr -out kube-scheduler.crt <span class=se>\
+</span><span class=se></span>-CA ../kube-ca.crt -CAkey ../kube-ca.key -CAcreateserial <span class=se>\
+</span><span class=se></span>-req -sha256 -days <span class=m>7300</span> <span class=se>\
+</span><span class=se></span>-extfile ../kubernetes-ca.conf -extensions req_client
+
+rm -f kube-scheduler.csr
+chmod <span class=m>400</span> kube-scheduler.key
+chmod <span class=m>444</span> kube-scheduler.crt
+
+<span class=c1># 把证书直接写道配置文件中，客户端不用保留证书了，(`--embed-certs`控制)</span>
+<span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span>scheduler.conf	
+kubectl config set-cluster default-cluster --server<span class=o>=</span>https://localhost:6443 --certificate-authority ../kube-ca.crt --embed-certs
+kubectl config set-credentials kube-scheduler --client-key kube-scheduler.key --client-certificate kube-scheduler.crt --embed-certs
+kubectl config set-context default-system --cluster default-cluster --user kube-scheduler
+kubectl config use-context default-system
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=复制证书到各节点>复制证书到各节点</h2>
+<ul>
+<li>
+<p>server节点</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 复制kube-apiserver证书/密钥到两个server节点</span>
+<span class=nb>cd</span> ~/ca/kube-ca/apiserver
+cp ../kube-ca.crt apiserver.crt apiserver-kubelet-client.crt sa.pub /opt/kubernetes/ssl/
+cp ../kube-ca.key apiserver.key apiserver-kubelet-client.key sa.key /opt/kubernetes/ssl/
+scp ../kube-ca.crt apiserver.crt apiserver-kubelet-client.crt sa.pub root@node4:/opt/kubernetes/ssl/
+scp ../kube-ca.key apiserver.key apiserver-kubelet-client.key sa.key root@node4:/opt/kubernetes/ssl/
+
+<span class=c1># 复制front-proxy-client证书/密钥到两个server节点</span>
+<span class=nb>cd</span> ~/ca/kube-proxy-ca/front-proxy-client
+cp front-proxy-client.key front-proxy-client.crt ../front-proxy-ca.crt /opt/kubernetes/ssl/
+scp front-proxy-client.key front-proxy-client.crt ../front-proxy-ca.crt root@node4:/opt/kubernetes/ssl/
+
+<span class=c1># 复制controller-manager、scheduler连接配置文件到所有server节点</span>
+<span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+mkdir ~/.kube/
+<span class=nb>unset</span> KUBECONFIG <span class=c1># 恢复kubectl的环境变量</span>
+cp admin.conf ~/.kube/config
+cp controller-manager.conf scheduler.conf	 /opt/kubernetes/etc/
+scp controller-manager.conf scheduler.conf root@node4:/opt/kubernetes/etc/
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>node节点</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 复制kubelet配置文件到所有node节点</span>
+<span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+scp kubelet-node1.conf proxy.conf root@node1:/opt/kubernetes/etc/
+<span class=c1># 复制kubelet的服务证书</span>
+<span class=nb>cd</span> ~/ca/kube-ca/kubelet
+scp ../kube-ca.crt  kubelet.crt kubelet.key root@node1:/opt/kubernetes/ssl/
+scp ../kube-ca.crt  kubelet.crt kubelet.key root@node2:/opt/kubernetes/ssl/
+
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>node节点现有文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>tree /opt/kubernetes
+/opt/kubernetes
+├── bin
+├── data
+├── etc
+│   └── kubelet-node1.conf  <span class=c1># node1才有，node2没有</span>
+│   └── proxy.conf
+<span class=p>|</span>   └── conf.d
+├── logs
+└── ssl
+│   └── kube-ca.crt
+│   └── kubelet.crt
+│   └── kubelet.key
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>Master节点现有文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>$ tree /opt/kubernetes
+/opt/kubernetes
+├── bin
+├── data
+├── etc
+│   ├── controller-manager.conf
+│   └── scheduler.conf	
+├── logs
+└── ssl
+    ├── apiserver.crt
+    ├── apiserver.key
+    ├── apiserver-kubelet-client.crt
+    ├── apiserver-kubelet-client.key
+    ├── etcd-ca.crt
+    ├── etcd-client.crt
+    ├── etcd-client.key
+    ├── front-proxy-client.crt
+    ├── front-proxy-client.key
+    ├── front-proxy-ca.crt
+    ├── kube-ca.key
+    ├── kube-ca.crt
+    ├── sa.key
+    └── sa.pub
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h1 id=master-node主>Master Node(主)</h1>
+<p>下边是一些公共参数，主要是日志配置，节点上的所有程序都调用了</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 公共配置文件Controller Manager、scheduler都调用了</span>
+cat &gt; /opt/kubernetes/etc/kube-default.conf<span class=s>&lt;&lt;EOF
+</span><span class=s># k8s所有服务共用配置文件
+</span><span class=s>KUBE_LOG_ARGS=&#34;--logtostderr=false --log-dir=/opt/kubernetes/logs/ --v=2&#34;
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p><code>--logtostderr</code>: 设置为false表示将日志写入文件，不写入stderr</p>
+</li>
+<li>
+<p><code>--log-dir</code>: 日志目录</p>
+</li>
+<li>
+<p><code>--v</code>: 日志等级</p>
+</li>
+</ul>
+<p><strong>先安装一个主Master节点，另一个等单节点集群创建成功后在添加</strong></p>
+<h2 id=下载程序>下载程序</h2>
+<p><a href=https://github.com/kubernetes/kubernetes/tree/master/CHANGELOG target=_blank rel="noopener noreffer">此链接查看最新版</a></p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 下载server端程序</span>
+<span class=nb>cd</span> /tmp
+wget https://dl.k8s.io/v1.19.1/kubernetes-server-linux-amd64.tar.gz
+tar -zxf kubernetes-server-linux-amd64.tar.gz
+<span class=nb>cd</span> kubernetes/server/bin/
+cp kube-apiserver kube-scheduler kube-controller-manager /opt/kubernetes/bin/
+<span class=c1># 传到另一个master节点 省的在下载了</span>
+scp kube-apiserver kube-scheduler kube-controller-manager root@node4:/opt/kubernetes/bin/
+<span class=nb>cd</span> /tmp
+rm -rf kubernetes*
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=部署api-server>部署API Server</h2>
+<p>主节点上负责提供 Kubernetes API 服务的组件；它是 Kubernetes 控制面的前端。</p>
+<h3 id=systemd服务>systemd服务</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 添加api-server到systemd服务</span>
+cat &gt; /usr/lib/systemd/system/kube-apiserver.service <span class=s>&lt;&lt;EOF
+</span><span class=s>[Unit]
+</span><span class=s>Description=Kubernetes API Server
+</span><span class=s>Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+</span><span class=s>After=network.target
+</span><span class=s>After=network-online.target
+</span><span class=s>Wants=network-online.target
+</span><span class=s>
+</span><span class=s>[Service]
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-apiserver.conf
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-default.conf
+</span><span class=s>User=kube
+</span><span class=s>Group=kube
+</span><span class=s>ExecStart=/opt/kubernetes/bin/kube-apiserver \$KUBE_API_ARGS \$KUBE_LOG_ARGS
+</span><span class=s>Restart=on-failure
+</span><span class=s>Type=notify
+</span><span class=s>LimitNOFILE=65536
+</span><span class=s>
+</span><span class=s>[Install]
+</span><span class=s>WantedBy=multi-user.target
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=配置文件>配置文件</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># api-server配置文件,</span>
+cat &gt; /opt/kubernetes/etc/kube-apiserver.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>KUBE_API_ARGS=&#34;--storage-backend=etcd3 \\
+</span><span class=s>--etcd-servers=https://node1:2379,https://node3:2379,https://node2:2379 \\
+</span><span class=s>--etcd-cafile=/opt/kubernetes/ssl/etcd-ca.crt \\
+</span><span class=s>--etcd-certfile=/opt/kubernetes/ssl/etcd-client.crt \\
+</span><span class=s>--etcd-keyfile=/opt/kubernetes/ssl/etcd-client.key \\
+</span><span class=s>--bind-address=0.0.0.0 \\
+</span><span class=s>--advertise-address=0.0.0.0 \\
+</span><span class=s>--secure-port=6443 \\
+</span><span class=s>--insecure-port=0 \\
+</span><span class=s>--service-cluster-ip-range=10.110.0.0/16 \\
+</span><span class=s>--service-node-port-range=30000-32767 \\
+</span><span class=s>--allow-privileged=true \\
+</span><span class=s>--authorization-mode=RBAC,Node \\
+</span><span class=s>--audit-log-maxage=30 \\
+</span><span class=s>--audit-log-maxbackup=3 \\
+</span><span class=s>--audit-log-maxsize=100 \\
+</span><span class=s>--audit-log-path=/opt/kubernetes/logs/k8s-audit.log \\
+</span><span class=s>--enable-admission-plugins=NodeRestriction,PodPreset \\
+</span><span class=s>--runtime-config=settings.k8s.io/v1alpha1=true \\
+</span><span class=s>--client-ca-file=/opt/kubernetes/ssl/kube-ca.crt \\
+</span><span class=s>--kubelet-client-certificate=/opt/kubernetes/ssl/apiserver-kubelet-client.crt \\
+</span><span class=s>--kubelet-client-key=/opt/kubernetes/ssl/apiserver-kubelet-client.key \\
+</span><span class=s>--tls-cert-file=/opt/kubernetes/ssl/apiserver.crt  \\
+</span><span class=s>--tls-private-key-file=/opt/kubernetes/ssl/apiserver.key \\
+</span><span class=s>--service-account-key-file=/opt/kubernetes/ssl/sa.pub \\
+</span><span class=s>--enable-bootstrap-token-auth=true \\
+</span><span class=s>--token-auth-file=/opt/kubernetes/etc/token.csv \\
+</span><span class=s>--requestheader-client-ca-file=/opt/kubernetes/ssl/front-proxy-ca.crt \\
+</span><span class=s>--proxy-client-key-file=/opt/kubernetes/ssl/front-proxy-client.key \\
+</span><span class=s>--proxy-client-cert-file=/opt/kubernetes/ssl/front-proxy-client.crt \\
+</span><span class=s>--requestheader-allowed-names=aggregator,front-proxy-client \\
+</span><span class=s>--requestheader-extra-headers-prefix=X-Remote-Extra- \\
+</span><span class=s>--requestheader-group-headers=X-Remote-Group \\
+</span><span class=s>--requestheader-username-headers=X-Remote-User \\
+</span><span class=s>--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname \\
+</span><span class=s>--enable-aggregator-routing=true&#34;
+</span><span class=s>EOF</span>
+
+<span class=c1># 创建token.csv，记住token，等会添加第二个节点需要用到</span>
+<span class=c1># 格式：token，用户名，UID，用户组</span>
+<span class=nv>TOKEN</span><span class=o>=</span><span class=k>$(</span>head -c <span class=m>16</span> /dev/urandom <span class=p>|</span> od -An -t x <span class=p>|</span> tr -d <span class=s1>&#39; &#39;</span><span class=k>)</span>
+cat &gt; /opt/kubernetes/etc/token.csv <span class=s>&lt;&lt; EOF
+</span><span class=s>$TOKEN,kubelet-bootstrap,10001,&#34;system:bootstrappers&#34;
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>配置文件说明：</p>
+<ul>
+<li>
+<p><code>--storage-backend</code>: 指定etcd的版本</p>
+</li>
+<li>
+<p><code>--etcd-servers</code>: etcd服务的URL</p>
+</li>
+<li>
+<p><code>--etcd-*file</code>: 连接etcd的证书和密钥</p>
+</li>
+<li>
+<p><code>--advertise-address</code>: 集群通告地址</p>
+</li>
+<li>
+<p><code>--secure-port</code>: API Server绑定主机安全端口号，默认为6443</p>
+</li>
+<li>
+<p><code>--service-cluster-ip-range</code>: Kubernetes集群中Service的虚拟IP地址范围，该IP范围不能与物理机的IP地址有重合。</p>
+</li>
+<li>
+<p><code>--service-node-port-range</code>: Kubernetes集群中Service可使用的物理机端口号范围，默认值为30000～32767</p>
+</li>
+<li>
+<p><code>--allow-privileged</code>: 启用授权</p>
+</li>
+<li>
+<p><code>authorization-mode</code>: 认证授权，启用RBAC授权和节点自管理</p>
+</li>
+<li>
+<p><code>audit-log*</code>: 审计日志</p>
+</li>
+<li>
+<p><code>--enable-admission-plugins</code>: Kubernetes集群的准入控制设置，各控制模块以插件的形式依次生效。默认启用的有(NamespaceLifecycle, LimitRanger, ServiceAccount, TaintNodesByCondition, Priority, DefaultTolerationSeconds, DefaultStorageClass, StorageObjectInUseProtection, PersistentVolumeClaimResize, RuntimeClass, CertificateApproval, CertificateSigning, CertificateSubjectRestriction, DefaultIngressClass, MutatingAdmissionWebhook, ValidatingAdmissionWebhook, ResourceQuota)</p>
+</li>
+<li>
+<p><code>--runtime-config</code>: 传递给 apiserver 用于描述运行时配置的键值对集合。 apis/<groupversion> 键可以被用来打开/关闭特定的 api 版本。apis/<groupversion>/<resource> 键被用来打开/关闭特定的资源 . api/all 和 api/legacy 键分别用于控制所有的和遗留的 api 版本</p>
+</li>
+<li>
+<p><code>--client-ca-file</code>: 对于任何请求，如果存包含client-ca-file中的authorities签名的客户端证书，将会使用客户端证书中的 CommonName 对应的身份进行认证</p>
+</li>
+<li>
+<p><code>--kubelet-client-*</code>: apiserver访问kubelet客户端证书</p>
+</li>
+<li>
+<p><code>--tls-*-file</code>: apiserver https证书</p>
+</li>
+<li>
+<p><code>--service-account-key-file</code>: 服务帐户密钥对</p>
+</li>
+<li>
+<p><code>--enable-bootstrap-token-auth</code>: 允许 &lsquo;kube-system&rsquo; 命名空间中的 &lsquo;bootstrap.kubernetes.io/token&rsquo; 类型密钥可以被用于 TLS 的启动认证</p>
+</li>
+<li>
+<p><code>--token-auth-file</code>: 这个文件将被用于通过令牌认证来保护 API 服务的安全端口</p>
+</li>
+</ul>
+<p>备注：<a href=https://kubernetes.io/zh/docs/reference/command-line-tools-reference/kube-apiserver/ target=_blank rel="noopener noreffer">apiserver所有参数的官方说明连接</a></p>
+<h2 id=部署controller-manager>部署Controller Manager</h2>
+<p>在主节点上运行控制器的组件。</p>
+<p>从逻辑上讲，每个控制器都是一个单独的进程，但是为了降低复杂性，它们都被编译到同一个可执行文件，并在一个进程中运行。</p>
+<p>这些控制器包括:</p>
+<ul>
+<li>节点控制器（Node Controller）: 负责在节点出现故障时进行通知和响应。</li>
+<li>副本控制器（Replication Controller）: 负责为系统中的每个副本控制器对象维护正确数量的 Pod。</li>
+<li>端点控制器（Endpoints Controller）: 填充端点(Endpoints)对象(即加入 Service 与 Pod)。</li>
+<li>服务帐户和令牌控制器（Service Account & Token Controllers）: 为新的命名空间创建默认帐户和 API 访问令牌.</li>
+</ul>
+<h3 id=systemd服务-1>systemd服务</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 添加controller-manager到systemd服务</span>
+cat &gt; /usr/lib/systemd/system/kube-controller-manager.service<span class=s>&lt;&lt;EOF
+</span><span class=s>[Unit]
+</span><span class=s>Description=Kubernetes Controller Manager
+</span><span class=s>Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+</span><span class=s>After=kube-apiserver.service
+</span><span class=s>Wants=kube-apiserver.service
+</span><span class=s>
+</span><span class=s>[Service]
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-controller-manager.conf
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-default.conf
+</span><span class=s>User=kube
+</span><span class=s>Group=kube
+</span><span class=s>ExecStart=/opt/kubernetes/bin/kube-controller-manager \$KUBE_CONTROLLER_MANAGER_ARGS \$KUBE_LOG_ARGS
+</span><span class=s>Restart=on-failure
+</span><span class=s>LimitNOFILE=65536
+</span><span class=s>
+</span><span class=s>[Install]
+</span><span class=s>WantedBy=multi-user.target
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=配置文件-1>配置文件</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /opt/kubernetes/etc/kube-controller-manager.conf <span class=s>&lt;&lt; EOF
+</span><span class=s>KUBE_CONTROLLER_MANAGER_ARGS=&#34;--leader-elect=true \\
+</span><span class=s>--kubeconfig=/opt/kubernetes/etc/controller-manager.conf \\
+</span><span class=s>--authentication-kubeconfig=/opt/kubernetes/etc/controller-manager.conf \\
+</span><span class=s>--authorization-kubeconfig=/opt/kubernetes/etc/controller-manager.conf \\
+</span><span class=s>--bind-address=0.0.0.0 \\
+</span><span class=s>--port=0 \\
+</span><span class=s>--cert-dir=/opt/kubernetes/ssl/ \\
+</span><span class=s>--allocate-node-cidrs=true \\
+</span><span class=s>--configure-cloud-routes=false \\
+</span><span class=s>--cloud-provider=external \\
+</span><span class=s>--cluster-cidr=10.120.0.0/16 \\
+</span><span class=s>--service-cluster-ip-range=10.110.0.0/16 \\
+</span><span class=s>--client-ca-file=/opt/kubernetes/ssl/kube-ca.crt \\
+</span><span class=s>--root-ca-file=/opt/kubernetes/ssl/kube-ca.crt \\
+</span><span class=s>--controllers=*,bootstrapsigner,tokencleaner,-cloud-node-lifecycle \\
+</span><span class=s>--cluster-signing-cert-file=/opt/kubernetes/ssl/kube-ca.crt \\
+</span><span class=s>--cluster-signing-key-file=/opt/kubernetes/ssl/kube-ca.key \\
+</span><span class=s>--cluster-signing-duration=87600h0m0s \\
+</span><span class=s>--service-account-private-key-file=/opt/kubernetes/ssl/sa.key \\
+</span><span class=s>--requestheader-client-ca-file=/opt/kubernetes/ssl/front-proxy-ca.crt \\
+</span><span class=s>--requestheader-allowed-names=aggregator,front-proxy-client \\
+</span><span class=s>--requestheader-extra-headers-prefix=X-Remote-Extra- \\
+</span><span class=s>--requestheader-group-headers=X-Remote-Group \\
+</span><span class=s>--requestheader-username-headers=X-Remote-User \\
+</span><span class=s>--use-service-account-credentials=true&#34;
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>配置文件说明：</p>
+<ul>
+<li>
+<p><code>--leader-elect</code>：当该组件启动多个时，自动选举（HA）</p>
+</li>
+<li>
+<p><code>--kubeconfig</code>: 指向 kubeconfig 文件的路径。该文件中包含主控节点位置以及鉴权凭据信息。</p>
+</li>
+<li>
+<p><code>--authentication-kubeconfig</code>: kubeconfig 文件的路径名。该文件中包含与某 Kubernetes “核心” 服务器相关的信息，并支持足够的权限以创建 tokenreviews.authentication.k8s.io。此选项是可选的。如果设置为空值，所有令牌请求都会被认作匿名请求，Kubernetes 也不再在集群中查找客户端的 CA 证书信息。</p>
+</li>
+<li>
+<p><code>--authorization-kubeconfig</code>: 包含 Kubernetes “核心” 服务器信息的 kubeconfig 文件路径，所包含信息具有创建 subjectaccessreviews.authorization.k8s.io 的足够权限。此参数是可选的。如果配置为空字符串，未被鉴权模块所忽略的请求都会被禁止</p>
+</li>
+<li>
+<p><code>--cert-dir</code>: TLS 证书所在的目录。如果提供了&ndash;tls-cert-file 和 &ndash;tls private-key-file，则将忽略此参数</p>
+</li>
+<li>
+<p><code>--allocate-node-cidrs</code>: 为 Pod 分配和设置子网掩码</p>
+</li>
+<li>
+<p><code>--configure-cloud-routes</code>: 决定是否由 &ndash;allocate-node-cidrs 所分配的 CIDR 要通过云驱动程序来配置。</p>
+</li>
+<li>
+<p><code>--cloud-provider</code>: 云服务的提供者。<code>external</code>表示没有对应的提供者（驱动）</p>
+</li>
+<li>
+<p><code>--cluster-cidr</code>: Kubernetes集群中pod的IP地址范围</p>
+</li>
+<li>
+<p><code>--service-cluster-ip-range</code>: Kubernetes集群中Service的虚拟IP地址范围，该IP范围不能与物理机的IP地址有重合。</p>
+</li>
+<li>
+<p><code>--client-ca-file</code>: 对于所有能够提供客户端证书的请求，若该证书由 client-ca-file 中所给机构之一签署，则该请求会被成功认证为客户端证书中 CommonName 所给的实体</p>
+</li>
+<li>
+<p><code>--root-ca-file</code>: 服务账号的令牌Secret中会包含此根证书机构</p>
+</li>
+<li>
+<p><code>--controllers</code>：要启用的控制器列表。* 表示启用所有默认启用的控制器, 这里我禁用了云检测</p>
+</li>
+<li>
+<p><code>--cluster-signing-cert-file/--cluster-signing-key-file</code>：自动为kubelet颁发证书的CA，与apiserver保持一致</p>
+</li>
+<li>
+<p><code>--cluster-signing-duration</code>: 自动为kubelet颁发证书的有效期</p>
+</li>
+<li>
+<p><code>--service-account-private-key-file</code>: 服务帐户密钥对</p>
+</li>
+<li>
+<p><code>--use-service-account-credentials</code>: 为每个控制器单独使用服务账号凭据。</p>
+</li>
+</ul>
+<p>备注：<a href=https://kubernetes.io/zh/docs/reference/command-line-tools-reference/kube-controller-manager/ target=_blank rel="noopener noreffer">Controller Manager的所有参数说明连接</a></p>
+<h2 id=部署scheduler>部署scheduler</h2>
+<p>主节点上的组件，该组件监视那些新创建的未指定运行节点的 Pod，并选择节点让 Pod 在上面运行。</p>
+<h3 id=systemd服务-2>systemd服务</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 添加scheduler到systemd服务</span>
+cat &gt; /usr/lib/systemd/system/kube-scheduler.service<span class=s>&lt;&lt;EOF
+</span><span class=s>[Unit]
+</span><span class=s>Description=Kubernetes Scheduler
+</span><span class=s>Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+</span><span class=s>After=kube-apiserver.service
+</span><span class=s>Wants=kube-apiserver.service
+</span><span class=s>
+</span><span class=s>[Service]
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-scheduler.conf
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-default.conf
+</span><span class=s>ExecStart=/opt/kubernetes/bin/kube-scheduler \$KUBE_SCHEDULER_ARGS \$KUBE_LOG_ARGS
+</span><span class=s>User=kube
+</span><span class=s>Group=kube
+</span><span class=s>Restart=on-failure
+</span><span class=s>LimitNOFILE=65536
+</span><span class=s>
+</span><span class=s>[Install]
+</span><span class=s>WantedBy=multi-user.target
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=配置文件-2>配置文件</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /opt/kubernetes/etc/kube-scheduler.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>KUBE_SCHEDULER_ARGS=&#34;--leader-elect=true \\
+</span><span class=s>--cert-dir=/opt/kubernetes/ssl/ \\
+</span><span class=s>--config=/opt/kubernetes/etc/kube-scheduler.yaml \\
+</span><span class=s>--authentication-kubeconfig=/opt/kubernetes/etc/scheduler.conf \\
+</span><span class=s>--authorization-kubeconfig=/opt/kubernetes/etc/scheduler.conf	&#34;
+</span><span class=s>EOF</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>配置文件说明：</p>
+<ul>
+<li>
+<p><code>--leader-elect</code>：当该组件启动多个时，自动选举（HA）</p>
+</li>
+<li>
+<p><code>--cert-dir</code>: TLS 证书所在的目录。如果提供了&ndash;tls-cert-file 和 &ndash;tls private-key-file，则将忽略此参数</p>
+</li>
+<li>
+<p><code>--config</code>: 指配置文件的路径。命令行参数会覆盖此文件中的值。</p>
+</li>
+<li>
+<p><code>--authentication-kubeconfig</code>: 指向具有足够权限以创建 subjectaccessreviews.authorization.k8s.io 的 &lsquo;core&rsquo; kubernetes 服务器的 kubeconfig 文件</p>
+</li>
+</ul>
+<p>备注: <a href=https://kubernetes.io/zh/docs/reference/command-line-tools-reference/kube-scheduler/ target=_blank rel="noopener noreffer">所有scheduler的参数说明连接</a></p>
+<h2 id=文件权限>文件权限</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>mkdir -p /var/run/kubernetes /usr/libexec/kubernetes
+<span class=nb>echo</span> <span class=s1>&#39;d /var/run/kubernetes 0755 kube kube -&#39;</span> &gt;&gt; /usr/lib/tmpfiles.d/kubernetes.conf
+chown kube:kube -R /var/run/kubernetes /usr/libexec/kubernetes /opt/kubernetes/<span class=o>{</span>etc,logs,ssl,data<span class=o>}</span>
+restorecon -R /opt/kubernetes /usr/libexec/kubernetes /var/run/kubernetes
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=启动服务>启动服务</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>systemctl start kube-apiserver.service
+systemctl start kube-controller-manager.service
+systemctl <span class=nb>enable</span> kube-apiserver.service
+systemctl <span class=nb>enable</span> kube-controller-manager.service
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=生成scheduler配置文件>生成scheduler配置文件</h2>
+<p>需要先启动API server</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 生成kube-scheduler.yaml默认文件</span>
+/opt/kubernetes/bin/kube-scheduler <span class=se>\
+</span><span class=se></span>--authentication-kubeconfig<span class=o>=</span>/opt/kubernetes/etc/scheduler.conf <span class=se>\
+</span><span class=se></span>--authorization-kubeconfig<span class=o>=</span>/opt/kubernetes/etc/scheduler.conf <span class=se>\
+</span><span class=se></span>--kubeconfig<span class=o>=</span>/opt/kubernetes/etc/scheduler.conf <span class=se>\
+</span><span class=se></span>--authentication-tolerate-lookup-failure<span class=o>=</span><span class=nb>false</span> <span class=se>\
+</span><span class=se></span>--write-config-to /opt/kubernetes/etc/kube-scheduler.yaml
+
+<span class=c1># 启动scheduler</span>
+systemctl start kube-scheduler.service
+systemctl <span class=nb>enable</span> kube-scheduler.service
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=查看集群状态>查看集群状态</h2>
+<p>由于我的ca管理和kubectl程序都是安装在node3上的，所以在node3上操作</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 复制kubectl的配置文件</span>
+mkdir ~/.kube/
+cp ~/ca/kube-ca/kubeconfig/admin.conf ~/.kube/config
+<span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span><span class=s2>&#34;~/.kube/config&#34;</span>
+
+kubectl get cs
+NAME                 STATUS    MESSAGE             ERROR
+scheduler            Healthy   ok                  
+controller-manager   Healthy   ok                  
+etcd-2               Healthy   <span class=o>{</span><span class=s2>&#34;health&#34;</span>:<span class=s2>&#34;true&#34;</span><span class=o>}</span>   
+etcd-1               Healthy   <span class=o>{</span><span class=s2>&#34;health&#34;</span>:<span class=s2>&#34;true&#34;</span><span class=o>}</span>   
+etcd-0               Healthy   <span class=o>{</span><span class=s2>&#34;health&#34;</span>:<span class=s2>&#34;true&#34;</span><span class=o>}</span>  
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=授权apiserver访问kubelet>授权APIserver访问kubelet</h2>
+<p>&ndash;kubelet-client-*参数调用证书的CN是<code>system:masters</code>所以用户就是<code>system:masters</code>, <code>system:masters</code>用户默认绑定到了集群管理员了，不要轻易使用哦~~</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>kubectl create clusterrolebinding system:kubelet-api-admin <span class=se>\
+</span><span class=se></span>--clusterrole<span class=o>=</span>system:kubelet-api-admin <span class=se>\
+</span><span class=se></span>--user<span class=o>=</span>system:masters
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=授权kubelet创建csr>授权kubelet创建csr</h2>
+<p>刚刚生成的toke文件中的用户组是<code>system:bootstrappers</code>，
+把用户组和RBAC预定义规则<code>system:node-bootstrapper</code>进行绑定既可以授权kubelet通过apiserver管理证书了</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>kubectl create clusterrolebinding system:kubelet-bootstrap <span class=se>\
+</span><span class=se></span>--clusterrole system:node-bootstrapper <span class=se>\
+</span><span class=se></span>--group system:bootstrappers
+</code></pre></td></tr></table>
+</div>
+</div><h1 id=worker-node>Worker Node</h1>
+<p>注意：一个节点（node1）的kubelet使用手动生成的密钥/证书, 一个（node2）上kubelet的密钥证书是由TLS Bootstrapping管理的，所以要两个节点上的kubelet配置是不一样的，其他都一样。</p>
+<p>下边是一些公共参数，主要是日志配置，节点上的所有程序都调用了</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /opt/kubernetes/etc/kube-default.conf<span class=s>&lt;&lt;EOF
+</span><span class=s># k8s所有服务共用配置文件
+</span><span class=s>KUBE_LOG_ARGS=&#34;--logtostderr=false --log-dir=/opt/kubernetes/logs/ --v=2&#34;
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p><code>--logtostderr</code>: 设置为false表示将日志写入文件，不写入stderr</p>
+</li>
+<li>
+<p><code>--log-dir</code>: 日志目录</p>
+</li>
+<li>
+<p><code>--v</code>: 日志等级</p>
+</li>
+</ul>
+<h2 id=安装docker>安装docker</h2>
+<p>Kubernetes 支持多个容器运行环境: Docker、 containerd、cri-o、 rktlet 以及任何实现 Kubernetes CRI (容器运行环境接口),我才用docker，毕竟常用</p>
+<p>参考我之前写的一篇文章来<a href=/docker-install/ rel>安装docker</a></p>
+<p>两个worker节点上安装配置都一样</p>
+<p>注意docker的配置文件如下：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>mkdir -p /etc/docker
+cat &gt; /etc/docker/daemon.json <span class=s>&lt;&lt;EOF
+</span><span class=s>{
+</span><span class=s>&#34;registry-mirrors&#34;:[&#34;https://t88fp3u4.mirror.aliyuncs.com&#34;],
+</span><span class=s>&#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;],
+</span><span class=s>&#34;log-driver&#34;: &#34;json-file&#34;,
+</span><span class=s>&#34;log-opts&#34;: {
+</span><span class=s>    &#34;max-size&#34;: &#34;100m&#34;
+</span><span class=s>},
+</span><span class=s>&#34;iptables&#34;: false,
+</span><span class=s>&#34;ip-forward&#34;: false,
+</span><span class=s>&#34;ip-masq&#34;: false,
+</span><span class=s>&#34;userland-proxy&#34;: false,
+</span><span class=s>&#34;selinux-enabled&#34;: true,
+</span><span class=s>&#34;storage-driver&#34;: &#34;overlay2&#34;,
+</span><span class=s>&#34;storage-opts&#34;: [
+</span><span class=s>    &#34;overlay2.override_kernel_check=true&#34;
+</span><span class=s>]
+</span><span class=s>}
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=下载程序文件>下载程序文件</h2>
+<p><a href=https://github.com/kubernetes/kubernetes/tree/master/CHANGELOG target=_blank rel="noopener noreffer">此链接查看最新版</a></p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> /tmp
+wget https://dl.k8s.io/v1.19.1/kubernetes-node-linux-amd64.tar.gz
+tar -zxf kubernetes-node-linux-amd64.tar.gz
+<span class=nb>cd</span> kubernetes/node/bin/kubelet
+sudo cp kubelet kube-proxy /opt/kubernetes/bin/
+<span class=c1># 传到另一各节点上，以免再次下载</span>
+scp kubelet kube-proxy root@node2:/opt/kubernetes/bin/
+<span class=nb>cd</span> /tmp
+rm -rf kubernetes*
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=部署kubeletnode1>部署kubelet(node1)</h2>
+<p>一个在集群中每个节点上运行的代理。它保证容器都运行在 Pod 中。</p>
+<p>kubelet 接收一组通过各类机制提供给它的 PodSpecs，确保这些 PodSpecs 中描述的容器处于运行状态且健康。kubelet 不会管理不是由 Kubernetes 创建的容器。</p>
+<p>这里我先写在<strong>node1节点上通过手动管理证书的方式来启动kubelet</strong>，另一个等会在说</p>
+<h3 id=systemd服务-3>systemd服务</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 设置kubelet的systemd服务</span>
+cat &gt; /usr/lib/systemd/system/kubelet.service <span class=s>&lt;&lt;EOF
+</span><span class=s>[Unit]
+</span><span class=s>Description=Kubernetes Kubelet Server
+</span><span class=s>Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+</span><span class=s>After=docker.service
+</span><span class=s>Wants=docker.service
+</span><span class=s>
+</span><span class=s>[Service]
+</span><span class=s>WorkingDirectory=/opt/kubernetes/data/
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-kubelet.conf
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-default.conf
+</span><span class=s>ExecStart=/opt/kubernetes/bin/kubelet \$KUBE_LOG_ARGS \$KUBE_KUBELET_ARGS
+</span><span class=s>Restart=on-failure
+</span><span class=s>
+</span><span class=s>[Install]
+</span><span class=s>WantedBy=multi-user.target
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=配置文件-3>配置文件</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 注意--kubeconfig的参数，文件调用本机的文件</span>
+cat &gt; /opt/kubernetes/etc/kube-kubelet.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>KUBE_KUBELET_ARGS=&#34;\\
+</span><span class=s>--kubeconfig=/opt/kubernetes/etc/kubelet-$HOSTNAME.conf \\
+</span><span class=s>--hostname-override=$HOSTNAME \\
+</span><span class=s>--network-plugin=cni \\
+</span><span class=s>--config=/opt/kubernetes/etc/kube-kubelet.yaml \\
+</span><span class=s>--dynamic-config-dir=/opt/kubernetes/etc/conf.d \\
+</span><span class=s>--cert-dir=/opt/kubernetes/ssl \\
+</span><span class=s>--pod-infra-container-image=951021/pause&#34;
+</span><span class=s>EOF</span>
+
+<span class=c1># 注意cgroupDriver修改容器的cgroup一样，默认为：cgroupfs</span>
+cat &gt; /opt/kubernetes/etc/kube-kubelet.yaml<span class=s>&lt;&lt;EOF
+</span><span class=s>kind: KubeletConfiguration
+</span><span class=s>apiVersion: kubelet.config.k8s.io/v1beta1
+</span><span class=s>cgroupDriver: systemd
+</span><span class=s>tlsCertFile: /opt/kubernetes/ssl/kubelet.crt
+</span><span class=s>tlsPrivateKeyFile: /opt/kubernetes/ssl/kubelet.key
+</span><span class=s>clusterDNS:
+</span><span class=s>- 10.110.0.2
+</span><span class=s>clusterDomain: cluster.local
+</span><span class=s>authentication:
+</span><span class=s>  x509:
+</span><span class=s>    clientCAFile: /opt/kubernetes/ssl/kube-ca.crt
+</span><span class=s>  anonymous:
+</span><span class=s>    enabled: false
+</span><span class=s>  webhook:
+</span><span class=s>    enabled: true
+</span><span class=s>authorization:
+</span><span class=s>  mode: Webhook
+</span><span class=s>  webhook:
+</span><span class=s>    cacheAuthorizedTTL: 0s
+</span><span class=s>    cacheUnauthorizedTTL: 0s
+</span><span class=s>evictionHard:
+</span><span class=s>  imagefs.available: 15%
+</span><span class=s>  memory.available: 100Mi
+</span><span class=s>  nodefs.available: 10%
+</span><span class=s>  nodefs.inodesFree: 5%
+</span><span class=s>staticPodPath: /opt/kubernetes/data/manifests
+</span><span class=s>failSwapOn: false
+</span><span class=s>hairpinMode: hairpin-veth
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>配置文件说明：</p>
+<ul>
+<li>
+<p><code>--kubeconfig</code>:该文件将用于获取 kubelet 的客户端证书。如果 &ndash;kubeconfig 指定的文件不存在，则使用引导 kubeconfig 从 API 服务器请求客户端证书。成功后，将引用生成的客户端证书和密钥的 kubeconfig 文件写入 &ndash;kubeconfig 所指定的路径。客户端证书和密钥文件将存储在 &ndash;cert-dir 指向的目录中。</p>
+</li>
+<li>
+<p><code>--hostname-override</code>: 设置本Node的名称。</p>
+</li>
+<li>
+<p><code>--network-plugin</code>: 启用CNI</p>
+</li>
+<li>
+<p><code>--config</code>: kubelet 将从该文件加载其初始配置。该路径可以是绝对路径，也可以是相对路径。相对路径从 kubelet 的当前工作目录开始。省略此参数则使用内置的默认配置值。命令行参数会覆盖此文件中的配置。</p>
+</li>
+<li>
+<p><code>--cert-dir</code>: LS 证书所在的目录。如果设置了 &ndash;tls-cert-file 和 &ndash;tls-private-key-file，则该设置将被忽略。（默认值为 “/var/lib/kubelet/pki”）</p>
+</li>
+<li>
+<p><code>--pod-infra-container-image</code>: 指定基础设施镜像，Pod 内所有容器与其共享网络和 IPC 命名空间。仅当容器运行环境设置为 docker 时，此特定于 docker 的参数才有效。（默认值为 “k8s.gcr.io/pause:3.1”）默认的由于某种不可描述的原因，无法访问，自己想办法吧。</p>
+</li>
+</ul>
+<p>备注：<a href=https://kubernetes.io/zh/docs/reference/command-line-tools-reference/kubelet/ target=_blank rel="noopener noreffer">所有kubelet参数说明连接</a></p>
+<h3 id=安装一些需要用到的工具>安装一些需要用到的工具</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>yum install conntrack-tools libnetfilter_cthelper libnetfilter_cttimeout libnetfilter_queue socat-y
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=部署kubeletnode2>部署kubelet(node2)</h2>
+<p><strong>这个节点的kubelet的密钥证书是由TLS Bootstrapping管理的</strong></p>
+<h3 id=systemd服务-4>systemd服务</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 设置kubelet的systemd服务</span>
+cat &gt; /usr/lib/systemd/system/kubelet.service <span class=s>&lt;&lt;EOF
+</span><span class=s>[Unit]
+</span><span class=s>Description=Kubernetes Kubelet Server
+</span><span class=s>Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+</span><span class=s>After=docker.service
+</span><span class=s>Wants=docker.service
+</span><span class=s>
+</span><span class=s>[Service]
+</span><span class=s>WorkingDirectory=/opt/kubernetes/data/
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-kubelet.conf
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-default.conf
+</span><span class=s>ExecStart=/opt/kubernetes/bin/kubelet \$KUBE_LOG_ARGS \$KUBE_KUBELET_ARGS
+</span><span class=s>Restart=on-failure
+</span><span class=s>
+</span><span class=s>[Install]
+</span><span class=s>WantedBy=multi-user.target
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=配置文件-4>配置文件</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 注意--kubeconfig的参数，文件调用本机的文件</span>
+cat &gt; /opt/kubernetes/etc/kube-kubelet.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>KUBE_KUBELET_ARGS=&#34;\\
+</span><span class=s>--kubeconfig=/opt/kubernetes/etc/kubelet-$HOSTNAME.conf \\
+</span><span class=s>--bootstrap-kubeconfig=/opt/kubernetes/etc/bootstrap.conf \\
+</span><span class=s>--hostname-override=$HOSTNAME \\
+</span><span class=s>--dynamic-config-dir=/opt/kubernetes/etc/conf.d \\
+</span><span class=s>--network-plugin=cni \\
+</span><span class=s>--config=/opt/kubernetes/etc/kube-kubelet.yaml \\
+</span><span class=s>--cert-dir=/opt/kubernetes/ssl \\
+</span><span class=s>--pod-infra-container-image=registry.cn-shanghai.aliyuncs.com/net-cc/pause&#34;
+</span><span class=s>EOF</span>
+
+<span class=c1># 注意cgroupDriver修改容器的cgroup一样，默认为：cgroupfs</span>
+cat &gt; /opt/kubernetes/etc/kube-kubelet.yaml<span class=s>&lt;&lt;EOF
+</span><span class=s>kind: KubeletConfiguration
+</span><span class=s>apiVersion: kubelet.config.k8s.io/v1beta1
+</span><span class=s>cgroupDriver: systemd
+</span><span class=s>tlsCertFile: /opt/kubernetes/ssl/kubelet.crt
+</span><span class=s>tlsPrivateKeyFile: /opt/kubernetes/ssl/kubelet.key
+</span><span class=s>clusterDNS:
+</span><span class=s>- 10.110.0.2
+</span><span class=s>clusterDomain: cluster.local
+</span><span class=s>authentication:
+</span><span class=s>  x509:
+</span><span class=s>    clientCAFile: /opt/kubernetes/ssl/kube-ca.crt
+</span><span class=s>  anonymous:
+</span><span class=s>    enabled: false
+</span><span class=s>  webhook:
+</span><span class=s>    cacheTTL: 0s
+</span><span class=s>    enabled: true
+</span><span class=s>authorization:
+</span><span class=s>  mode: Webhook
+</span><span class=s>  webhook:
+</span><span class=s>    cacheAuthorizedTTL: 0s
+</span><span class=s>    cacheUnauthorizedTTL: 0s
+</span><span class=s>evictionHard:
+</span><span class=s>  imagefs.available: 15%
+</span><span class=s>  memory.available: 100Mi
+</span><span class=s>  nodefs.available: 10%
+</span><span class=s>  nodefs.inodesFree: 5%
+</span><span class=s>failSwapOn: false
+</span><span class=s>hairpinMode: hairpin-veth
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>这里新增加了一个参数<code>--bootstrap-kubeconfig</code>用来首次启动向apiserver申请证书</p>
+</li>
+<li>
+<p><code>bootstrap-kubeconfig</code>文件生成方法：</p>
+<p>由于我的kubectl安装在master 节点(node3)上的，所以需要在master节点上生成，然后复制到worker节点的<code>/opt/kubernetes/etc/</code>目录</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=nb>cd</span> ~/ca/kube-ca/kubeconfig
+<span class=nv>KUBE_APISERVER</span><span class=o>=</span><span class=s2>&#34;https://node3:6443&#34;</span> <span class=c1># apiserver IP:PORT</span>
+<span class=nv>TOKEN</span><span class=o>=</span><span class=s2>&#34;c47ffb939f5ca36231d9e3121a252940&#34;</span> <span class=c1># 与token.csv里保持一致</span>
+<span class=c1># 生成bootstrap配置文件</span>
+kubectl config set-cluster kubernetes --certificate-authority<span class=o>=</span>/opt/kubernetes/ssl/kube-ca.crt --embed-certs<span class=o>=</span><span class=nb>true</span> --server<span class=o>=</span><span class=si>${</span><span class=nv>KUBE_APISERVER</span><span class=si>}</span> --kubeconfig<span class=o>=</span>bootstrap.conf
+kubectl config set-credentials system:bootstrappers --token<span class=o>=</span><span class=si>${</span><span class=nv>TOKEN</span><span class=si>}</span> --kubeconfig<span class=o>=</span>bootstrap.conf
+kubectl config set-context default --cluster<span class=o>=</span>kubernetes --user<span class=o>=</span>system:bootstrappers --kubeconfig<span class=o>=</span>bootstrap.conf
+kubectl config use-context default --kubeconfig<span class=o>=</span>bootstrap.conf
+<span class=c1># 传到node2节点</span>
+scp bootstrap.conf root@node2:/opt/kubernetes/etc/bootstrap.conf
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id=启动服务-1>启动服务</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restorecon -R /opt/kubernetes
+systemctl daemon-reload
+systemctl start kubelet
+systemctl <span class=nb>enable</span> kubelet
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=批准kubelet证书申请并加入集群>批准kubelet证书申请并加入集群</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 查看kubelet证书请求</span>
+kubectl get csr
+NAME                                                   AGE    SIGNERNAME                                    REQUESTOR           CONDITION
+node-csr-uCEGPOIiDdlLODKts8J658HrFq9CZ--K6M4G7bjhk8A   6m3s   kubernetes.io/kube-apiserver-client-kubelet   kubelet-bootstrap   Pending
+
+<span class=c1># 批准申请</span>
+kubectl certificate approve node-csr-uCEGPOIiDdlLODKts8J658HrFq9CZ--K6M4G7bjhk8A
+
+<span class=c1># 查看节点</span>
+kubectl get node
+NAME         STATUS     ROLES    AGE   VERSION
+k8s-master   NotReady   &lt;none&gt;   7s    v1.18.3
+</code></pre></td></tr></table>
+</div>
+</div><p>注：由于网络插件还没有部署，节点会没有准备就绪 NotReady</p>
+<h3 id=安装一些需要用到的工具-1>安装一些需要用到的工具</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>yum install conntrack-tools -y
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>注意</strong>：这里的<code>--kubeconfig</code>指向的配置文件是空的，等会会自动生成</p>
+<h2 id=部署kube-proxy>部署kube-proxy</h2>
+<p>kube-proxy 是集群中每个节点上运行的网络代理,实现 Kubernetes Service 概念的一部分。</p>
+<p>kube-proxy 维护节点上的网络规则。这些网络规则允许从集群内部或外部的网络会话与 Pod 进行网络通信。</p>
+<p>如果操作系统提供了数据包过滤层并可用的话，kube-proxy会通过它来实现网络规则。否则，kube-proxy 仅转发流量本身。</p>
+<p>两个worker节点上安装配置都一样</p>
+<h3 id=systemd服务-5>systemd服务</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 设置kube-proxy的systemd服务</span>
+cat &gt; /usr/lib/systemd/system/kube-proxy.service <span class=s>&lt;&lt;EOF
+</span><span class=s>[Unit]
+</span><span class=s>Description=Kubernetes Kube-Proxy Server
+</span><span class=s>Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+</span><span class=s>After=network.target
+</span><span class=s>After=network-online.target
+</span><span class=s>Wants=network-online.target
+</span><span class=s>
+</span><span class=s>[Service]
+</span><span class=s>WorkingDirectory=/opt/kubernetes/data/
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-proxy.conf
+</span><span class=s>EnvironmentFile=/opt/kubernetes/etc/kube-default.conf
+</span><span class=s>ExecStart=/opt/kubernetes/bin/kube-proxy \$KUBE_PROXY_ARGS \$KUBE_LOG_ARGS
+</span><span class=s>Restart=on-failure
+</span><span class=s>
+</span><span class=s>[Install]
+</span><span class=s>WantedBy=multi-user.target
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=配置文件-5>配置文件</h3>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /opt/kubernetes/etc/kube-proxy.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>KUBE_PROXY_ARGS=&#34;--config=/opt/kubernetes/etc/kube-proxy.yaml&#34;
+</span><span class=s>EOF</span>
+
+<span class=c1># 生成配置文件</span>
+/opt/kubernetes/bin/kube-proxy <span class=se>\
+</span><span class=se></span>--kubeconfig<span class=o>=</span>/opt/kubernetes/etc/proxy.conf <span class=se>\
+</span><span class=se></span>--write-config-to<span class=o>=</span>/opt/kubernetes/etc/kube-proxy.yaml
+
+<span class=c1># 修改配置文件的以下几个地方</span>
+hostnameOverride: <span class=nv>$HOSTNAME</span>
+.........
+clusterCIDR: <span class=o>=</span>10.120.0.0/16
+........
+ipvs:
+........
+  scheduler: <span class=s2>&#34;rr&#34;</span>
+........
+mode: <span class=s2>&#34;ipvs&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>配置文件说明：</p>
+<ul>
+<li><code>--config</code>: 配置文件的路径。</li>
+<li><code>--kubeconfig</code>: 包含授权信息的 kubeconfig 文件的路径（master 位置由 master 标志设置）</li>
+<li><code>--write-config-to</code>: 将配置值写入此文件并退出程序</li>
+</ul>
+<p>注意：<a href=https://kubernetes.io/zh/docs/reference/command-line-tools-reference/kube-proxy/ target=_blank rel="noopener noreffer">所有配置参数说明连接</a></p>
+<h2 id=文件权限-1>文件权限</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>restorecon -R /opt/kubernetes
+</code></pre></td></tr></table>
+</div>
+</div><h2 id=启动服务-2>启动服务</h2>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>sudo systemctl daemon-reload
+sudo systemctl start kubelet.service
+sudo systemctl start kube-proxy.service
+sudo systemctl <span class=nb>enable</span> kubelet.service
+sudo systemctl <span class=nb>enable</span> kube-proxy.service
+</code></pre></td></tr></table>
+</div>
+</div><h1 id=部署cni网络>部署CNI网络</h1>
+<p>通过给Kubelet传递&ndash;network-plugin=cni命令行选项来选择CNI插件。Kubelet从&ndash;cni-conf-dir（默认是/etc/cni/net.d）读取文件并使用该文件中的CNI配置来设置每个pod的网络。CNI配置文件必须与CNI规约匹配，并且配置引用的任何所需的CNI插件都必须存在于&ndash;cni-bin-dir（默认是/opt/cni/bin）。</p>
+<p>如果这个目录中有多个CNI配置文件，kubelet将会使用按文件名的字典顺序排列的第一个作为配置文件。</p>
+<p>除了配置文件指定的CNI插件外，Kubernetes还需要标准的CNIlo插件，最低版本是0.2.0。</p>
+<p><a href=https://github.com/containernetworking/plugins/releases target=_blank rel="noopener noreffer">查看最新版本</a></p>
+<ul>
+<li>
+<p>安装CNI二进制文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 两个Worker Node上都需要安装</span>
+mkdir -p /opt/cni/bin/
+<span class=nv>VERSION</span><span class=o>=</span>v0.8.7
+<span class=nb>cd</span> /tmp
+curl -L https://github.com/containernetworking/plugins/releases/download/<span class=si>${</span><span class=nv>VERSION</span><span class=si>}</span>/cni-plugins-linux-amd64-<span class=si>${</span><span class=nv>VERSION</span><span class=si>}</span>.tgz -o cni-plugins-linux-amd64-<span class=si>${</span><span class=nv>VERSION</span><span class=si>}</span>.tgz
+tar -zxvf cni-plugins-linux-amd64-<span class=si>${</span><span class=nv>VERSION</span><span class=si>}</span>.tgz -C /opt/cni/bin/
+scp -r /opt/cni/bin/ root@node2:/opt/cni/bin/
+rm -f cni-plugins-linux-amd64-<span class=si>${</span><span class=nv>VERSION</span><span class=si>}</span>.tgz
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>安装CNI网络插件<code>flannel</code></p>
+<p>flannel我部署到kube集群里边了，没有单独每个Worker Node部署</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 在master节点操作，因为master节点安装了kubectl客户端程序和配置</span>
+wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+<span class=nv>PODIP</span><span class=o>=</span>10.120.0.0/16  <span class=c1># pod的ip地址，即controller-manager控制器设置的cluster-cidr地址</span>
+sed -i <span class=s1>&#39;s|10.244.0.0/16|&#39;</span><span class=s2>&#34;</span><span class=nv>$PODIP</span><span class=s2>&#34;</span><span class=s1>&#39;|g&#39;</span> kube-flannel.yml
+kubectl apply -f kube-flannel.yml
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h1 id=master-node备>Master Node(备)</h1>
+<p>和Master Node主配置一样，不在叙述</p>
+<h1 id=负载均衡>负载均衡</h1>
+<h2 id=部署nginx>部署nginx</h2>
+<ul>
+<li>
+<p>安装nginx</p>
+<p>在两个master node上安装</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>yum install -y nginx
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>配置nginx</p>
+<p>使用nginx的4层负载均衡，主备一样</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>setsebool -P nis_enabled <span class=m>1</span> <span class=c1># 修改selinux权限</span>
+cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
+cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+cat &gt;&gt; /etc/nginx/nginx.conf <span class=s>&lt;&lt;EOF
+</span><span class=s># 四层负载均衡，为两台Master apiserver组件提供负载均衡
+</span><span class=s>stream {
+</span><span class=s>
+</span><span class=s>    log_format  main  &#39;\$remote_addr \$upstream_addr - [\$time_local] \$status \$upstream_bytes_sent&#39;;
+</span><span class=s>    access_log  /var/log/nginx/k8s.access.log  main;
+</span><span class=s>    upstream k8s-apiserver {
+</span><span class=s>      server 192.168.122.12:6443;   # Master1 APISERVER IP:PORT
+</span><span class=s>      server 192.168.122.13:6443;   # Master2 APISERVER IP:PORT
+</span><span class=s>    }
+</span><span class=s>
+</span><span class=s>    server {
+</span><span class=s>      listen 8443;
+</span><span class=s>      proxy_pass k8s-apiserver;
+</span><span class=s>    }
+</span><span class=s>}
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>启动nginx</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>systemctl start nginx
+systemctl <span class=nb>enable</span> nginx
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=部署keepalived>部署keepalived</h2>
+<ul>
+<li>
+<p>安装keepalived</p>
+<p>在两个master node上安装keepalived即可（一主一备）</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>yum install -y keepalived
+mkdir -p /etc/keepalived
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>master节点1(node3)配置文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>mv /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf.back
+cat &gt; /etc/keepalived/keepalived.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>! Configuration File for keepalived
+</span><span class=s>global_defs {
+</span><span class=s>  router_id keepalive-master
+</span><span class=s>}
+</span><span class=s>
+</span><span class=s>vrrp_script check_apiserver {
+</span><span class=s>  # 检测脚本路径
+</span><span class=s>  script &#34;/etc/keepalived/check-nginx.sh&#34;
+</span><span class=s>  # 多少秒检测一次
+</span><span class=s>  interval 3
+</span><span class=s>  # 失败的话权重-2
+</span><span class=s>  weight -2
+</span><span class=s>  fail 1
+</span><span class=s>}
+</span><span class=s>
+</span><span class=s>vrrp_instance VI-kube-master {
+</span><span class=s>  state MASTER    # 定义节点角色
+</span><span class=s>  interface ens3  # 网卡名称
+</span><span class=s>  virtual_router_id 68
+</span><span class=s>  priority 100
+</span><span class=s>  # 启用单播模式~
+</span><span class=s>  unicast_src_ip 192.168.122.12
+</span><span class=s>  unicast_peer {
+</span><span class=s>    192.168.122.13
+</span><span class=s>  }
+</span><span class=s>  dont_track_primary
+</span><span class=s>  advert_int 3
+</span><span class=s>  authentication {
+</span><span class=s>      auth_type PASS
+</span><span class=s>      auth_pass net-cc
+</span><span class=s>  }
+</span><span class=s>  virtual_ipaddress {
+</span><span class=s>    # 自定义虚拟ip
+</span><span class=s>    192.168.122.2
+</span><span class=s>  }
+</span><span class=s>  track_script {
+</span><span class=s>      check_apiserver
+</span><span class=s>  }
+</span><span class=s>}
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>master节点2(node4)配置文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>mv /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf.back
+cat &gt; /etc/keepalived/keepalived.conf<span class=s>&lt;&lt;EOF
+</span><span class=s>! Configuration File for keepalived
+</span><span class=s>global_defs {
+</span><span class=s>  router_id keepalive-backup
+</span><span class=s>}
+</span><span class=s>
+</span><span class=s>vrrp_script check_apiserver {
+</span><span class=s>  script &#34;/etc/keepalived/check-nginx.sh&#34;
+</span><span class=s>  interval 3
+</span><span class=s>  weight -5
+</span><span class=s>  fail 1
+</span><span class=s>}
+</span><span class=s>
+</span><span class=s>vrrp_instance VI-kube-master {
+</span><span class=s>  state BACKUP
+</span><span class=s>  interface ens32
+</span><span class=s>  virtual_router_id 68
+</span><span class=s>  priority 95
+</span><span class=s>  unicast_src_ip 192.168.122.13
+</span><span class=s>  unicast_peer {
+</span><span class=s>    192.168.122.12
+</span><span class=s>  }
+</span><span class=s>  dont_track_primary
+</span><span class=s>  advert_int 3
+</span><span class=s>  authentication {
+</span><span class=s>      auth_type PASS
+</span><span class=s>      auth_pass net-cc
+</span><span class=s>  }
+</span><span class=s>  virtual_ipaddress {
+</span><span class=s>    192.168.122.2
+</span><span class=s>  }
+</span><span class=s>  track_script {
+</span><span class=s>      check_apiserver
+</span><span class=s>  }
+</span><span class=s>}
+</span><span class=s>EOF</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>两个节点都创建以下脚本文件</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>cat &gt; /etc/keepalived/check-nginx.sh<span class=s>&lt;&lt;EOF
+</span><span class=s>#!/bin/bash
+</span><span class=s>#检查ngin进程是否存在
+</span><span class=s>counter=\$(ps -C nginx --no-heading|wc -l)
+</span><span class=s>if [ &#34;\${counter}&#34; = &#34;0&#34; ]; then
+</span><span class=s>  #尝试启动一次ngnx,停止5秒后再次检测
+</span><span class=s>  systemctl restart nginx
+</span><span class=s>  sleep 5
+</span><span class=s>  counter=\$(ps -C nginx --no-heading|wc -l)
+</span><span class=s>  if [ &#34;\${counter}&#34;=&#34;0&#34; ]; then
+</span><span class=s>    #如果启动没成功,就杀掉keepave触发主备切换
+</span><span class=s>    systemctl stop nginx
+</span><span class=s>    exit 2
+</span><span class=s>  fi
+</span><span class=s>fi
+</span><span class=s>EOF</span>
+chmod +x /etc/keepalived/check-nginx.sh
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>启动keepalived</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>systemctl <span class=nb>enable</span> keepalived <span class=o>&amp;&amp;</span> service keepalived start
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>测试</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>curl -k https://192.168.122.2:6443/version
+<span class=o>{</span>
+<span class=s2>&#34;major&#34;</span>: <span class=s2>&#34;1&#34;</span>,
+<span class=s2>&#34;minor&#34;</span>: <span class=s2>&#34;19&#34;</span>,
+<span class=s2>&#34;gitVersion&#34;</span>: <span class=s2>&#34;v1.19.1&#34;</span>,
+<span class=s2>&#34;gitCommit&#34;</span>: <span class=s2>&#34;206bcadf021e76c27513500ca24182692aabd17e&#34;</span>,
+<span class=s2>&#34;gitTreeState&#34;</span>: <span class=s2>&#34;clean&#34;</span>,
+<span class=s2>&#34;buildDate&#34;</span>: <span class=s2>&#34;2020-09-09T11:18:22Z&#34;</span>,
+<span class=s2>&#34;goVersion&#34;</span>: <span class=s2>&#34;go1.15&#34;</span>,
+<span class=s2>&#34;compiler&#34;</span>: <span class=s2>&#34;gc&#34;</span>,
+<span class=s2>&#34;platform&#34;</span>: <span class=s2>&#34;linux/amd64&#34;</span>
+<span class=o>}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=测试>测试</h2>
+<ul>
+<li>
+<p>关闭主节点Nginx，测试VIP是否漂移到备节点服务器。</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=c1># 在Nginx Master执行 pkill nginx</span>
+pkill nginx
+<span class=c1># 在Nginx Backup，ip addr命令查看已成功绑定VIP</span>
+ip addr
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>访问负载均衡器测试</p>
+<p>找K8s集群中任意一个节点，使用curl查看K8s版本测试，使用VIP访问：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>curl -k https://192.168.122.2:6443/version
+<span class=o>{</span>
+  <span class=s2>&#34;major&#34;</span>: <span class=s2>&#34;1&#34;</span>,
+  <span class=s2>&#34;minor&#34;</span>: <span class=s2>&#34;18&#34;</span>,
+  <span class=s2>&#34;gitVersion&#34;</span>: <span class=s2>&#34;v1.18.3&#34;</span>,
+  <span class=s2>&#34;gitCommit&#34;</span>: <span class=s2>&#34;2e7996e3e2712684bc73f0dec0200d64eec7fe40&#34;</span>,
+  <span class=s2>&#34;gitTreeState&#34;</span>: <span class=s2>&#34;clean&#34;</span>,
+  <span class=s2>&#34;buildDate&#34;</span>: <span class=s2>&#34;2020-05-20T12:43:34Z&#34;</span>,
+  <span class=s2>&#34;goVersion&#34;</span>: <span class=s2>&#34;go1.13.9&#34;</span>,
+  <span class=s2>&#34;compiler&#34;</span>: <span class=s2>&#34;gc&#34;</span>,
+  <span class=s2>&#34;platform&#34;</span>: <span class=s2>&#34;linux/amd64&#34;</span>
+<span class=o>}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id=修改所有worker-node连接lb-vip>修改所有Worker Node连接LB VIP</h2>
+<p>虽然我们增加了Master2和负载均衡器，但是我们是从单Master架构扩容的，也就是说目前所有的Node组件连接都还是Master1，如果不改为连接VIP走负载均衡器，那么Master还是单点故障。
+因此接下来就是要改所有Node组件配置文件</p>
+<ul>
+<li>
+<p>所有Worker Node执行：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>sed -i &#39;s#192.168.122.12#k8s.api#g&#39; /opt/kubernetes/etc/*
+sed -i &#39;s#node3#k8s.api#g&#39; /opt/kubernetes/etc/*
+systemctl restart kubelet
+systemctl restart kube-proxy
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>检查节点状态：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>kubectl get node
+NAME          STATUS   ROLES    AGE    VERSION
+k8s-master    Ready    &lt;none&gt;   34h    v1.18.3
+k8s-master2   Ready    &lt;none&gt;   101m   v1.18.3
+k8s-node1     Ready    &lt;none&gt;   33h    v1.18.3
+k8s-node2     Ready    &lt;none&gt;   33h    v1.18.3
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p>至此，一套完整的 Kubernetes 高可用集群就部署完成了！</p>
+<p>PS：如果你是在公有云上，一般都不支持keepalived，那么你可以直接用它们的负载均衡器产品（内网就行，还免费~），架构与上面一样，直接负载均衡多台Master kube-apiserver即可！</p></div><div class=post-footer id=post-footer>
+<div class=post-info>
+<div class=post-info-line>
+<div class=post-info-mod>
+<span>更新于 2021-12-06&nbsp;<a class=git-hash href=https://github.com/zccing/zccing.github.io/commit/f7e90a527baa175295a870d6f1a4035200a3dc6c target=_blank title="commit by Cc(alex_zjf@163.com) f7e90a527baa175295a870d6f1a4035200a3dc6c: 更换成LoveIt模板">
+<i class="fas fa-hashtag fa-fw"></i>f7e90a5</a></span>
+</div>
+<div class=post-info-license></div>
+</div>
+<div class=post-info-line>
+<div class=post-info-md></div>
+<div class=post-info-share>
+<span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.net-cc.com/k8s-install/ data-title=二进制方式安装K8S><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.net-cc.com/k8s-install/ data-title=二进制方式安装K8S><i class="fab fa-evernote fa-fw"></i></a></span>
+</div>
+</div>
+</div>
+<div class=post-info-more>
+<section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/linux/>linux</a>,&nbsp;<a href=/tags/k8s/>K8S</a>,&nbsp;<a href=/tags/%E5%AE%B9%E5%99%A8/>容器</a></section>
+<section>
+<span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span>
+</section>
+</div>
+<div class=post-nav><a href=/etcd-install/ class=prev rel=prev title=etcd安装配置笔记><i class="fas fa-angle-left fa-fw"></i>etcd安装配置笔记</a></div>
+</div>
+</article></div>
+</main><footer class=footer>
+<div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.89.4">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://www.net-cc.com target=_blank>cc</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br>
+<span class=icp><a rel=备案查询 href=https://beian.miit.gov.cn/ target=_blank>豫ICP备2021035180号</a></span></div>
+</div>
+</footer></div>
+<div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部>
+<i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论>
+<i class="fas fa-comment fa-fw"></i>
+</a>
+</div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/katex/copy-tex.min.css><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js></script><script type=text/javascript src=/lib/katex/auto-render.min.js></script><script type=text/javascript src=/lib/katex/copy-tex.min.js></script><script type=text/javascript src=/lib/katex/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.js></script></body>
+</html>
