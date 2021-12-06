@@ -115,6 +115,7 @@ sysctl --system  # 生效
 
 **使用 * 标记的端口号都可以自定义的，所以您需要保证所自定义的端口是开放的。**
 
+
 # 安装ETCD集群
 
 参考 [etcd安装配置]({{< relref "etcd install.md" >}}) , 拷贝客户端证书到kubernetes server节点的`/opt/kubernetes/ssl/`目录下；

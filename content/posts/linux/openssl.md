@@ -6,9 +6,7 @@ draft: false
 keywords: ['SSL证书','https证书']
 description: "使用openssl生成支持SAN扩展的证书笔记"
 tags: ['PKI', 'k8s', 'linux']
-categories: ['k8s', 'linux']
-Author: "Net Cc"
-autoCollapseToc: true
+categories: ['linux']
 ---
 
 OpenSSL 是一个免费开源的库，它提供了构建数字证书的命令行工具，其中一些可以用来自建 Root CA。
