@@ -1,7 +1,7 @@
 baseURL = "https://www.net-cc.com"
 languageCode = "zh-cn"
 defaultContentLanguage = "zh-cn"                             # en / zh-cn / ... (This field determines which i18n file to use)
-title = "晨曦"
+title = "星速网"
 # enableRobotsTXT = true
 enableEmoji = true
 theme = "LoveIt"
@@ -53,7 +53,7 @@ paginate = 10                                              # 首页每页显示�
   #  应用图标配置
   [params.app]
     # 当添加到 iOS 主屏幕或者 Android 启动器时的标题, 覆盖默认标题
-    title = "晨曦"
+    title = "星速网"
     # 是否隐藏网站图标资源链接
     noFavicon = false
     # 更现代的 SVG 网站图标, 可替代旧的 .png 和 .ico 文件
@@ -98,7 +98,7 @@ paginate = 10                                              # 首页每页显示�
       # LOGO 的 URL
       logo = "/images/logo.png"
       # 标题名称
-      name = "晨曦"
+      name = "星速网"
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
       pre = ""
       # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标
@@ -174,7 +174,7 @@ paginate = 10                                              # 首页每页显示�
 
   # 作者的社交信息设置
   [params.social]
-    GitHub = "https://github.com/zccing"
+    GitHub = "zccing"
     Weibo = ""
     Zhihu = ""
     Douban = ""
