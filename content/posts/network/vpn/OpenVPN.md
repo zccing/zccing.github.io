@@ -5,8 +5,8 @@ lastmod: 2020-09-5T01:37:56+08:00
 draft: false
 keywords: ['openvpn', '编译安装openvpn','openvpn配置']
 description: "编译安装openvpn，并配置lan to lan"
-tags: ['linux']
-categories: ['linux']
+tags: ['VPN']
+categories: ['VPN']
 ---
 
 openvpn的安装配置记录

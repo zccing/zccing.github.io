@@ -3,14 +3,13 @@ title: "二进制方式安装K8S"
 date: 2020-09-20T01:37:56+08:00
 lastmod: 2020-12-05T22:04:04+08:00
 draft: false
-keywords: ['k8s', '二进制安装k8s','k8s集群','容器']
+keywords: ['k8s', '安装k8s','k8s集群','容器']
 description: "通过二进制方式安装k8s高可用集群"
-tags: ['linux', 'k8s', '容器']
-categories: ['linux','k8s']
+tags: ['k8s']
+categories: ['k8s']
 autoCollapseToc: true
 ---
 
-部署一套完整的Kubernetes高可用集群（二进制，最新版V1.19.1）
 <!--more-->
 
 # 节点信息

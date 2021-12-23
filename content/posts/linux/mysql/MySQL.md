@@ -5,8 +5,8 @@ lastmod: 2020-09-07T18:54:18+08:00
 draft: false
 keywords: ['mysql', 'mysql安装','二进制安装mysql','编译安装mysql']
 description: "linux安装最新版的mysql记录，通过存储库、二进制、编译三种方式进行安装mysql"
-tags: ['linux']
-categories: ['linux']
+tags: ['mysql']
+categories: ['mysql']
 ---
 
 linux安装最新版的mysql记录，通过存储库、二进制、编译三种方式进行安装mysql

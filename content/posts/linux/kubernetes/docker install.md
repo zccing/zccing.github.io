@@ -3,26 +3,22 @@ title: "centos安装docker"
 date: 2020-08-30T01:37:56+08:00
 lastmod: 2020-08-30T01:37:56+08:00
 draft: false
-keywords: ['docker', 'centos', 'linux', '容器']
-description: "本文记录了使用centos系统如何安装docker容器，采用的是通过yum源方式进行安装，主要为了方便快速"
-tags: ['docker', '容器', 'K8S', 'linux']
-categories: ['K8S','容器']
+keywords: ['docker', 'linux', '容器']
+description: "使用centos系统如何安装docker容器，采用的是通过yum源方式进行安装，主要为了方便快速"
+tags: ['docker', 'K8S']
+categories: ['K8S']
 ---
 
-# docker安装记录
+<!--more-->
 
-
-## linux服务器配置
-
-> 采用yum源安装，方便，也可以二进制安装，编译的话不建议了，浪费时间，如果你要研究代码的话可以编译看下
-
-* 开启ip转发
+## 1 开启网络转发和PNAT
 
 > centos6 参考这里：<https://blog.csdn.net/qianye_111/article/details/78987161>
 
 ```sh
-firewall-cmd --add-masquerade --permanent --zone=public # 更改防火墙允许所有ip转发
+firewall-cmd --add-masquerade --permanent --zone=public # 更改防火墙开启PNAT
 firewall-cmd --reload
+# 开启转发
 cat > /etc/sysctl.d/99-kubernetes-cri.conf <<EOF
 net.bridge.bridge-nf-call-iptables  = 1
 net.ipv4.ip_forward                 = 1
@@ -32,9 +28,9 @@ sysctl -p /etc/sysctl.d/99-kubernetes-cri.conf
 cat /proc/sys/net/ipv4/ip_forward  # 查看是否开启了ip转发，如果返回1表示开启了
 ```
 
-## 通过yum安装docker-ce
+## 2 通过yum安装docker-ce
 
-> 参考下这里:<https://yq.aliyun.com/articles/110806>
+使用仓库安装，方便，也可以二进制安装，编译的话不建议了，时间就是金钱，我的朋友。[阿里云镜像站介绍](<https://yq.aliyun.com/articles/110806>)
 
 ```sh
 # step 1: 安装必要的一些系统工具
@@ -45,7 +41,7 @@ sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/cen
 sudo yum makecache fast
 sudo yum -y install docker-ce
 # Step 4: 开启Docker服务
-sudo service docker start
+sudo systemctl docker start
 
 # 注意：
 # 官方软件源默认启用了最新的软件，您可以通过编辑软件源的方式获取各个版本的软件包。例如官方并没有将测试版本的软件源置为可用，你可以通过以下方式开启。同理可以开启各种测试版本等。
@@ -65,9 +61,10 @@ sudo service docker start
 # sudo yum -y install docker-ce-[VERSION]
 ```
 
-## 配置docker网络
+## 3 配置docker网络
 
 * 如果要docker内容器要固定ip地址，需要创建一个network
+
     ```sh
     # 把ip改为相应的即可
     docker network create --attachable --driver bridge --gateway 192.168.243.1 --subnet 192.168.243.1/24 --ipam-driver default mybridge
@@ -96,12 +93,11 @@ sudo service docker start
     route delete 157.0.0.0 # 删除
     ```
 
-## docker配置ip、log和存储驱动
-
-> docker加速网址可以去阿里云搞一个，地址是：<https://yq.aliyun.com/>
+## 4 docker配置ip、log和存储驱动
 
 ```sh
 mkdir -p /etc/docker
+# 创建配置文件，配置docker默认网桥的IP地址为192.168.66.1/24，使用163和中国科技大学的镜像站
 cat > /etc/docker/daemon.json <<EOF
 {
     "registry-mirrors": [
@@ -135,85 +131,120 @@ EOF
 mkdir -p /etc/systemd/system/docker.service.d
 ```
 
-## docker daemon.json配置文件格式
+## 5 docker daemon.json配置文件格式
 
-官方的完整配置样式，需要根据你的需要修改
+[官方的完整配置](https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file)样式，需要根据你的需要修改
 
 ```json
 {
-    "authorization-plugins":h[],
-    "data-root": "",
-    "dns": [],
-    "dns-opts": [],
-    "dns-search": [],
-    "exec-opts": [],
-    "exec-root": "",
-    "experimental": false,
-    "storage-driver": "",
-    "storage-opts": [],
-    "labels": [],
-    "live-restore": true,
-    "log-driver": "",
-    "log-opts": {},
-    "mtu": 0,
-    "pidfile": "",
-    "cluster-store": "",
-    "cluster-store-opts": {},
-    "cluster-advertise": "",
-    "max-concurrent-downloads": 3,
-    "max-concurrent-uploads": 5,
-    "default-shm-size": "64M",
-    "shutdown-timeout": 15,
-    "debug": true,
-    "hosts": [],
-    "log-level": "",
-    "tls": true,
-    "tlsverify": true,
-    "tlscacert": "",
-    "tlscert": "",
-    "tlskey": "",
-    "swarm-default-advertise-addr": "",
-    "api-cors-header": "",
-    "selinux-enabled": false,
-    "userns-remap": "",
-    "group": "",
-    "cgroup-parent": "",
-    "default-ulimits": {},
-    "init": false,
-    "init-path": "/usr/libexec/docker-init",
-    "ipv6": false,
-    "iptables": false,
-    "ip-forward": false,
-    "ip-masq": false,
-    "userland-proxy": false,
-    "userland-proxy-path": "/usr/libexec/docker-proxy",
-    "ip": "0.0.0.0",
-    "bridge": "",
-    "bip": "",
-    "fixed-cidr": "",
-    "fixed-cidr-v6": "",
-    "default-gateway": "",
-    "default-gateway-v6": "",
-    "icc": false,
-    "raw-logs": false,
-    "allow-nondistributable-artifacts": [],
-    "registry-mirrors": [],
-    "seccomp-profile": "",
-    "insecure-registries": [],
-    "no-new-privileges": false,
-    "default-runtime": "runc",
-    "oom-score-adjust": -500,
-    "node-generic-resources": ["NVIDIA-GPU=UUID1", "NVIDIA-GPU=UUID2"],
-    "runtimes": {
-        "cc-runtime": {
-            "path": "/usr/bin/cc-runtime"
-        },
-        "custom": {
-            "path": "/usr/local/bin/my-runc-replacement",
-            "runtimeArgs": [
-                "--debug"
-            ]
-        }
+  "allow-nondistributable-artifacts": [],
+  "api-cors-header": "",
+  "authorization-plugins": [],
+  "bip": "",
+  "bridge": "",
+  "cgroup-parent": "",
+  "cluster-advertise": "",
+  "cluster-store": "",
+  "cluster-store-opts": {},
+  "containerd": "/run/containerd/containerd.sock",
+  "containerd-namespace": "docker",
+  "containerd-plugin-namespace": "docker-plugins",
+  "data-root": "",
+  "debug": true,
+  "default-address-pools": [
+    {
+      "base": "172.30.0.0/16",
+      "size": 24
+    },
+    {
+      "base": "172.31.0.0/16",
+      "size": 24
     }
+  ],
+  "default-cgroupns-mode": "private",
+  "default-gateway": "",
+  "default-gateway-v6": "",
+  "default-runtime": "runc",
+  "default-shm-size": "64M",
+  "default-ulimits": {
+    "nofile": {
+      "Hard": 64000,
+      "Name": "nofile",
+      "Soft": 64000
+    }
+  },
+  "dns": [],
+  "dns-opts": [],
+  "dns-search": [],
+  "exec-opts": [],
+  "exec-root": "",
+  "experimental": false,
+  "features": {},
+  "fixed-cidr": "",
+  "fixed-cidr-v6": "",
+  "group": "",
+  "hosts": [],
+  "icc": false,
+  "init": false,
+  "init-path": "/usr/libexec/docker-init",
+  "insecure-registries": [],
+  "ip": "0.0.0.0",
+  "ip-forward": false,
+  "ip-masq": false,
+  "iptables": false,
+  "ip6tables": false,
+  "ipv6": false,
+  "labels": [],
+  "live-restore": true,
+  "log-driver": "json-file",
+  "log-level": "",
+  "log-opts": {
+    "cache-disabled": "false",
+    "cache-max-file": "5",
+    "cache-max-size": "20m",
+    "cache-compress": "true",
+    "env": "os,customer",
+    "labels": "somelabel",
+    "max-file": "5",
+    "max-size": "10m"
+  },
+  "max-concurrent-downloads": 3,
+  "max-concurrent-uploads": 5,
+  "max-download-attempts": 5,
+  "mtu": 0,
+  "no-new-privileges": false,
+  "node-generic-resources": [
+    "NVIDIA-GPU=UUID1",
+    "NVIDIA-GPU=UUID2"
+  ],
+  "oom-score-adjust": -500,
+  "pidfile": "",
+  "raw-logs": false,
+  "registry-mirrors": [],
+  "runtimes": {
+    "cc-runtime": {
+      "path": "/usr/bin/cc-runtime"
+    },
+    "custom": {
+      "path": "/usr/local/bin/my-runc-replacement",
+      "runtimeArgs": [
+        "--debug"
+      ]
+    }
+  },
+  "seccomp-profile": "",
+  "selinux-enabled": false,
+  "shutdown-timeout": 15,
+  "storage-driver": "",
+  "storage-opts": [],
+  "swarm-default-advertise-addr": "",
+  "tls": true,
+  "tlscacert": "",
+  "tlscert": "",
+  "tlskey": "",
+  "tlsverify": true,
+  "userland-proxy": false,
+  "userland-proxy-path": "/usr/libexec/docker-proxy",
+  "userns-remap": ""
 }
 ```

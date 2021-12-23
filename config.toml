@@ -1,13 +1,13 @@
 baseURL = "https://www.net-cc.com"
 languageCode = "zh-cn"
 defaultContentLanguage = "zh-cn"                             # en / zh-cn / ... (This field determines which i18n file to use)
-title = "星速网"
+title = "星速"
 # enableRobotsTXT = true
 enableEmoji = true
 theme = "LoveIt"
 enableGitInfo = true # use git commit log to generate lastmod record # 可根据 Git 中的提交生成最近更新记录。
 
-hasCJKLanguage = false     # has chinese/japanese/korean ? # 自动检测是否包含 中文\日文\韩文
+hasCJKLanguage = true     # has chinese/japanese/korean ? # 自动检测是否包含 中文\日文\韩文
 paginate = 10                                              # 首页每页显示的文章数
 
 [menu]
@@ -53,7 +53,7 @@ paginate = 10                                              # 首页每页显示�
   #  应用图标配置
   [params.app]
     # 当添加到 iOS 主屏幕或者 Android 启动器时的标题, 覆盖默认标题
-    title = "星速网"
+    title = "星速"
     # 是否隐藏网站图标资源链接
     noFavicon = false
     # 更现代的 SVG 网站图标, 可替代旧的 .png 和 .ico 文件
@@ -98,7 +98,7 @@ paginate = 10                                              # 首页每页显示�
       # LOGO 的 URL
       logo = "/images/logo.png"
       # 标题名称
-      name = "星速网"
+      name = "星速"
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
       pre = ""
       # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标

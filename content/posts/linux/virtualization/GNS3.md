@@ -5,8 +5,8 @@ lastmod: 2020-09-5T01:37:56+08:00
 draft: false
 keywords: ['git', '安装git','编译安装git','linux']
 description: "使用编译的方式在linux服务器上安装git"
-tags: ['linux']
-categories: ['linux']
+tags: ['虚拟化']
+categories: ['虚拟化']
 ---
 
 linux安装GNS3的VPCS、dynamips、IOU支持，目前是使用fedora29来安装的，可能也支持fedora30，但是fedora31未经过测试，不晓得支持不

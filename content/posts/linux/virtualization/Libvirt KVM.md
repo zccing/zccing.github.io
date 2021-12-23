@@ -5,8 +5,8 @@ lastmod: 2020-09-5T01:37:56+08:00
 draft: false
 keywords: ['KVM', 'libvirt','虚拟机','linux虚拟机']
 description: "介绍使用libvirt来管理Linux的KVM虚拟机，并介绍virsh命令"
-tags: ['linux']
-categories: ['linux']
+tags: ['虚拟化']
+categories: ['虚拟化']
 ---
 
 使用libvirt来管理Linux的KVM虚拟机，主要使用virsh命令

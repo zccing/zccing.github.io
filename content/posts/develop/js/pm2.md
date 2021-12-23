@@ -1,0 +1,175 @@
+---
+title: "PM2实用指南"
+date: 2020-08-30T01:37:56+08:00
+lastmod: 2021-12-23T01:37:56+08:00
+draft: false
+keywords: ['pm2', 'nodejs']
+description: "PM2是node进程管理工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单"
+tags: ['js']
+categories: ['js']
+---
+
+<!--more-->
+
+## 1 安装nodejs
+
+我就不造轮子了，上大招[官方链接](https://nodejs.org/zh-cn/download/)
+
+## 2 安装PM2
+
+### 2.1 安装
+
+  ```sh
+  sudo npm install -g pm2
+  # tab补全
+  pm2 completion install
+  source ~/.bash_profile
+  ```
+
+### 2.2 目录介绍
+
+pm2安装好后，会自动创建下面目录。看文件名基本就知道干嘛的了，就不翻译了。
+
+  * `$HOME/.pm2` will contain all PM2 related files
+  * `$HOME/.pm2/logs` will contain all applications logs
+  * `$HOME/.pm2/pids` will contain all applications pids
+  * `$HOME/.pm2/pm2.log` PM2 logs
+  * `$HOME/.pm2/pm2.pid` PM2 pid
+  * `$HOME/.pm2/rpc.sock` Socket file for remote commands
+  * `$HOME/.pm2/pub.sock` Socket file for publishable events
+  * `$HOME/.pm2/conf.js` PM2 Configuration
+
+### 2.3 常用命令
+
+  * 启动服务 
+    * Usage: `pm2 start appname [option]`
+    * option:
+      * `--watch`：监听应用目录的变化，一旦发生变化，自动重启。如果要精确监听、不见听的目录，最好通过配置文件。
+      * `-i --instances`：启用多少个实例，可用于负载均衡。如果-i 0或者-i max，则根据当前机器核数确定实例数目。
+      * `--ignore-watch`：排除监听的目录/文件，可以是特定的文件名，也可以是正则。比如--ignore-watch="test node_modules "some scripts""
+      * `-n --name`：应用的名称。查看应用信息的时候可以用到。
+      * `-o --output <path>`：标准输出日志文件的路径。
+      * `-e --error <path>`：错误输出日志文件的路径。
+      * `--node-args <args>`: 传入到nodejs的参数
+      * `--interpreter <interpreter>`：the interpreter pm2 should use for executing app (bash, python...)。比如你用的coffee script来编写应用。
+  * 重启服务
+    * Usage: `pm2 restart appname`
+  * 停止服务
+    * Usage: 
+      * `pm2 stop appname|appid` 停止一个服务
+      * `pm2 stop all` 停止所有服务
+  * 删除服务
+    * Usage: 
+      * `pm2 delete appname|appid|all`
+  * 保存当前已经启动了的服务
+    * Usage: `pm2 save`
+  * 设置开机自启的配置
+    * Usage: `pm2 startup`
+    * `pm2 startup`以后会得到以下提示
+
+      ```sh
+      [PM2] Init System found: upstart
+      [PM2] To setup the Startup Script, copy/paste the following command:
+      sudo env PATH=$PATH:/opt/nodejs/bin /opt/nodejs/lib/node_modules/pm2/bin/pm2 startup systemd -u cc --hp /home/cc
+      ```
+
+    * 按照上边的提示设置systemd启动脚本
+
+      ```sh
+      sudo env PATH=$PATH:/opt/nodejs/bin /opt/nodejs/lib/node_modules/pm2/bin/pm2 startup systemd -u cc --hp /home/cc
+      ```
+
+    * 启动systemd服务
+
+      ```sh
+      systemctl enable pm2-cc
+      ```
+  * 查看进程
+    * Usage: `pm2 list`
+  * 查看某个进程状态
+    * Usage: `pm2 describe appid`
+  * 查看日志
+    * Usage: `pm2 logs`
+
+## 3 启动服务配置文件
+
+>* 配置文件里的设置项，跟命令行参数基本是一一对应的。
+>* 可以选择`yaml`或者`json`文件, 看个人喜好
+>* `json`格式的配置文件，`pm2`当作普通的`js`文件来处理，所以可以在里面添加注释或者编写代码，这对于动态调整配置很有好处。
+
+参考[官方文档](http://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/)中的例子:
+
+```js
+{
+  "name"        : "fis-receiver",  // 应用名称
+  "script"      : "./bin/www",  // 实际启动脚本
+  "cwd"         : "./",  // 当前工作路径
+  "watch": [  // 监控变化的目录，一旦变化，自动重启
+    "bin",
+    "routers"
+  ],
+  "ignore_watch" : [  // 从监控目录中排除
+    "node_modules", 
+    "logs",
+    "public"
+  ],
+  "watch_options": {
+    "followSymlinks": false
+  },
+  "error_file" : "./logs/app-err.log",  // 错误日志路径
+  "out_file"   : "./logs/app-out.log",  // 普通日志路径
+  "env": {
+      "NODE_ENV": "production"  // 环境参数，当前指定为生产环境
+  }
+}
+```
+
+## 4 环境切换
+
+### 4.1 环境配置声明
+
+首先，在配置文件中，通过env选项声明多个环境配置。简单说明下：
+* env为默认的环境配置（生产环境），`env_dev`、`env_test`则分别是开发、测试环境。可以看到，不同环境下的`NODE_ENV`、`REMOTE_ADDR`字段的值是不同的。
+* 在应用中，可以通过`process.env.REMOTE_ADD`R等来读取配置中生命的变量。
+
+  ```js
+    "env": {
+    "NODE_ENV": "production",
+    "REMOTE_ADDR": "http://www.example.com/"
+  },
+  "env_dev": {
+    "NODE_ENV": "development",
+    "REMOTE_ADDR": "http://wdev.example.com/"
+  },
+  "env_test": {
+    "NODE_ENV": "test",
+    "REMOTE_ADDR": "http://wtest.example.com/"
+  }
+  ```
+
+### 4.2 启动指明环境
+
+假设通过下面启动脚本（开发环境），那么，此时process.env.REMOTE_ADDR的值就是相应的 http://wdev.example.com/。
+```bash
+pm2 start app.js --env dev
+```
+
+## 5 负载均衡
+
+命令如下，表示开启三个进程。如果-i 0，则会根据机器当前核数自动开启尽可能多的进程。
+[参考](http://pm2.keymetrics.io/docs/usage/cluster-mode/#automatic-load-balancing)
+
+```bash
+pm2 start app.js -i 3 # 开启三个进程
+pm2 start app.js -i max # 根据机器CPU核数，开启对应数目的进程 
+```
+
+## 6 更新PM2
+
+[官方文档](http://pm2.keymetrics.io/docs/usage/update-pm2/#updating-pm2)
+
+```bash
+$ pm2 save # 记得保存进程状态
+$ npm install pm2 -g
+$ pm2 update
+```

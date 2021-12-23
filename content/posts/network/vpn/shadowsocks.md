@@ -1,19 +1,16 @@
 ---
-title: "shadowsocks笔记"
+title: "shadowsocks"
 date: 2020-08-30T01:37:56+08:00
 lastmod: 2020-09-07T18:51:22+08:00
 draft: false
 keywords: ['shadowsocks', 'ss','小飞机']
 description: "通过二进制方式安装ss，用来做国际优化"
-tags: ['linux']
-categories: ['linux']
+tags: ['VPN']
+categories: ['VPN']
 ---
 
 通过二进制方式安装ss，在阿里云香港购买一台服务器，用来做国际优化
 <!--more-->
-
-
-# shadowsocks笔记
 
 ## 安装shadowsocks-libev服务端
 
@@ -194,8 +191,7 @@ categories: ['linux']
 
 * 安装`nodejs`
 
-    > 需要`nodejs 10.x`版本
-    > 安装方法参考[nodejs安装]({{< relref nodejs.md >}})
+我就不造轮子了，上大招[官方链接](https://nodejs.org/zh-cn/download/)
 
 * 安装`sqlite`
 
