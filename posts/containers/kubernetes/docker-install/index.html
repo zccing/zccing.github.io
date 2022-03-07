@@ -1,0 +1,520 @@
+<!doctype html><html lang=zh-cn>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=robots content="noodp">
+<meta http-equiv=x-ua-compatible content="IE=edge, chrome=1">
+<title>centos安装docker - 星速</title><meta name=Description content="使用centos系统如何安装docker容器，采用的是通过yum源方式进行安装，主要为了方便快速"><meta property="og:title" content="centos安装docker">
+<meta property="og:description" content="使用centos系统如何安装docker容器，采用的是通过yum源方式进行安装，主要为了方便快速">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.net-cc.com/posts/containers/kubernetes/docker-install/"><meta property="og:image" content="https://www.net-cc.com/images/logo.png"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2020-08-30T01:37:56+08:00">
+<meta property="article:modified_time" content="2022-03-07T22:40:15+08:00">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.net-cc.com/images/logo.png">
+<meta name=twitter:title content="centos安装docker">
+<meta name=twitter:description content="使用centos系统如何安装docker容器，采用的是通过yum源方式进行安装，主要为了方便快速">
+<meta name=application-name content="星速">
+<meta name=apple-mobile-web-app-title content="星速"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.net-cc.com/posts/containers/kubernetes/docker-install/><link rel=next href=https://www.net-cc.com/posts/containers/kubernetes/etcd-install/><link rel=alternate href=/posts/containers/kubernetes/docker-install/index.xml type=application/rss+xml title=星速>
+<link rel=feed href=/posts/containers/kubernetes/docker-install/index.xml type=application/rss+xml title=星速><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"centos安装docker","inLanguage":"zh-cn","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.net-cc.com\/posts\/containers\/kubernetes\/docker-install\/"},"image":["https:\/\/www.net-cc.com\/images"],"genre":"posts","keywords":"k8s","wordcount":1316,"url":"https:\/\/www.net-cc.com\/posts\/containers\/kubernetes\/docker-install\/","datePublished":"2020-08-30T01:37:56+08:00","dateModified":"2022-03-07T22:40:15+08:00","publisher":{"@type":"Organization","name":"cc","logo":"https:\/\/www.net-cc.com"},"author":{"@type":"Person","name":"cc"},"description":"使用centos系统如何安装docker容器，采用的是通过yum源方式进行安装，主要为了方便快速"}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script>
+<div id=mask></div><div class=wrapper><header class=desktop id=header-desktop>
+<div class=header-wrapper>
+<div class=header-title>
+<a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a>
+</div><div class=menu>
+<div class=menu-inner><a class=menu-item href=/posts/> 所有文章 </a><a class=menu-item href=/tags/> 标签 </a><a class=menu-item href=/categories/> 分类 </a><a class=menu-item href=/about/ title=关于> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容 id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索>
+<i class="fas fa-search fa-fw"></i>
+</a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空>
+<i class="fas fa-times-circle fa-fw"></i>
+</a>
+<span class="search-button search-loading" id=search-loading-desktop>
+<i class="fas fa-spinner fa-fw fa-spin"></i>
+</span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a>
+</div></div></div></header><header class=mobile id=header-mobile>
+<div class=header-container>
+<div class=header-wrapper>
+<div class=header-title>
+<a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a>
+</div><div class=menu-toggle id=menu-toggle-mobile>
+<span></span><span></span><span></span>
+</div></div><div class=menu id=menu-mobile><div class=search-wrapper>
+<div class="search mobile" id=search-mobile>
+<input type=text placeholder=搜索文章标题或内容 id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索>
+<i class="fas fa-search fa-fw"></i>
+</a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空>
+<i class="fas fa-times-circle fa-fw"></i>
+</a>
+<span class="search-button search-loading" id=search-loading-mobile>
+<i class="fas fa-spinner fa-fw fa-spin"></i>
+</span>
+</div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>
+取消
+</a>
+</div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title=关于>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i>
+</a></div></div></header><div class="search-dropdown desktop">
+<div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile">
+<div id=search-dropdown-mobile></div></div><main class=main>
+<div class=container><div class=toc id=toc-auto>
+<h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">centos安装docker</h1><div class=post-meta>
+<div class=post-meta-line><span class=post-author><a href=https://www.net-cc.com title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>cc</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E5%AE%B9%E5%99%A8/><i class="far fa-folder fa-fw"></i>容器</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-08-30>2020-08-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1316 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept>
+<div class="details-summary toc-title">
+<span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span>
+</div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents>
+<ul>
+<li><a href=#1-开启网络转发和pnat>1 开启网络转发和PNAT</a></li><li><a href=#2-通过yum安装docker-ce>2 通过yum安装docker-ce</a></li><li><a href=#3-配置docker网络>3 配置docker网络</a></li><li><a href=#4-docker配置iplog和存储驱动>4 docker配置ip、log和存储驱动</a></li><li><a href=#5-docker-daemonjson配置文件格式>5 docker daemon.json配置文件格式</a></li></ul></nav></div></div><div class=content id=content><h2 id=1-开启网络转发和pnat>1 开启网络转发和PNAT</h2><blockquote>
+<p>centos6 参考这里：<a href=https://blog.csdn.net/qianye_111/article/details/78987161 target=_blank rel="noopener noreffer">https://blog.csdn.net/qianye_111/article/details/78987161</a></p></blockquote><div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>firewall-cmd --add-masquerade --permanent --zone<span class=o>=</span>public <span class=c1># 更改防火墙开启PNAT</span>
+</span></span><span class=line><span class=cl>firewall-cmd --reload
+</span></span><span class=line><span class=cl><span class=c1># 开启转发</span>
+</span></span><span class=line><span class=cl>cat &gt; /etc/sysctl.d/99-kubernetes-cri.conf <span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>net.bridge.bridge-nf-call-iptables  = 1
+</span></span></span><span class=line><span class=cl><span class=s>net.ipv4.ip_forward                 = 1
+</span></span></span><span class=line><span class=cl><span class=s>net.bridge.bridge-nf-call-ip6tables = 1
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>sysctl -p /etc/sysctl.d/99-kubernetes-cri.conf
+</span></span><span class=line><span class=cl>cat /proc/sys/net/ipv4/ip_forward  <span class=c1># 查看是否开启了ip转发，如果返回1表示开启了</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=2-通过yum安装docker-ce>2 通过yum安装docker-ce</h2><p>使用仓库安装，方便，也可以二进制安装，编译的话不建议了，时间就是金钱，我的朋友。<a href=https://yq.aliyun.com/articles/110806 target=_blank rel="noopener noreffer">阿里云镜像站介绍</a></p><div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># step 1: 安装必要的一些系统工具</span>
+</span></span><span class=line><span class=cl>sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+</span></span><span class=line><span class=cl><span class=c1># Step 2: 添加软件源信息</span>
+</span></span><span class=line><span class=cl>sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</span></span><span class=line><span class=cl><span class=c1># Step 3: 更新并安装 Docker-CE</span>
+</span></span><span class=line><span class=cl>sudo yum makecache fast
+</span></span><span class=line><span class=cl>sudo yum -y install docker-ce
+</span></span><span class=line><span class=cl><span class=c1># Step 4: 开启Docker服务</span>
+</span></span><span class=line><span class=cl>sudo systemctl docker start
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 注意：</span>
+</span></span><span class=line><span class=cl><span class=c1># 官方软件源默认启用了最新的软件，您可以通过编辑软件源的方式获取各个版本的软件包。例如官方并没有将测试版本的软件源置为可用，你可以通过以下方式开启。同理可以开启各种测试版本等。</span>
+</span></span><span class=line><span class=cl><span class=c1># vim /etc/yum.repos.d/docker-ce.repo</span>
+</span></span><span class=line><span class=cl><span class=c1># 将 [docker-ce-test] 下方的 enabled=0 修改为 enabled=1</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># 安装指定版本的Docker-CE:</span>
+</span></span><span class=line><span class=cl><span class=c1># Step 1: 查找Docker-CE的版本:</span>
+</span></span><span class=line><span class=cl><span class=c1># yum list docker-ce.x86_64 --showduplicates | sort -r</span>
+</span></span><span class=line><span class=cl><span class=c1>#   Loading mirror speeds from cached hostfile</span>
+</span></span><span class=line><span class=cl><span class=c1>#   Loaded plugins: branch, fastestmirror, langpacks</span>
+</span></span><span class=line><span class=cl><span class=c1>#   docker-ce.x86_64            17.03.1.ce-1.el7.centos            docker-ce-stable</span>
+</span></span><span class=line><span class=cl><span class=c1>#   docker-ce.x86_64            17.03.1.ce-1.el7.centos            @docker-ce-stable</span>
+</span></span><span class=line><span class=cl><span class=c1>#   docker-ce.x86_64            17.03.0.ce-1.el7.centos            docker-ce-stable</span>
+</span></span><span class=line><span class=cl><span class=c1>#   Available Packages</span>
+</span></span><span class=line><span class=cl><span class=c1># Step2 : 安装指定版本的Docker-CE: (VERSION 例如上面的 17.03.0.ce.1-1.el7.centos)</span>
+</span></span><span class=line><span class=cl><span class=c1># sudo yum -y install docker-ce-[VERSION]</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=3-配置docker网络>3 配置docker网络</h2><ul>
+<li>
+<p>如果要docker内容器要固定ip地址，需要创建一个network</p><div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># 把ip改为相应的即可</span>
+</span></span><span class=line><span class=cl>docker network create --attachable --driver bridge --gateway 192.168.243.1 --subnet 192.168.243.1/24 --ipam-driver default mybridge
+</span></span></code></pre></td></tr></table></div></div></li><li>
+<p>不同主机之间的docker相互访问，首先要确定主机与主机之间是否互联，不能经过nat，然后在主机配置到docker网段的路由即可</p><div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># linux配置路由，注意替换ip地址</span>
+</span></span><span class=line><span class=cl><span class=c1># centos7</span>
+</span></span><span class=line><span class=cl>firewall-cmd --add-masquerade --permanent --zone<span class=o>=</span>public
+</span></span><span class=line><span class=cl>firewall-cmd --reload
+</span></span><span class=line><span class=cl>ip route add 192.168.240.0/20 via 192.168.250.4
+</span></span><span class=line><span class=cl>ip route del 192.168.240.0/20 via 192.168.250.4 <span class=c1># 删除路由</span>
+</span></span><span class=line><span class=cl><span class=c1># centos 6</span>
+</span></span><span class=line><span class=cl>sysctl -w net.ipv4.ip_forward<span class=o>=</span><span class=m>1</span>
+</span></span><span class=line><span class=cl>route add -net 10.20.30.48 netmask 255.255.255.248 gw 10.20.30.41
+</span></span><span class=line><span class=cl>or
+</span></span><span class=line><span class=cl>route add -net 192.168.1.0/24 eth1
+</span></span><span class=line><span class=cl>route del -net 10.20.30.40 netmask 255.255.255.248 eth0 <span class=c1># 删除路由</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># windows配置路由</span>
+</span></span><span class=line><span class=cl>route -p add 157.0.0.0 MASK 255.0.0.0 157.55.80.1 METRIC <span class=m>3</span> IF <span class=m>2</span>
+</span></span><span class=line><span class=cl><span class=c1># 修改删除路由</span>
+</span></span><span class=line><span class=cl>route CHANGE 157.0.0.0 MASK 255.0.0.0 157.55.80.5 METRIC <span class=m>2</span> IF <span class=m>2</span> <span class=c1># 修改</span>
+</span></span><span class=line><span class=cl>route delete 157.0.0.0 <span class=c1># 删除</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><h2 id=4-docker配置iplog和存储驱动>4 docker配置ip、log和存储驱动</h2><div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>mkdir -p /etc/docker
+</span></span><span class=line><span class=cl><span class=c1># 创建配置文件，配置docker默认网桥的IP地址为192.168.66.1/24，使用163和中国科技大学的镜像站</span>
+</span></span><span class=line><span class=cl>cat &gt; /etc/docker/daemon.json <span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>{
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;registry-mirrors&#34;: [
+</span></span></span><span class=line><span class=cl><span class=s>        &#34;https://docker.mirrors.ustc.edu.cn&#34;,
+</span></span></span><span class=line><span class=cl><span class=s>        &#34;http://hub-mirror.c.163.com&#34;
+</span></span></span><span class=line><span class=cl><span class=s>    ],
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;exec-opts&#34;: [
+</span></span></span><span class=line><span class=cl><span class=s>        &#34;native.cgroupdriver=systemd&#34;
+</span></span></span><span class=line><span class=cl><span class=s>    ],
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;log-driver&#34;: &#34;json-file&#34;,
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;log-opts&#34;: {
+</span></span></span><span class=line><span class=cl><span class=s>        &#34;max-size&#34;: &#34;100m&#34;
+</span></span></span><span class=line><span class=cl><span class=s>    },
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;bip&#34;: &#34;192.168.66.1/24&#34;,
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;ipv6&#34;: false,
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;iptables&#34;: false,
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;ip-masq&#34;: false,
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;dns&#34;: [
+</span></span></span><span class=line><span class=cl><span class=s>        &#34;223.5.5.5&#34;,
+</span></span></span><span class=line><span class=cl><span class=s>        &#34;223.6.6.6&#34;
+</span></span></span><span class=line><span class=cl><span class=s>    ],
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;dns-search&#34;:[
+</span></span></span><span class=line><span class=cl><span class=s>        &#34;net-cc.com&#34;
+</span></span></span><span class=line><span class=cl><span class=s>    ],
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;storage-driver&#34;: &#34;overlay2&#34;,
+</span></span></span><span class=line><span class=cl><span class=s>    &#34;storage-opts&#34;: [
+</span></span></span><span class=line><span class=cl><span class=s>        &#34;overlay2.override_kernel_check=true&#34;
+</span></span></span><span class=line><span class=cl><span class=s>    ]
+</span></span></span><span class=line><span class=cl><span class=s>}
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>mkdir -p /etc/systemd/system/docker.service.d
+</span></span></code></pre></td></tr></table></div></div><h2 id=5-docker-daemonjson配置文件格式>5 docker daemon.json配置文件格式</h2><p><a href=https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file target=_blank rel="noopener noreffer">官方的完整配置</a>样式，需要根据你的需要修改</p><div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span></code></pre></td><td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;allow-nondistributable-artifacts&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;api-cors-header&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;authorization-plugins&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;bip&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;bridge&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;cgroup-parent&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;cluster-advertise&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;cluster-store&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;cluster-store-opts&#34;</span><span class=p>:</span> <span class=p>{},</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;containerd&#34;</span><span class=p>:</span> <span class=s2>&#34;/run/containerd/containerd.sock&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;containerd-namespace&#34;</span><span class=p>:</span> <span class=s2>&#34;docker&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;containerd-plugin-namespace&#34;</span><span class=p>:</span> <span class=s2>&#34;docker-plugins&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;data-root&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;debug&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;default-address-pools&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;base&#34;</span><span class=p>:</span> <span class=s2>&#34;172.30.0.0/16&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;size&#34;</span><span class=p>:</span> <span class=mi>24</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;base&#34;</span><span class=p>:</span> <span class=s2>&#34;172.31.0.0/16&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;size&#34;</span><span class=p>:</span> <span class=mi>24</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;default-cgroupns-mode&#34;</span><span class=p>:</span> <span class=s2>&#34;private&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;default-gateway&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;default-gateway-v6&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;default-runtime&#34;</span><span class=p>:</span> <span class=s2>&#34;runc&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;default-shm-size&#34;</span><span class=p>:</span> <span class=s2>&#34;64M&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;default-ulimits&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;nofile&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;Hard&#34;</span><span class=p>:</span> <span class=mi>64000</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;Name&#34;</span><span class=p>:</span> <span class=s2>&#34;nofile&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;Soft&#34;</span><span class=p>:</span> <span class=mi>64000</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;dns&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;dns-opts&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;dns-search&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;exec-opts&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;exec-root&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;experimental&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;features&#34;</span><span class=p>:</span> <span class=p>{},</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;fixed-cidr&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;fixed-cidr-v6&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;group&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;hosts&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;icc&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;init&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;init-path&#34;</span><span class=p>:</span> <span class=s2>&#34;/usr/libexec/docker-init&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;insecure-registries&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;ip&#34;</span><span class=p>:</span> <span class=s2>&#34;0.0.0.0&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;ip-forward&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;ip-masq&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;iptables&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;ip6tables&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;ipv6&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;labels&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;live-restore&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;log-driver&#34;</span><span class=p>:</span> <span class=s2>&#34;json-file&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;log-level&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;log-opts&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;cache-disabled&#34;</span><span class=p>:</span> <span class=s2>&#34;false&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;cache-max-file&#34;</span><span class=p>:</span> <span class=s2>&#34;5&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;cache-max-size&#34;</span><span class=p>:</span> <span class=s2>&#34;20m&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;cache-compress&#34;</span><span class=p>:</span> <span class=s2>&#34;true&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;env&#34;</span><span class=p>:</span> <span class=s2>&#34;os,customer&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;labels&#34;</span><span class=p>:</span> <span class=s2>&#34;somelabel&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;max-file&#34;</span><span class=p>:</span> <span class=s2>&#34;5&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;max-size&#34;</span><span class=p>:</span> <span class=s2>&#34;10m&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;max-concurrent-downloads&#34;</span><span class=p>:</span> <span class=mi>3</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;max-concurrent-uploads&#34;</span><span class=p>:</span> <span class=mi>5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;max-download-attempts&#34;</span><span class=p>:</span> <span class=mi>5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;mtu&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;no-new-privileges&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;node-generic-resources&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;NVIDIA-GPU=UUID1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;NVIDIA-GPU=UUID2&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;oom-score-adjust&#34;</span><span class=p>:</span> <span class=mi>-500</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;pidfile&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;raw-logs&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;registry-mirrors&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;runtimes&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;cc-runtime&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;path&#34;</span><span class=p>:</span> <span class=s2>&#34;/usr/bin/cc-runtime&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;custom&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;path&#34;</span><span class=p>:</span> <span class=s2>&#34;/usr/local/bin/my-runc-replacement&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&#34;runtimeArgs&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;--debug&#34;</span>
+</span></span><span class=line><span class=cl>      <span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;seccomp-profile&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;selinux-enabled&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;shutdown-timeout&#34;</span><span class=p>:</span> <span class=mi>15</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;storage-driver&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;storage-opts&#34;</span><span class=p>:</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;swarm-default-advertise-addr&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;tls&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;tlscacert&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;tlscert&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;tlskey&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;tlsverify&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;userland-proxy&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;userland-proxy-path&#34;</span><span class=p>:</span> <span class=s2>&#34;/usr/libexec/docker-proxy&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;userns-remap&#34;</span><span class=p>:</span> <span class=s2>&#34;&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer>
+<div class=post-info>
+<div class=post-info-line>
+<div class=post-info-mod>
+<span>更新于 2022-03-07&nbsp;<a class=git-hash href=https://github.com/zccing/zccing.github.io/commit/eccd9bbc558a89cd68712a31d8bb59ce750de2a3 target=_blank title="commit by Cc(alex_zjf@163.com) eccd9bbc558a89cd68712a31d8bb59ce750de2a3: 重新排版了文档结构">
+<i class="fas fa-hashtag fa-fw"></i>eccd9bb</a></span>
+</div><div class=post-info-license></div></div><div class=post-info-line>
+<div class=post-info-md></div><div class=post-info-share>
+<span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.net-cc.com/posts/containers/kubernetes/docker-install/ data-title=centos安装docker><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.net-cc.com/posts/containers/kubernetes/docker-install/ data-title=centos安装docker><i class="fab fa-evernote fa-fw"></i></a></span>
+</div></div></div><div class=post-info-more>
+<section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/k8s/>k8s</a></section><section>
+<span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span>
+</section></div><div class=post-nav>
+<a href=/posts/containers/kubernetes/etcd-install/ class=next rel=next title=etcd安装与配置>etcd安装与配置<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer>
+<div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://www.net-cc.com target=_blank>cc</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br>
+<span class=icp><a rel=备案查询 href=https://beian.miit.gov.cn/ target=_blank>豫ICP备2021035180号</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部>
+<i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论>
+<i class="fas fa-comment fa-fw"></i>
+</a>
+</div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/katex/copy-tex.min.css><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js></script><script type=text/javascript src=/lib/katex/auto-render.min.js></script><script type=text/javascript src=/lib/katex/copy-tex.min.js></script><script type=text/javascript src=/lib/katex/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:5},comment:{},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
