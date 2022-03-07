@@ -6,7 +6,7 @@ draft: false
 keywords: ['k8s容器运行时介绍']
 description: "容器运行时笔记"
 tags: ['k8s']
-categories: ['k8s']
+categories: ['容器']
 autoCollapseToc: false
 ---
 

@@ -5,8 +5,8 @@ lastmod: 2021-12-23T01:37:56+08:00
 draft: false
 keywords: ['pm2', 'nodejs']
 description: "PM2是node进程管理工具，可以利用它来简化很多node应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单"
-tags: ['js']
-categories: ['js']
+tags: ['nodejs']
+categories: ['编程语言']
 ---
 
 <!--more-->

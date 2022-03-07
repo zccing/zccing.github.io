@@ -5,7 +5,7 @@ lastmod: 2020-09-5T01:37:56+08:00
 draft: false
 keywords: ['git', '安装git','编译安装git','linux']
 description: "使用编译的方式在linux服务器上安装git"
-tags: ['虚拟化']
+tags: ['GNS3']
 categories: ['虚拟化']
 ---
 

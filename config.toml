@@ -199,7 +199,7 @@ paginate = 10                                              # 首页每页显示�
     #  是否使用 fontawesome 扩展语法
     fontawesome = true
     # 是否在文章页面显示原始 Markdown 文档链接
-    linkToMarkdown = false
+    linkToMarkdown = true
     #  是否在 RSS 中显示全文内容
     rssFullText = false
     #  目录配置
@@ -360,6 +360,7 @@ paginate = 10                                              # 首页每页显示�
   # 目录设置
   [markup.tableOfContents]
     startLevel = 2
+    ordered = false
     endLevel = 6
 
 # 作者配置
@@ -376,8 +377,8 @@ paginate = 10                                              # 首页每页显示�
 
 # Permalinks 配置
 [Permalinks]
-  # posts = ":year/:month/:filename"
-  posts = ":filename"
+  # posts = ":year/:month/:day/:filename"
+  posts = ":sections/:filename"
 
 # 隐私信息配置
 [privacy]

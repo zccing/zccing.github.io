@@ -5,7 +5,7 @@ draft: false
 keywords: ['markdown', 'markdown语法']
 description: "可以在 Hugo 的文章中使用的基本 Markdown 语法示例"
 tags: ['markdown']
-categories: ['markdown']
+categories: ['编程语言']
 ---
 
 <!--more-->

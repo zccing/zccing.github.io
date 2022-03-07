@@ -6,8 +6,8 @@ draft: false
 keywords: ["etcd","etcd配置","etcd集群","k8s集群"]
 description: "通过二进制方式安装高可用ETCD集群，并采用动态添加一个节点"
 tags: ['k8s']
-categories: ['k8s']
-Author: "ccc"
+categories: ['容器']
+Author: "cc"
 autoCollapseToc: true
 ---
 

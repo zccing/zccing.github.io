@@ -5,8 +5,8 @@ lastmod: 2020-09-07T18:51:22+08:00
 draft: false
 keywords: ['shadowsocks', 'ss','小飞机']
 description: "通过二进制方式安装ss，用来做国际优化"
-tags: ['VPN']
-categories: ['VPN']
+tags: ['vpn']
+categories: ['网络技术']
 ---
 
 通过二进制方式安装ss，在阿里云香港购买一台服务器，用来做国际优化

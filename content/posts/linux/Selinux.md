@@ -38,7 +38,7 @@ categories: ['linux']
 
 * 安全上下文(Security Context): 每个进程、目录和文件都有自己的安全上下文，进程能否访问目录/文件，需要判断两者的安全上下文是否匹配，然后进行比较，符合就通过，不符合就`AVC`拒绝
 
-![selnux运行模式](/image/linux/selinux运行模式.jpg "selinux运行模式图示")
+![selnux运行模式](/images/linux/selinux运行模式.jpg "selinux运行模式图示")
 
 主体的访问请求首先和`Selinux`中定义好的策略进行匹配，如果进程符合策略中定义的规则，就把进程的安全上下文和目标的安全上下文进行匹配，如果失败则访问拒绝，并通过`AVC`（`Access Vector Cache`，访问向量缓存，主要用于记录所有和 SELinux 相关的访问统计信息)生成拒绝访问信息，如果安全上下文匹配，则通过`Selinux`控制
 

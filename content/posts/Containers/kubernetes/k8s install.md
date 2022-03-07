@@ -6,7 +6,7 @@ draft: false
 keywords: ['k8s', '安装k8s','k8s集群','容器']
 description: "通过二进制方式安装k8s高可用集群"
 tags: ['k8s']
-categories: ['k8s']
+categories: ['容器']
 autoCollapseToc: true
 ---
 
