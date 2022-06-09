@@ -24,7 +24,7 @@ autoCollapseToc: true
 
 ## 2 节点创建etcd账户和防火墙放行
 
-```sh
+```bash
 # 创建用户和目录
 groupadd -r etcd
 # -k MAIL_DIR=/dev/null参数不创建此用户的mail目录
@@ -44,7 +44,7 @@ firewall-cmd --reload
 
 **在所有节点上下载ETCD的二进制文件**
 
-```sh
+```bash
 # etcd的版本
 ETCD_VER=v3.4.13
 # 通过github下载
@@ -69,7 +69,7 @@ rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
 
 **在所有节点上都需要创建**
 
-```sh
+```bash
 cat > /usr/lib/systemd/system/etcd.service<<EOF
 [Unit]
 Description=Etcd Server
@@ -105,7 +105,7 @@ echo 'ETCD_CONFIG_FILE="/opt/etcd/etc/etcd.conf"' > /opt/etcd/etc/config
 
 * node1配置文件
 
-    ```sh
+    ```bash
     cat > /opt/etcd/etc/etcd.conf<<EOF
     name: 'node1'
     data-dir: ''
@@ -133,7 +133,7 @@ echo 'ETCD_CONFIG_FILE="/opt/etcd/etc/etcd.conf"' > /opt/etcd/etc/config
 
 * node2配置文件
 
-    ```sh
+    ```bash
     cat > /opt/etcd/etc/etcd.conf<<EOF
     name: 'node1'
     data-dir: ''
@@ -163,7 +163,7 @@ echo 'ETCD_CONFIG_FILE="/opt/etcd/etc/etcd.conf"' > /opt/etcd/etc/config
 
 先启动node1，然后在启动node2，每个节点的目录权限别忘记更改
 
-```sh
+```bash
 systemctl daemon-reload
 systemctl start etcd.service
 systemctl enable etcd.service
@@ -171,7 +171,7 @@ systemctl enable etcd.service
 
 ### 5.4 测试etcd
 
-```sh
+```bash
 
 # 由于参数太多，所以添加etcdctl参数环境变量
 cat >> ~/.bashrc<<EOF
@@ -188,7 +188,7 @@ etcdctl endpoint health --write-out=table
 
 前边已经配置了两个成员的etcd集群，etcd集群成员少于三个没有冗余性的，下边我们动态添加一个成员。**在已经添加到etcd集群的服务器（node1）通过etcdctl客户端动态添加成员**
 
-```sh
+```bash
 etcdctl member add node3  --peer-urls=http://192.168.122.12:2380
 
 # 以上命令执行成功会返回新集群的配置参数，如下，记录下来，等会修改集群配置
@@ -202,7 +202,7 @@ ETCD_INITIAL_CLUSTER_STATE="existing"
 
 根据上边命令回显，node3添加配置如下，参数解析和node1一样
 
-```sh
+```bash
 cat > /opt/etcd/etc/etcd.conf<<EOF
 name: $ETCD_NAME
 data-dir: ''
@@ -223,7 +223,7 @@ EOF
         
 ### 6.2 启动新节点
 
-```sh
+```bash
 # 启动服务
 systemctl daemon-reload
 systemctl start etcd.service
@@ -232,6 +232,6 @@ systemctl enable etcd.service
         
 ### 6.3 测试etcd
 
-```sh
+```bash
 etcdctl endpoint health --write-out=table
 ```

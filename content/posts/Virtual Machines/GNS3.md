@@ -16,7 +16,7 @@ linux安装GNS3的VPCS、dynamips、IOU支持，目前是使用fedora29来安装
 
 ## gns3 vpcs and dy 安装
 
-```sh
+```bash
 dnf copr enable athmane/gns3-extra
 dnf install vpcs dynamips
 ```
@@ -25,7 +25,7 @@ dnf install vpcs dynamips
 
 * `fedora 29`
 
-    ```sh
+    ```bash
     sudo dnf install git bison flex gcc make openssl-libs.i686 libgcc.i686
     git clone http://github.com/ndevilla/iniparser.git
     cd iniparser

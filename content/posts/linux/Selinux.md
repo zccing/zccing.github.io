@@ -46,7 +46,7 @@ categories: ['linux']
 
 * 查看文件的安全上下文：
 
-    ```sh
+    ```bash
     # 查看文件的安全上下文
     ls -Z
     # 查看进程的安全上下文
@@ -58,20 +58,20 @@ categories: ['linux']
 * `restorecon`:
     恢复目录或者程序的默认安全上下文
 
-    ```sh
+    ```bash
     sudo restorecon -Rv -f /var/sshd
     ```
 
 * `chcon`:
 
-    ```sh
+    ```bash
     sudo chcon -R -t ssh_home_t ~/.ssh/authorized_keys
     ```
 
 * `semanage`:
     添加到默认规则里，以后使用`restorecon`即可恢复，不会存在下载就没有了
 
-    ```sh
+    ```bash
     # 查看文件安全上下文的默认类型
     $ sudo semanage fcontext -l
 
@@ -95,14 +95,14 @@ categories: ['linux']
 
 * `sesearch`:
 
-    ```sh
+    ```bash
     # 查看类型为 inetd_t 的selinux规则
     sesearch -A -t inetd_t
     ```
 
 * `seinfo`:
 
-    ```sh
+    ```bash
     # 查看所有的类型
     seinfo -b
     ```
@@ -113,7 +113,7 @@ categories: ['linux']
 
 * `semanage`:
 
-    ```sh
+    ```bash
     # 查看所有模块
     semanage module -l
     # 禁用一个模块
@@ -127,7 +127,7 @@ categories: ['linux']
 
 * `semodule`:
 
-    ```sh
+    ```bash
     # Install or replace a base policy package.
     semodule -b base.pp
     # Install or replace a non-base policy package.
@@ -166,7 +166,7 @@ categories: ['linux']
 
 * `getsebool` or `setatus`
 
-    ```sh
+    ```bash
     # 查看所有bool
     getsebool -a
     sestatus -b
@@ -175,14 +175,14 @@ categories: ['linux']
 * `sesearch`
   查看一个`bool`包含的`selinux`规则
 
-  ```sh
+  ```bash
   # 查看 httpd_can_network_connect_db 布尔值包含的selinux规则
   sesearch -A -b httpd_can_network_connect_db
   ```
 
 * `setsebool`
 
-  ```sh
+  ```bash
   # 允许vsvtp匿名用户写入权限：
   setsebool -P allow_ftpd_anon_write=1
   ```
@@ -191,7 +191,7 @@ categories: ['linux']
 
 * 启用`auditd`服务
 
-    ```sh
+    ```bash
     sudo dnf install audit
     sudo systemctl enable auditd
     sudo systemctl start auditd
@@ -200,14 +200,14 @@ categories: ['linux']
 * 查看`audit`日志
   * `audit2why`:
 
-    ```sh
+    ```bash
     # 查看本次启动所有关于selinux拒绝的信息，并给出解决方案，不过大部分没有0.0,并且不准确或者解决方案的权限过大
     sudo audit2why -b
     ```
 
   * `audit2allow`:
 
-    ```sh
+    ```bash
     # 详细查看selinux的avc拒绝信息
     sudo audit2allow -b
     ```
@@ -216,7 +216,7 @@ categories: ['linux']
 
     如果不能通过修改`bool`值、文件安全上下文等来解决问题，可以通过`audit2allow`命令生成`selinux`模块并加载，来解决问题
 
-    ```sh
+    ```bash
     # 利用`audit2allow`生成`selinux`模块
     sudo audit2allwo -b -M local
     # 倒入`local`模块

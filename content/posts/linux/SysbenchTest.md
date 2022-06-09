@@ -20,12 +20,12 @@ linux系统基准测试工具sysbenchtest的安装和使用
 ### 二进制安装
 
 * centos
-    ```shell
+    ```bashell
     yum install epel-release    # 安装centos社区源
     yum install sysbench        # 安装sysbench
     ```
 * ubuntu
-    ```shell
+    ```bashell
     curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.deb.sh | sudo bash  #
     sudo apt -y install sysbench
     ```
@@ -36,14 +36,14 @@ linux系统基准测试工具sysbenchtest的安装和使用
 
 * 下载源代码
     github地址：<https://github.com/akopytov/sysbench/releases>
-    ```shell
+    ```bashell
     wget https://github.com/akopytov/sysbench/archive/1.0.16.tar.gz
     tar -zxvf 1.0.16.tar.gz
     ```
 
 * 安装依赖
   * centos
-    ```shell
+    ```bashell
     yum -y install make automake libtool pkgconfig libaio-devel
     # For MySQL support, replace with mysql-devel on RHEL/CentOS 5
     yum -y install mariadb-devel openssl-devel
@@ -51,7 +51,7 @@ linux系统基准测试工具sysbenchtest的安装和使用
     yum -y install postgresql-devel
     ```
   * ubuntu
-    ```shell
+    ```bashell
     apt -y install make automake libtool pkg-config libaio-dev
     # For MySQL support
     apt -y install libmysqlclient-dev libssl-dev
@@ -59,7 +59,7 @@ linux系统基准测试工具sysbenchtest的安装和使用
     apt -y install libpq-dev
     ```
 * 编译安装
-    ```shell
+    ```bashell
     ./autogen.sh
     # Add --with-pgsql to build with PostgreSQL support
     ./configure
@@ -72,7 +72,7 @@ linux系统基准测试工具sysbenchtest的安装和使用
 * 一般语法
     sysbench的常规命令行语法是：
 
-    ```shell
+    ```bashell
     sysbench [options] ... [testname] [command]
     ```
 
@@ -133,7 +133,7 @@ linux系统基准测试工具sysbenchtest的安装和使用
 > 素数（也叫质数）就是从1开始的自然数中，无法被整除的数，比如2、3、5、7、11、13、17等。编程公式：对正整数n，如果用2到根号n之间的所有整数去除，均无法整除，则n为素数。
 > 循环计算`cpu-max-prime`定义的素数为一个`event`
 
-```shell
+```bashell
 # 素数上限2万，默认10秒，1个线程
 sysbench cpu --cpu-max-prime=20000  --threads=1 run
 ```
@@ -146,7 +146,7 @@ sysbench cpu --cpu-max-prime=20000  --threads=1 run
 > 测试内存的联系读写性能
 > 读或者写一个`memory-block-size`大小，即一个`event`
 
-```shell
+```bashell
 # 使用8k的内存块测试1G的数据
 sysbench memory --memory-block-size=8k --memory-total-size=10G run
 ```
@@ -169,7 +169,7 @@ sysbench memory --memory-block-size=8k --memory-total-size=10G run
 > 磁盘IO性能测试[主要看每秒请求数(request)和总体的吞吐量(total)
 > 一次IO请求为一个`event`
 
-```shell
+```bashell
 # 准备测试文件
 sysbench fileio --threads=2 --file-total-size=2G prepare
 # 测试
@@ -196,7 +196,7 @@ sysbench fileio --threads=2 --file-total-size=2G cleanup
 
 > thread-locks小于线程数除以2，lock越少，处理时间越长 
 
-```shell
+```bashell
 sysbench threads --threads=2 --thread-yields=2000 --thread-locks=10 run
 ```
 
@@ -208,7 +208,7 @@ sysbench threads --threads=2 --thread-yields=2000 --thread-locks=10 run
 > 使用互斥锁工作负载时，sysbench应用程序将为每个线程运行单个请求。此请求将首先对CPU施加压力（使用简单的增量循环，通过`--mutex-loops`参数），之后它将采用随机互斥（锁定），递增全局变量并再次释放锁定。通过lock（`--mutex-locks`）的数量重复该过程若干次。随机互斥锁取自`--mutex-num`参数大小的池。
 > 此处运行的持续时间很重要，但必须考虑到线程将从可用池中获取随机互斥锁。这个随机因素可能会对结果产生一些影响。
 
-```shell
+```bashell
 sysbench mutex --threads=100 --mutex-num=1000 --mutex-locks=100000 --mutex-loops=10000 run
 ```
 

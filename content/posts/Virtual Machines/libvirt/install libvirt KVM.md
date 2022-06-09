@@ -24,7 +24,7 @@ categories: ['虚拟化']
 
 * 下载文件
 
-    ```sh
+    ```bash
     # 可以去官网下载最新的
     wget https://download.qemu.org/qemu-6.2.0.tar.xz
     tar -xf qemu-6.2.0.tar.xz
@@ -33,13 +33,13 @@ categories: ['虚拟化']
 
 * 安装需要用到的库文件
 
-    ```sh
+    ```bash
     yum install git glib2-devel libfdt-devel pixman-devel zlib-devel bzip2-devel libaio-devel spice-server-devel spice-protocol libusb-devel usbredir-devel
     ```
 
 * 编译安装
 
-    ```sh
+    ```bash
     ./configure \
     # 编译完成后安装的目录
     --prefix=/opt/qemu-kvm \
@@ -69,12 +69,12 @@ categories: ['虚拟化']
 
 * 添加qemu扩展存储库
 
-    ```sh
+    ```bash
     yum install centos-release-qemu-ev
     ```
 
 * 安装qemu和libvirt
 
-    ```sh
+    ```bash
     yum install qemu-kvm libvirt -y
     ```

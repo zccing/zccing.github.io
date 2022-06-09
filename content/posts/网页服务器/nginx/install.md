@@ -19,7 +19,7 @@ author: ""
 
 ### 添加官方仓库
 
-```sh
+```bash
 sudo su
 cat > /etc/yum.repos.d/nginx.repo<<EOF
 [nginx-stable]
@@ -42,7 +42,7 @@ EOF
 
 ### 安装nginx
 
-```sh
+```bash
 yum install nginx -y
 systemctl enable nginx
 systemctl start nginx
@@ -54,13 +54,13 @@ nginx的配置存放在/etc/nginx目录下边, nginx.conf 是全局的一些配�
 
 1. 备份/etc/nginx/conf.d/default.conf
 
-```sh
+```bash
 sudo cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
 ```
 
 2. 修改/etc/nginx/conf.d/default.conf
 
-```sh
+```bash
 cat > /etc/nginx/conf.d/default.conf<<EOF
 # 使用http协议访问带www的网址，跳转到https协议的带www的网址上
 server {

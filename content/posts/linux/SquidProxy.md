@@ -22,7 +22,7 @@ categories: ['linux']
 
 ### yum安装
 
-```shell
+```bashell
 yum updata && yum install -y squid
 ```
 
@@ -30,7 +30,7 @@ yum updata && yum install -y squid
 
 > 最新源码地址：http://www.squid-cache.org/Versions/
 
-```shell
+```bashell
 ## 安装依赖包
 yum install gcc-c++ make gcc openssl openssl-devel
 
@@ -76,7 +76,7 @@ make -j4 && make install
 
 * 防火墙
     放行配置的服务开放端口,默认为3128
-    ```shell
+    ```bashell
     centos 6
     vim /usr/local/virus/iptables/iptables.allow
     iptables -A INPUT -i $EXTIF -p tcp -s 0.0.0.0/0 --dport 3128 -j ACCEPT
@@ -92,7 +92,7 @@ make -j4 && make install
 
 * /etc/squid/squid.conf
   * acl语法
-    ```shell
+    ```bashell
     acl <acl名称> <要控制的acl类型> <设定的内容>
     ```
     * 自订的acl名称: 自定义的一个名称
@@ -111,7 +111,7 @@ make -j4 && make install
   * http_access和cache语法
     * 语法
         > 有顺序的，从上往下匹配，匹配到后就不往后匹配了
-        ```shell
+        ```bashell
         http_access <acl定义的名称> deny|allow
         cache <acl定义的名称> deny|allow
         ```
@@ -136,7 +136,7 @@ make -j4 && make install
             ```
   * 磁碟中快取的存在时间
     * 语法：
-        ```shell
+        ```bashell
         refresh_pattern <regex> <最小时间> <百分比> <最大时间>
         ```
         > regex: 使用的是正规表示法来分析网址列的资料

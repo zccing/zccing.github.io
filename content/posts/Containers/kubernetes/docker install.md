@@ -15,7 +15,7 @@ categories: ['容器']
 
 > centos6 参考这里：<https://blog.csdn.net/qianye_111/article/details/78987161>
 
-```sh
+```bash
 firewall-cmd --add-masquerade --permanent --zone=public # 更改防火墙开启PNAT
 firewall-cmd --reload
 # 开启转发
@@ -32,7 +32,7 @@ cat /proc/sys/net/ipv4/ip_forward  # 查看是否开启了ip转发，如果返�
 
 使用仓库安装，方便，也可以二进制安装，编译的话不建议了，时间就是金钱，我的朋友。[阿里云镜像站介绍](<https://yq.aliyun.com/articles/110806>)
 
-```sh
+```bash
 # step 1: 安装必要的一些系统工具
 sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 # Step 2: 添加软件源信息
@@ -65,14 +65,14 @@ sudo systemctl docker start
 
 * 如果要docker内容器要固定ip地址，需要创建一个network
 
-    ```sh
+    ```bash
     # 把ip改为相应的即可
     docker network create --attachable --driver bridge --gateway 192.168.243.1 --subnet 192.168.243.1/24 --ipam-driver default mybridge
     ```
 
 * 不同主机之间的docker相互访问，首先要确定主机与主机之间是否互联，不能经过nat，然后在主机配置到docker网段的路由即可
 
-    ```sh
+    ```bash
     # linux配置路由，注意替换ip地址
     # centos7
     firewall-cmd --add-masquerade --permanent --zone=public
@@ -95,7 +95,7 @@ sudo systemctl docker start
 
 ## 4 docker配置ip、log和存储驱动
 
-```sh
+```bash
 mkdir -p /etc/docker
 # 创建配置文件，配置docker默认网桥的IP地址为192.168.66.1/24，使用163和中国科技大学的镜像站
 cat > /etc/docker/daemon.json <<EOF

@@ -620,7 +620,7 @@ categories: ['虚拟化']
 
 > 创建镜像文件，参考[磁盘存储](#磁盘存储)
 
-```sh
+```bash
 qemu-img create -f qcow2 node1.qcow2 10G  # 创建大小为10G，qcow2格式的镜像文件
 qemu-img info node1.qcow2                 # 查看镜像信息
 qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
@@ -634,7 +634,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
 
 * 安装
 
-    ```sh
+    ```bash
     dnf install libvirt-client
     or
     yum install libvirt-client
@@ -642,7 +642,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
 
 * 命令常用方式
 
-    ```sh
+    ```bash
     virsh define node1.xml          # 导入虚拟机配置（xml格式）（这个虚拟机还不是活动的)
     virsh create node1.xml          # 创建虚拟机（创建后，虚拟机立即执行，成为活动主机）
     virsh start node1               # 开启node1虚拟机
@@ -667,7 +667,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
 
 * 存储池来管理存储
 
-    ```sh
+    ```bash
     virsh pool-define-as kvm_images dir - - - - "/home/data/kvm/pool" # 定义存储池
     virsh pool-build kvm_images     # 建立基于文件夹的存储池
     virsh pool-start kvm_images     # 使存储池生效
@@ -684,7 +684,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
 
 * 虚拟机备份
 
-    ```sh
+    ```bash
     virsh save --bypass-cache node1 /var/lib/libvirt/save/node1_1.save --running    # 备份
     virsh restore /var/lib/libvirt/save/node1_1.save --bypass-cache --running       # 还原
     ```
@@ -693,7 +693,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
 
     > 如果要使用kvm的快照功能，就必须使用qcow2的磁盘格式，而raw只支持内存快照，如果不是，请修改
 
-    ```sh
+    ```bash
     virsh snapshot-create node1 node1.snap1 # 创建快照
     virsh snapshot-revert node1 node1.snap1 # 恢复快照
     virsh snapshot-list node1               # 查看快照
@@ -705,7 +705,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
     > KVM虚拟机依靠两个主要文件来启动，一个是img文件，一个是xml配置文件,因此迁移的时候，可以直接迁移这两个文件就能实现静态迁移。如果img文件存放在共享存储，则更为方便，只用迁移xml配置文件，就可以实现静态迁移。
     > 当然，virsh命令也可以迁移虚拟机，不过要求目标主机与当前主机的应用环境须保持一致，其命令格式如下：
 
-    ```sh
+    ```bash
     virsh migrate --live node1 qemu+tcp//destnationip/system tcp://destnationip
     ```
 
@@ -848,7 +848,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
 
         * 安装ksmtuned管理工具
 
-            ```sh
+            ```bash
             yum install ksmtuned
             ```
 
@@ -898,7 +898,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
 
     * 查看当前虚拟机的内存限制，单位为KB
 
-    ```sh
+    ```bash
     virsh memtune c7-1
 
     hard_limit     : 无限制       # 强制最大内存
@@ -908,7 +908,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
 
     * 设置强制最大内存为100MB，在线生效。
 
-    ```sh
+    ```bash
     virsh memtune c7-1 --hard-limit 1024000 --live
 
     virsh memtune c7-1          # 查看
@@ -928,7 +928,7 @@ qemu-img convert -f raw -o qcow2 node1.img node1.qcow2     # 更改镜像格式
   
     * 查看内存信息，无可用大页
 
-        ```sh
+        ```bash
         cat /proc/meminfo | grep Huge
         HugePages_Total:       0        # 大叶面的数量
         HugePages_Free:        0        # 未使用的大叶面数量

@@ -30,7 +30,7 @@ autoCollapseToc: true
 
 尽管主节点中包含etcd端口，但您也可以在外部或自定义端口上托管您自己的etcd集群
 
-```sh
+```bash
 # 节点之间免密登录
 ssh-keygen -b 2048 -t rsa
 ssh-copy-id root@node1
@@ -140,7 +140,7 @@ sysctl --system  # 生效
 
 * kubernetes-ca
 
-  ```sh
+  ```bash
   mkdir -p ~/ca/{kube-ca,kube-proxy-ca}
   cd ~/ca/kube-ca
   openssl genrsa -out kube-ca.key  2048
@@ -195,7 +195,7 @@ sysctl --system  # 生效
 
 * kubernetes-front-proxy-ca
 
-  ```sh
+  ```bash
   cd ~/ca/kube-proxy-ca
   openssl genrsa -out front-proxy-ca.key 2048
 
@@ -234,7 +234,7 @@ sysctl --system  # 生效
 
 * apiserver证书
 
-  ```sh
+  ```bash
   mkdir -p ~/ca/kube-ca/{apiserver,kubeconfig,kubelet}
   cd ~/ca/kube-ca/apiserver
 
@@ -262,7 +262,7 @@ sysctl --system  # 生效
 
   apiserver访问kubelet的证书密钥对（RBAC会针对`system:masters`用户进行授权）
 
-    ```sh
+    ```bash
     cd ~/ca/kube-ca/apiserver
     # 创建密钥
     openssl genrsa -out apiserver-kubelet-client.key 2048
@@ -288,7 +288,7 @@ sysctl --system  # 生效
 
   注意：DNS和IP要写所有的安装kubelet节点的ip和主机名称
 
-  ```sh
+  ```bash
   cd ~/ca/kube-ca/kubelet
   # 创建密钥
   openssl genrsa -out kubelet.key 2048
@@ -336,7 +336,7 @@ sysctl --system  # 生效
 
   只有当你运行kube-proxy并要支持[扩展API服务器](https://kubernetes.io/zh/docs/tasks/extend-kubernetes/setup-extension-api-server/)时，才需要front-proxy证书
 
-  ```sh
+  ```bash
   mkdir ~/ca/kube-proxy-ca/front-proxy-client
   cd ~/ca/kube-proxy-ca/front-proxy-client
   # 创建密钥
@@ -359,7 +359,7 @@ sysctl --system  # 生效
 
 * 服务账户管理的密钥对
 
-  ```sh
+  ```bash
   cd ~/ca/kube-ca/apiserver
   openssl genrsa -out sa.key 2048
   openssl rsa -in sa.key -pubout -out sa.pub
@@ -391,7 +391,7 @@ sysctl --system  # 生效
 
   k8s集群管理工具
 
-  ```sh
+  ```bash
   cd /tmp
   wget https://dl.k8s.io/v1.19.1/kubernetes-client-linux-amd64.tar.gz
   tar -zxf kubernetes-client-linux-amd64.tar.gz
@@ -410,7 +410,7 @@ sysctl --system  # 生效
   
   可以通过`KUBECONFIG`变量来控制
 
-  ```sh
+  ```bash
   mkdir ~/ca/kube-ca/kubeconfig
   cd ~/ca/kube-ca/kubeconfig
   # 创建密钥
@@ -445,7 +445,7 @@ sysctl --system  # 生效
 
   node2我使用自动签发证书的方式，所以这里未生成证书
 
-  ```sh
+  ```bash
   cd ~/ca/kube-ca/kubeconfig
   export NODENAME=node1
   # 创建密钥
@@ -480,7 +480,7 @@ sysctl --system  # 生效
 
   注意：证书的CN不要变更
 
-  ```sh
+  ```bash
   cd ~/ca/kube-ca/kubeconfig
   # 创建密钥
   openssl genrsa -out kube-proxy.key 2048
@@ -513,7 +513,7 @@ sysctl --system  # 生效
 
   注意：证书的CN不要变更
 
-  ```sh
+  ```bash
   cd ~/ca/kube-ca/kubeconfig
   # 创建密钥
   openssl genrsa -out kube-controller-manager.key 2048
@@ -546,7 +546,7 @@ sysctl --system  # 生效
 
   注意：证书的CN不要变更
 
-  ```sh
+  ```bash
   cd ~/ca/kube-ca/kubeconfig
   # 创建密钥
   openssl genrsa -out kube-scheduler.key 2048
@@ -578,7 +578,7 @@ sysctl --system  # 生效
 
 * server节点
 
-  ```sh
+  ```bash
   # 复制kube-apiserver证书/密钥到两个server节点
   cd ~/ca/kube-ca/apiserver
   cp ../kube-ca.crt apiserver.crt apiserver-kubelet-client.crt sa.pub /opt/kubernetes/ssl/
@@ -602,7 +602,7 @@ sysctl --system  # 生效
 
 * node节点
 
-  ```sh
+  ```bash
   # 复制kubelet配置文件到所有node节点
   cd ~/ca/kube-ca/kubeconfig
   scp kubelet-node1.conf proxy.conf root@node1:/opt/kubernetes/etc/
@@ -615,7 +615,7 @@ sysctl --system  # 生效
 
 * node节点现有文件
 
-  ```sh
+  ```bash
   tree /opt/kubernetes
   /opt/kubernetes
   ├── bin
@@ -633,7 +633,7 @@ sysctl --system  # 生效
 
 * Master节点现有文件
 
-  ```sh
+  ```bash
   $ tree /opt/kubernetes
   /opt/kubernetes
   ├── bin
@@ -663,7 +663,7 @@ sysctl --system  # 生效
 
 下边是一些公共参数，主要是日志配置，节点上的所有程序都调用了
 
-```sh
+```bash
 # 公共配置文件Controller Manager、scheduler都调用了
 cat > /opt/kubernetes/etc/kube-default.conf<<EOF
 # k8s所有服务共用配置文件
@@ -684,7 +684,7 @@ EOF
 
 [此链接查看最新版](https://github.com/kubernetes/kubernetes/tree/master/CHANGELOG)
 
-```sh
+```bash
 # 下载server端程序
 cd /tmp
 wget https://dl.k8s.io/v1.19.1/kubernetes-server-linux-amd64.tar.gz
@@ -703,7 +703,7 @@ rm -rf kubernetes*
 
 ### systemd服务
 
-```sh
+```bash
 # 添加api-server到systemd服务
 cat > /usr/lib/systemd/system/kube-apiserver.service <<EOF
 [Unit]
@@ -730,7 +730,7 @@ EOF
 
 ### 配置文件
 
-```sh
+```bash
 # api-server配置文件,
 cat > /opt/kubernetes/etc/kube-apiserver.conf<<EOF
 KUBE_API_ARGS="--storage-backend=etcd3 \\
@@ -835,7 +835,7 @@ EOF
 
 ### systemd服务
 
-```sh
+```bash
 # 添加controller-manager到systemd服务
 cat > /usr/lib/systemd/system/kube-controller-manager.service<<EOF
 [Unit]
@@ -860,7 +860,7 @@ EOF
 
 ### 配置文件
 
-```sh
+```bash
 cat > /opt/kubernetes/etc/kube-controller-manager.conf << EOF
 KUBE_CONTROLLER_MANAGER_ARGS="--leader-elect=true \\
 --kubeconfig=/opt/kubernetes/etc/controller-manager.conf \\
@@ -934,7 +934,7 @@ EOF
 
 ### systemd服务
 
-```sh
+```bash
 # 添加scheduler到systemd服务
 cat > /usr/lib/systemd/system/kube-scheduler.service<<EOF
 [Unit]
@@ -959,7 +959,7 @@ EOF
 
 ### 配置文件
 
-```sh
+```bash
 cat > /opt/kubernetes/etc/kube-scheduler.conf<<EOF
 KUBE_SCHEDULER_ARGS="--leader-elect=true \\
 --cert-dir=/opt/kubernetes/ssl/ \\
@@ -984,7 +984,7 @@ EOF
 
 ## 文件权限
 
-```sh
+```bash
 mkdir -p /var/run/kubernetes /usr/libexec/kubernetes
 echo 'd /var/run/kubernetes 0755 kube kube -' >> /usr/lib/tmpfiles.d/kubernetes.conf
 chown kube:kube -R /var/run/kubernetes /usr/libexec/kubernetes /opt/kubernetes/{etc,logs,ssl,data}
@@ -993,7 +993,7 @@ restorecon -R /opt/kubernetes /usr/libexec/kubernetes /var/run/kubernetes
 
 ## 启动服务
 
-```sh
+```bash
 systemctl start kube-apiserver.service
 systemctl start kube-controller-manager.service
 systemctl enable kube-apiserver.service
@@ -1004,7 +1004,7 @@ systemctl enable kube-controller-manager.service
 
 需要先启动API server
 
-```sh
+```bash
 # 生成kube-scheduler.yaml默认文件
 /opt/kubernetes/bin/kube-scheduler \
 --authentication-kubeconfig=/opt/kubernetes/etc/scheduler.conf \
@@ -1022,7 +1022,7 @@ systemctl enable kube-scheduler.service
 
 由于我的ca管理和kubectl程序都是安装在node3上的，所以在node3上操作
 
-```sh
+```bash
 # 复制kubectl的配置文件
 mkdir ~/.kube/
 cp ~/ca/kube-ca/kubeconfig/admin.conf ~/.kube/config
@@ -1041,7 +1041,7 @@ etcd-0               Healthy   {"health":"true"}
 
 --kubelet-client-*参数调用证书的CN是`system:masters`所以用户就是`system:masters`, `system:masters`用户默认绑定到了集群管理员了，不要轻易使用哦~~
 
-```sh
+```bash
 kubectl create clusterrolebinding system:kubelet-api-admin \
 --clusterrole=system:kubelet-api-admin \
 --user=system:masters
@@ -1052,7 +1052,7 @@ kubectl create clusterrolebinding system:kubelet-api-admin \
 刚刚生成的toke文件中的用户组是`system:bootstrappers`，
 把用户组和RBAC预定义规则`system:node-bootstrapper`进行绑定既可以授权kubelet通过apiserver管理证书了
 
-```sh
+```bash
 kubectl create clusterrolebinding system:kubelet-bootstrap \
 --clusterrole system:node-bootstrapper \
 --group system:bootstrappers
@@ -1064,7 +1064,7 @@ kubectl create clusterrolebinding system:kubelet-bootstrap \
 
 下边是一些公共参数，主要是日志配置，节点上的所有程序都调用了
 
-```sh
+```bash
 cat > /opt/kubernetes/etc/kube-default.conf<<EOF
 # k8s所有服务共用配置文件
 KUBE_LOG_ARGS="--logtostderr=false --log-dir=/opt/kubernetes/logs/ --v=2"
@@ -1088,7 +1088,7 @@ Kubernetes 支持多个容器运行环境: Docker、 containerd、cri-o、 rktle
 
 注意docker的配置文件如下：
 
-```sh
+```bash
 mkdir -p /etc/docker
 cat > /etc/docker/daemon.json <<EOF
 {
@@ -1115,7 +1115,7 @@ EOF
 
 [此链接查看最新版](https://github.com/kubernetes/kubernetes/tree/master/CHANGELOG)
 
-```sh
+```bash
 cd /tmp
 wget https://dl.k8s.io/v1.19.1/kubernetes-node-linux-amd64.tar.gz
 tar -zxf kubernetes-node-linux-amd64.tar.gz
@@ -1137,7 +1137,7 @@ kubelet 接收一组通过各类机制提供给它的 PodSpecs，确保这些 Po
 
 ### systemd服务
 
-```sh
+```bash
 # 设置kubelet的systemd服务
 cat > /usr/lib/systemd/system/kubelet.service <<EOF
 [Unit]
@@ -1160,7 +1160,7 @@ EOF
 
 ### 配置文件
 
-```sh
+```bash
 # 注意--kubeconfig的参数，文件调用本机的文件
 cat > /opt/kubernetes/etc/kube-kubelet.conf<<EOF
 KUBE_KUBELET_ARGS="\\
@@ -1224,7 +1224,7 @@ EOF
 
 ### 安装一些需要用到的工具
 
-```sh
+```bash
 yum install conntrack-tools libnetfilter_cthelper libnetfilter_cttimeout libnetfilter_queue socat-y
 ```
 
@@ -1234,7 +1234,7 @@ yum install conntrack-tools libnetfilter_cthelper libnetfilter_cttimeout libnetf
 
 ### systemd服务
 
-```sh
+```bash
 # 设置kubelet的systemd服务
 cat > /usr/lib/systemd/system/kubelet.service <<EOF
 [Unit]
@@ -1257,7 +1257,7 @@ EOF
 
 ### 配置文件
 
-```sh
+```bash
 # 注意--kubeconfig的参数，文件调用本机的文件
 cat > /opt/kubernetes/etc/kube-kubelet.conf<<EOF
 KUBE_KUBELET_ARGS="\\
@@ -1311,7 +1311,7 @@ EOF
 
   由于我的kubectl安装在master 节点(node3)上的，所以需要在master节点上生成，然后复制到worker节点的`/opt/kubernetes/etc/`目录
 
-  ```sh
+  ```bash
   cd ~/ca/kube-ca/kubeconfig
   KUBE_APISERVER="https://node3:6443" # apiserver IP:PORT
   TOKEN="c47ffb939f5ca36231d9e3121a252940" # 与token.csv里保持一致
@@ -1326,7 +1326,7 @@ EOF
 
 ### 启动服务
 
-```sh
+```bash
 restorecon -R /opt/kubernetes
 systemctl daemon-reload
 systemctl start kubelet
@@ -1335,7 +1335,7 @@ systemctl enable kubelet
 
 ### 批准kubelet证书申请并加入集群
 
-```sh
+```bash
 # 查看kubelet证书请求
 kubectl get csr
 NAME                                                   AGE    SIGNERNAME                                    REQUESTOR           CONDITION
@@ -1354,7 +1354,7 @@ k8s-master   NotReady   <none>   7s    v1.18.3
 
 ### 安装一些需要用到的工具
 
-```sh
+```bash
 yum install conntrack-tools -y
 ```
 
@@ -1373,7 +1373,7 @@ kube-proxy 维护节点上的网络规则。这些网络规则允许从集群内
 
 ### systemd服务
 
-```sh
+```bash
 # 设置kube-proxy的systemd服务
 cat > /usr/lib/systemd/system/kube-proxy.service <<EOF
 [Unit]
@@ -1397,7 +1397,7 @@ EOF
 
 ### 配置文件
 
-```sh
+```bash
 cat > /opt/kubernetes/etc/kube-proxy.conf<<EOF
 KUBE_PROXY_ARGS="--config=/opt/kubernetes/etc/kube-proxy.yaml"
 EOF
@@ -1430,13 +1430,13 @@ mode: "ipvs"
 
 ## 文件权限
 
-```sh
+```bash
 restorecon -R /opt/kubernetes
 ```
 
 ## 启动服务
 
-```sh
+```bash
 sudo systemctl daemon-reload
 sudo systemctl start kubelet.service
 sudo systemctl start kube-proxy.service
@@ -1456,7 +1456,7 @@ sudo systemctl enable kube-proxy.service
 
 * 安装CNI二进制文件
 
-  ```sh
+  ```bash
   # 两个Worker Node上都需要安装
   mkdir -p /opt/cni/bin/
   VERSION=v0.8.7
@@ -1471,7 +1471,7 @@ sudo systemctl enable kube-proxy.service
 
   flannel我部署到kube集群里边了，没有单独每个Worker Node部署
 
-  ```sh
+  ```bash
   # 在master节点操作，因为master节点安装了kubectl客户端程序和配置
   wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
   PODIP=10.120.0.0/16  # pod的ip地址，即controller-manager控制器设置的cluster-cidr地址
@@ -1492,7 +1492,7 @@ sudo systemctl enable kube-proxy.service
 
   在两个master node上安装
 
-  ```sh
+  ```bash
   yum install -y nginx
   ```
 
@@ -1500,7 +1500,7 @@ sudo systemctl enable kube-proxy.service
 
   使用nginx的4层负载均衡，主备一样
 
-  ```sh
+  ```bash
   setsebool -P nis_enabled 1 # 修改selinux权限
   cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
   cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
@@ -1525,7 +1525,7 @@ sudo systemctl enable kube-proxy.service
 
 * 启动nginx
 
-  ```sh
+  ```bash
   systemctl start nginx
   systemctl enable nginx
   ```
@@ -1536,14 +1536,14 @@ sudo systemctl enable kube-proxy.service
   
   在两个master node上安装keepalived即可（一主一备）
 
-  ```sh
+  ```bash
   yum install -y keepalived
   mkdir -p /etc/keepalived
   ```
 
 * master节点1(node3)配置文件
 
-  ```sh
+  ```bash
   mv /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf.back
   cat > /etc/keepalived/keepalived.conf<<EOF
   ! Configuration File for keepalived
@@ -1590,7 +1590,7 @@ sudo systemctl enable kube-proxy.service
 
 * master节点2(node4)配置文件
 
-  ```sh
+  ```bash
   mv /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf.back
   cat > /etc/keepalived/keepalived.conf<<EOF
   ! Configuration File for keepalived
@@ -1632,7 +1632,7 @@ sudo systemctl enable kube-proxy.service
 
 * 两个节点都创建以下脚本文件
 
-  ```sh
+  ```bash
   cat > /etc/keepalived/check-nginx.sh<<EOF
   #!/bin/bash
   #检查ngin进程是否存在
@@ -1654,13 +1654,13 @@ sudo systemctl enable kube-proxy.service
 
 * 启动keepalived
 
-  ```sh
+  ```bash
   systemctl enable keepalived && service keepalived start
   ```
 
 * 测试
   
-  ```sh
+  ```bash
   curl -k https://192.168.122.2:6443/version
   {
   "major": "1",
@@ -1679,7 +1679,7 @@ sudo systemctl enable kube-proxy.service
 
 * 关闭主节点Nginx，测试VIP是否漂移到备节点服务器。
 
-  ```sh
+  ```bash
   # 在Nginx Master执行 pkill nginx
   pkill nginx
   # 在Nginx Backup，ip addr命令查看已成功绑定VIP
@@ -1690,7 +1690,7 @@ sudo systemctl enable kube-proxy.service
 
   找K8s集群中任意一个节点，使用curl查看K8s版本测试，使用VIP访问：
 
-  ```sh
+  ```bash
   curl -k https://192.168.122.2:6443/version
   {
     "major": "1",
@@ -1721,7 +1721,7 @@ sudo systemctl enable kube-proxy.service
 
 * 检查节点状态：
 
-  ```sh
+  ```bash
   kubectl get node
   NAME          STATUS   ROLES    AGE    VERSION
   k8s-master    Ready    <none>   34h    v1.18.3

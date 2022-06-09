@@ -16,7 +16,7 @@ categories: ['网络技术']
 
 * 存储库安装
 
-    ```sh
+    ```bash
     cd /etc/yum.repos.d/
     wget https://copr.fedorainfracloud.org/coprs/librehat/shadowsocks/repo/epel-7/librehat-shadowsocks-epel-7.repo
     yum check
@@ -27,7 +27,7 @@ categories: ['网络技术']
 * 编译安装
   * 安装需要的lib库
 
-    ```sh
+    ```bash
     yum install epel-release -y
     yum install gcc make pcre-devel mbedtls-devel libsodium-devel c-ares-devel libev-devel libnetfilter_conntrack-devel libnetfilter_conntrack -y
     # 如果要安装文档的还需要以下几个依赖
@@ -36,7 +36,7 @@ categories: ['网络技术']
 
   * 下载软件，解压缩
 
-    ```sh
+    ```bash
     cd /usr/local/src
     wget https://github.com/shadowsocks/shadowsocks-libev/releases/download/v3.2.3/shadowsocks-libev-3.2.3.tar.gz
     tar -xvf shadowsocks-libev-3.2.3.tar.gz
@@ -46,7 +46,7 @@ categories: ['网络技术']
 
   * 编译安装
 
-    ```sh
+    ```bash
     ./configure --prefix=/opt/shadowsocks-libev/ \
     --disable-documentation
     make
@@ -55,7 +55,7 @@ categories: ['网络技术']
 
   * 添加系统服务
 
-    ```sh
+    ```bash
     cd /usr/local/src/shadowsocks-libev-3.2.3
     cp rpm/SOURCES/systemd/shadowsocks-libev.service /usr/lib/systemd/system/
     cp rpm/SOURCES/systemd/shadowsocks-libev.default /etc/sysconfig/shadowsocks-libev
@@ -77,7 +77,7 @@ categories: ['网络技术']
 * 配置
   * 编辑配置文件
 
-    ```sh
+    ```bash
     # 添加配置文件
     cat > /etc/shadowsocks-libev/config.json <<EOF
     {
@@ -94,7 +94,7 @@ categories: ['网络技术']
   * 优化
     > 参照这一篇文章进行优化[shadowsocks advanced config](https://shadowsocks.org/en/config/advanced.html)
 
-    ```sh
+    ```bash
     cat > /etc/sysctl.d/98-shadowsocks.conf <<EOF
     # max open files
     fs.file-max = 51200
@@ -157,7 +157,7 @@ categories: ['网络技术']
 
   * 安装后的配置
 
-    ```sh
+    ```bash
     cat > /etc/shadowsocks-libev/config.json <<EOF
     {
       "server":["service-ip"],
@@ -171,7 +171,7 @@ categories: ['网络技术']
 
   * 添加系统服务
 
-    ```sh
+    ```bash
     cp rpm/SOURCES/systemd/shadowsocks-libev-local.service /usr/lib/systemd/system/
     sed -i 's/\/usr\/bin\//\/opt\/shadowsocks-libev\/bin\//g' /usr/lib/systemd/system/shadowsocks-libev-local.service
     # 开机启动服务
@@ -197,7 +197,7 @@ categories: ['网络技术']
 
     > `sqlite`一般都自带的无需安装
 
-    ```sh
+    ```bash
     yum install sqlite
     ```
 
@@ -205,7 +205,7 @@ categories: ['网络技术']
 
   * 拓扑
 
-    ```sh
+    ```bash
     +-------------+    +-------------+       +------+
     | Shadowsocks |    | Shadowsocks |  ...  |      |
     | manager API |    | manager API |       |      |
@@ -228,7 +228,7 @@ categories: ['网络技术']
 
   * 从源代码安装
 
-    ```sh
+    ```bash
     git clone https://github.com/shadowsocks/shadowsocks-manager.git
     cd shadowsocks-manager
     npm i -g
@@ -239,7 +239,7 @@ categories: ['网络技术']
     > 升级前请做好备份,请勿跨版本升级，例如`0.21.0`可以升级到`0.22.x`，但不能直接升级到`0.23.x`
     > 通过NPM安装的可执行文件(ssmgr):`/opt/nodejs/bin`,程序文件:`ib/node_modules/shadowsocks-manager/`
 
-    ```sh
+    ```bash
     npm i -g shadowsocks-manager
     or
     npm i -g shadowsocks-manager --unsafe-perm
@@ -250,7 +250,7 @@ categories: ['网络技术']
 * 配置`shadowsocks-manager`
   * 创建配置文件
 
-    ```sh
+    ```bash
     cat > $HOME/.ssmgr/default.yml <<EOF
     type: s
     shadowsocks:
@@ -264,7 +264,7 @@ categories: ['网络技术']
 
   * 启动节点
 
-    ```sh
+    ```bash
     pm2 --name "node" -f start ssmgr -x -- -c $HOME/.ssmgr/default.yml -r libev:chacha20-ietf-poly1305
     ```
 
@@ -334,7 +334,7 @@ categories: ['网络技术']
 
   * 启动`web`
 
-    ```sh
+    ```bash
     pm2 --name "web" -f start ssmgr -x -- -c $HOME/.ssmgr/web.yml
     ```
 

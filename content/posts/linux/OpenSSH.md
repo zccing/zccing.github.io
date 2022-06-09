@@ -19,7 +19,7 @@ openssh配置指南，linux免密登录配置方法等等
 默认自动安装SSH并开启密码登陆
 开启密钥登陆
 
-```shell
+```bashell
 ssh localhost
 # 首次登陆下,生成~/.ssh目录
 exit

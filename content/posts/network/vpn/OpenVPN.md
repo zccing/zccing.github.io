@@ -19,12 +19,12 @@ openvpn的安装配置记录
 ### 编译安装
 
 * 安装编译依赖库
-    ```sh
+    ```bash
     yum -y install gcc gcc-c++ make autoconf openssl-devel lzo-devel pam-devel systemd-devel systemd-libs
     ```
 
 * 下载并配置编译环境
-    ```sh
+    ```bash
     cd /usr/local/src/
 
     # 需要翻墙，我是翻墙下载过来上传上去的
@@ -52,21 +52,21 @@ openvpn的安装配置记录
     ```
 
 * 安装openvpn到/opt/openvpn目录中
-    ```sh
+    ```bash
     make -j4 && make install
     ```
 
 ### 添加环境变量和服务
 
 * 配置环境变量
-    ```sh
+    ```bash
     vim /etc/profile   # 编辑profile
     export PATH=$PATH:/opt/openvpn/sbin/  # 在最后一行添加，然后就可以直接使用 openvpn命令了
     ```
 
 * 添加man手册
     这步可有可无，无伤大雅
-    ```sh
+    ```bash
     vim /etc/man_db.conf  # 编辑man配置文件
 
     # 在MANDATORY_MANPATH文件位置添加以下字符串
@@ -74,7 +74,7 @@ openvpn的安装配置记录
     ```
 
 * 加载内核模块
-    ```sh
+    ```bash
     lsmod | grep tun    # 查看模块是否有tunnel4和tun模块
 
     # 安装缺少的模块
@@ -82,7 +82,7 @@ openvpn的安装配置记录
     modprobe tun
 
 * 添加到系统服务并创建配置文件
-    ```sh
+    ```bash
     cd /opt/openvpn  # 进入openvpn的安装目录目录
     cp ./lib/systemd/system/openvpn-server@.service /usr/lib/systemd/system/openvpn@server.service  # 拷贝服务文件到系统服务目录
     mkdir -p /etc/openvpn/server/ # 创建配置文件目录
@@ -109,7 +109,7 @@ openvpn的安装配置记录
 ### 下载和配置easyrsa
 
 * 下载easyrsa
-    ```sh
+    ```bash
     cd /usr/local/src/
     git clone https://github.com/OpenVPN/easy-rsa.git
     cp -R easy-rsa /opt/openvpn/
@@ -117,7 +117,7 @@ openvpn的安装配置记录
     cp vars.example vars
     ```
 * 配置vars文件
-    ```sh
+    ```bash
     vim vars
 
     # 修改一下位置的对应值
@@ -349,7 +349,7 @@ openvpn的安装配置记录
 ### 服务端配置
 
 * 打开服务端配置文件，并按照需要修改，把 “；”去掉即可启用
-    ```sh
+    ```bash
     vim /etc/openvpn/server/server.conf
 
     # 定义openvpn监听的IP地址，单网卡的可以不注明，但是多网卡的建议注明。
@@ -490,7 +490,7 @@ openvpn的安装配置记录
 
     ```
 * 启用服务
-    ```sh
+    ```bash
     systemctl start openvpn@server  # 启动服务
     systemctl enable openvpn@server # 开机启动
     firewall-cmd --add-service=openvpn --permanent --zone=public # 开启ip伪装
@@ -503,7 +503,7 @@ openvpn的安装配置记录
 ### 客户端配置
 
 * 打开客户端配置文件，并按照需要修改，把 “；”去掉即可启用
-    ```sh
+    ```bash
     vim ~/openvpn/openvpn-client/client.conf
 
     # 定义这是一个client，配置从server端pull拉取过来，如IP地址，路由信息之类，Server使用push指令推送过来。
@@ -597,7 +597,7 @@ openvpn的安装配置记录
 ### 创建认证脚本
 
 * 创建文件,并修改权限，psw-file的权限修改最小
-    ```sh
+    ```bash
     mkdir -p /etc/openvpn/openvpn-passwd
     cd /etc/openvpn/openvpn-passwd
     touch checkpsw.sh openvpn-password.log psw-file
@@ -606,7 +606,7 @@ openvpn的安装配置记录
     chmod u+x checkpsw.sh
     ```
 * 编辑checkpsw.sh 文件，添加一下内容
-    ```sh
+    ```bash
     #!/bin/sh
     ###########################################################
     # checkpsw.sh (C) 2004 Mathias Sundman <mathias@openvpn.se>
@@ -646,7 +646,7 @@ openvpn的安装配置记录
 ### 修改配置文件
 
 * 服务端
-    ```sh
+    ```bash
     #############################  密码认证部分（不需要密码的可以不填）  ##########################
 
     # 加入脚本处理，如密码认证
@@ -665,7 +665,7 @@ openvpn的安装配置记录
 
     ```
 * 客户端
-    ```sh
+    ```bash
 
     #############################  密码认证部分（不需要密码的可以不填）  ##########################
 
@@ -677,22 +677,22 @@ openvpn的安装配置记录
     ```
 * 创建用户账号
     修改/etc/openvpn/openvpn-passwd/psw-file文件，格式如下：
-    ```sh
+    ```bash
     zhangcc 123456
     mysql 123456
     ```
 * 重启服务
-    ```sh
+    ```bash
     systemctl restart openvpn@server
     ```
 * 配置客户端自动输入密码登录
     在配置文件目录里新建passwd.txt文件，编辑这个文件，并在第一行输入账号，第二行输入密码，如下：
-    ```sh
+    ```bash
     username
     password
     ```
     编辑.ovpn或者.conf配置文件，修改 auth-user-pass
-    ```sh
+    ```bash
     auth-user-pass passwd.txt
     ```
     然后再次连接的时候就不需要账号密码了

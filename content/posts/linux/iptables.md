@@ -71,7 +71,7 @@ categories: ['linux']
 > 高度模块化，由诸多扩展模块实现其检查条件或处理动作的定义；模块位置`/usr/lib64/xtables/`，
 > `IPv6`模块`libip6t_`开头，`IPv4`模块`libipt_`, `libxt_`开头
 
-```sh
+```bash
 iptables [-t table] {-A|-C|-D} chain rule-specification
 iptables [-t table] -I chain [rulenum] rule-specification
 iptables [-t table] -R chain rulenum rule-specification
@@ -89,7 +89,7 @@ target = -j targetname [per-target-options]
 
 * 规则格式：
 
-    ```sh
+    ```bash
     iptables [-t table] COMMAND chain [PARAMETERS] [-m matchname [per-match-options]] -j targetname [per-target-options]
     ```
 
@@ -98,7 +98,7 @@ target = -j targetname [per-target-options]
   * `COMMAND`:
     * 链管理:
 
-        ```sh
+        ```bash
         -N：new, 自定义一条新的规则链；
         -X： delete，删除自定义的规则链；
             注意：仅能删除 用户自定义的 引用计数为0的 空的 链；
@@ -111,7 +111,7 @@ target = -j targetname [per-target-options]
 
     * 规则管理:
 
-        ```sh
+        ```bash
         -A：append，追加；
         -I：insert, 插入，要指明位置，省略时表示第一条；
         -D：delete，删除；
@@ -127,7 +127,7 @@ target = -j targetname [per-target-options]
 
     * 查看
 
-        ```sh
+        ```bash
         -L：list, 列出指定鏈上的所有规则；
         -n：numberic，以数字格式显示地址和端口号；
         -v：verbose，详细信息；
@@ -145,7 +145,7 @@ target = -j targetname [per-target-options]
         > 无需加载任何模块，由iptables/netfilter自行提供；
         > `[!]`取反
 
-        ```sh
+        ```bash
         [!] -s, --source  address[/mask][,...]：检查报文中的源IP地址是否符合此处指定的地址或范围；
         [!] -d, --destination address[/mask][,...]：检查报文中的目标IP地址是否符合此处指定的地址或范围；所有地址：0.0.0.0/0
         [!] -p, --protocol protocol: tcp, udp, udplite, icmp, icmpv6,esp, ah, sctp, mh or  [all]
@@ -158,7 +158,7 @@ target = -j targetname [per-target-options]
         > 在使用-p选项指明了特定的协议时，无需再同时使用-m选项指明扩展模块的扩展机制；
         * `tcp`:
 
-            ```sh
+            ```bash
             [!] --source-port, --sport port[:port]：匹配报文的源端口；可以是端口范围；
             [!] --destination-port,--dport port[:port]：匹配报文的目标端口；可以是端口范围；
             [!] --tcp-flags  mask  comp
@@ -170,14 +170,14 @@ target = -j targetname [per-target-options]
 
         * `udp`:
 
-            ```sh
+            ```bash
             [!] --source-port, --sport port[:port]：匹配报文的源端口；可以是端口范围；
             [!] --destination-port,--dport port[:port]：匹配报文的目标端口；可以是端口范围；
             ```
 
         * `icmp`:
 
-            ```sh
+            ```bash
             [!] --icmp-type {type[/code]|typename}
                 echo-request：8/0
                 echo-reply：0/0
@@ -188,7 +188,7 @@ target = -j targetname [per-target-options]
         * `multiport`:
             > 以离散或连续的 方式定义多端口匹配条件，最多15个；
 
-            ```sh
+            ```bash
             [!] --source-ports,--sports port[,port|,port:port]...：指定多个源端口；
             [!] --destination-ports,--dports port[,port|,port:port]...：指定多个目标端口；
             $ sudo iptables -I INPUT  -d 172.16.0.7 -p tcp -m multiport --dports 22,80,139,445,3306 -j ACCEPT
@@ -197,7 +197,7 @@ target = -j targetname [per-target-options]
         * `iprange`:
             > 以连续地址块的方式来指明多IP地址匹配条件；
 
-            ```sh
+            ```bash
             [!] --src-range from[-to]
             [!] --dst-range from[-to]
             $ sudo iptables -I INPUT -d 172.16.0.7 -p tcp -m multiport --dports 22,80,139,445,3306 -m iprange --src-range 172.16.0.61-172.16.0.70 -j REJECT
@@ -206,7 +206,7 @@ target = -j targetname [per-target-options]
         * `time`:
             > 如果数据包到达时间/日期在给定范围内，则匹配。
 
-            ```sh
+            ```bash
             --timestart hh:mm[:ss]
             --timestop hh:mm[:ss]
             [!] --weekdays day[,day...]
@@ -219,7 +219,7 @@ target = -j targetname [per-target-options]
         * `string`:
             > 此模块使用某种模式匹配策略来匹配给定的字符串, 只对明文编码的字符串可以匹配
 
-            ```sh
+            ```bash
             --algo {bm|kmp}             # 检测模式
             [!] --string pattern        # 字符串
             [!] --hex-string pattern    # 字符串hex
@@ -231,7 +231,7 @@ target = -j targetname [per-target-options]
         * `connlimit`:
             > 允许您限制每个客户端IP地址（或客户端地址块）到服务器的并行连接数。
 
-            ```sh
+            ```bash
             --connlimit-upto n      # 上限，小于等于N
             --connlimit-above n     # 下限，大于N
             $ sudo iptables -I INPUT -d 172.16.0.7 -p tcp --syn --dport 22 -m connlimit --connlimit-above 2 -j REJECT
@@ -241,7 +241,7 @@ target = -j targetname [per-target-options]
           > 该模块使用令牌桶过滤器以有限的速率匹配。
           > 限制本机某tcp服务接收新请求的速率：--syn, -m limit
 
-          ```sh
+          ```bash
           # 限制每(秒|分钟|小时|天）可以生成多少个令牌
           --limit rate[/second|/minute|/hour|/day]
           # 令牌桶最大可以存放多少个令牌（一个令牌代表一个数据包）

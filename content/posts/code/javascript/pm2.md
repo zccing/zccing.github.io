@@ -19,7 +19,7 @@ categories: ['编程语言']
 
 ### 2.1 安装
 
-  ```sh
+  ```bash
   sudo npm install -g pm2
   # tab补全
   pm2 completion install
@@ -67,7 +67,7 @@ pm2安装好后，会自动创建下面目录。看文件名基本就知道干�
     * Usage: `pm2 startup`
     * `pm2 startup`以后会得到以下提示
 
-      ```sh
+      ```bash
       [PM2] Init System found: upstart
       [PM2] To setup the Startup Script, copy/paste the following command:
       sudo env PATH=$PATH:/opt/nodejs/bin /opt/nodejs/lib/node_modules/pm2/bin/pm2 startup systemd -u cc --hp /home/cc
@@ -75,13 +75,13 @@ pm2安装好后，会自动创建下面目录。看文件名基本就知道干�
 
     * 按照上边的提示设置systemd启动脚本
 
-      ```sh
+      ```bash
       sudo env PATH=$PATH:/opt/nodejs/bin /opt/nodejs/lib/node_modules/pm2/bin/pm2 startup systemd -u cc --hp /home/cc
       ```
 
     * 启动systemd服务
 
-      ```sh
+      ```bash
       systemctl enable pm2-cc
       ```
   * 查看进程

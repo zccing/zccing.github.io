@@ -29,7 +29,7 @@ autoCollapseToc: true
 
 ## 初始化节点
 
-```sh
+```bash
 # 关闭swap, 我没关，苦逼，内存不够
 swapoff -a  # 临时
 sed -ri 's/.*swap.*/#&/' /etc/fstab    # 永久
@@ -118,7 +118,7 @@ sysctl --system  # 生效
 
 通过阿里云镜像仓库安装最新版docker，所有节点上都要安装
 
-```sh
+```bash
 yum install -y yum-utils lvm2
 yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 # 注意： centos8需要更改为centos8的仓库，已经有centos8的镜像了
@@ -159,7 +159,7 @@ systemctl start docker
 
 所有节点上都要安装
 
-```sh
+```bash
 # 安装ipset,一般默认都有
 yum install ipset ipvsadm -y
 ```
@@ -172,7 +172,7 @@ yum install ipset ipvsadm -y
 
 使用nginx的4层负载均衡，主备一样
 
-```sh
+```bash
 cat > /etc/yum.repos.d/nginx.repo<<"EOF"
 [nginx-stable]
 name=nginx stable repo
@@ -226,7 +226,7 @@ systemctl start nginx
 
 # 安装kubeadm kubelet
 
-```sh
+```bash
 # 使用阿里云镜像站
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
@@ -244,7 +244,7 @@ yum update -y && yum install -y kubelet kubeadm kubectl && systemctl enable --no
 
 # kubectl命令补全
 
-```sh
+```bash
 echo 'eval "$(kubectl completion bash)"' >> ~/.bashrc
 echo 'eval "$(kubeadm completion bash)"' >> ~/.bashrc
 source ~/.bashrc
@@ -459,7 +459,7 @@ EOF
 ```
 
 # 安装master节点
-```sh
+```bash
 # 安装第一个master节点
 systemctl enable kubelet
 kubeadm init --config=kubeadm-init.conf --upload-certs
@@ -470,7 +470,7 @@ kubeadm init --config=kubeadm-init.conf --upload-certs
 
 # 安装flannel网络
 
-```sh
+```bash
 wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 PODIP=10.120.0.0/16  # pod的ip地址，即controller-manager控制器设置的cluster-cidr地址
 sed -i 's|10.244.0.0/16|'"$PODIP"'|g' kube-flannel.yml
@@ -503,7 +503,7 @@ kubectl apply -f kube-flannel.yml
 
 # 安装
 
-```sh
+```bash
 # 安装metrics-server(基础指标监控服务器)
 wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 kubectl apple -f components.yaml
@@ -521,7 +521,7 @@ kubectl describe secrets -n kube-system $(kubectl -n kube-system get secret | aw
 
 # 问题记录
 
-```sh
+```bash
 # 错误日志,
 root@node1:~# kubectl -n kube-system logs kube-proxy-lff8f | tail -n 10
 I1118 21:46:43.893050       1 streamwatcher.go:114] Unexpected EOF during watch stream event decoding: unexpected EOF

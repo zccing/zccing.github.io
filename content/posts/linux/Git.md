@@ -17,7 +17,7 @@ categories: ['linux']
 
 ### 下载源代码包
 
-```shell
+```bashell
 mkdir ~/src
 cd ~/src
 wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.19.1.tar.gz
@@ -25,7 +25,7 @@ wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.19.1.tar.gz
 
 ### 安装依赖库文件
 
-```shell
+```bashell
 yum install curl-devel expat-devel openssl-devel zlib-devel asciidoc
 ```
 
@@ -33,7 +33,7 @@ yum install curl-devel expat-devel openssl-devel zlib-devel asciidoc
 
 ### 编译
 
-```shell
+```bashell
 mkdir /opt/git
 make prefix=/opt/git/ all
 sudo make prefix=/opt/git/ install
@@ -42,7 +42,7 @@ echo $? # 查看是否编译安装完成
 
 ### 设置环境变量
 
-```shell
+```bashell
 mkdir /opt/bin
 ln -s /opt/git/bin/* /opt/bin
 echo "export PATH=$PATH:/opt/bin/" >> /etc/profile
@@ -51,7 +51,7 @@ source /etc/profile
 
 ### 测试
 
-```shell
+```bashell
 git --version
 
 # 初始化

@@ -44,7 +44,7 @@ Yum存储库添加到系统的存储库列表中
 
 * 查看MySQL Yum存储库中的所有子存储库，并查看其中哪些被启用或禁用
 
-```sh
+```bash
 yum repolist all | grep mysql
 # 查看MySQL Yum存储库中的所有子存储库，并查看其中哪些被启用或禁用
 sudo yum-config-manager --disable mysql**-community
@@ -55,7 +55,7 @@ sudo yum-config-manager --enable mysql**-community
 
 * 如若不支持yum-config-manager命令，可以通过修改etc/yum.repos.d/mysql-community.repo来解决，
 
-```sh
+```bash
 vim etc/yum.repos.d/mysql-community.repo
 # 打开文件,找到要配置的子库的条目，然后编辑该enabled选项,指定 enabled=0禁用子库，或 enabled=1启用子库
 yum repolist enabled | grep mysql
@@ -66,14 +66,14 @@ yum repolist enabled | grep mysql
 
 ### 三、安装mysql
 
-```sh
+```bash
 yum install mysql-community-server
 # 安装MySQL，装MySQL服务器的软件包以及其他必需的软件包
 ```
 
 ### 四、启动MySQL服务器
 
-```sh
+```bash
 service mysqld start
 # 启动MySQL服务
 systemctl start mysqld.service
@@ -84,7 +84,7 @@ service mysqld status
 
 ### 五、开机启动mysql
 
-```sh
+```bash
 systemctl enable mysqld
 systemctl daemon-reload
 ```
@@ -147,12 +147,12 @@ systemctl daemon-reload
 ### 配置编译环境
 
 * yum安装需要的库文件
-    ```sh
+    ```bash
     yum install wget gcc gcc-c++ make perl ncurses ncurses-devel openssl openssl-devel libaio libaio-devel bison-devel bison
     ```
 
 * 安装cmake
-    ```sh
+    ```bash
     yum install gcc-c++  # 安装c++支持
     wget https:# cmake.org/files/v3.11/cmake-3.11.4-Linux-x86_64.tar.gz  # 官网下载最新的cmake源文件压缩包
     tar -zxf cmake-3.11.4-Linux-x86_64.tar.gz   # 解压源文件到当前目录
@@ -165,7 +165,7 @@ systemctl daemon-reload
     ```
 
 * 安装boost(可选，因为我安装的源代码是包含boost头的，建议不安装和编译，节省时间)
-    ```sh
+    ```bash
     cd ~/src
     wget https:# dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.gz   # 下载
     tar -zxf boost_1_68_0.tar.gz  # 解压缩
@@ -194,7 +194,7 @@ systemctl daemon-reload
     ```
 
 * 添加用户和创建安装、数据库文件目录
-    ```sh
+    ```bash
     groupadd dba
     useradd -r -g dba -s /bin/false dba
     mkdir /opt/mysql
@@ -205,7 +205,7 @@ systemctl daemon-reload
 ### 编译mysql
 
 * 下载mysql源包
-    ```sh
+    ```bash
     wget http://mirrors.163.com/mysql/Downloads/MySQL-8.0/mysql-boost-8.0.12.tar.gz   # 从网易镜像站下载源文件
     wget http://mirrors.163.com/mysql/Downloads/MySQL-8.0/mysql-boost-8.0.12.tar.gz.md5   # 下载校验md5
     md5sum -c mysql-boost-8.0.12.tar.gz.md5   # 校验源文件
@@ -214,7 +214,7 @@ systemctl daemon-reload
     ```
 
 * 编译安装和初始化mysql
-    ```sh
+    ```bash
     # 编译
     mkdir bld
     cd bld
@@ -300,7 +300,7 @@ systemctl daemon-reload
     ```
 * openssl创建证书
     如果你不准备用mysql自动生成的证书，可以手动重新生成你需要的
-    ```sh
+    ```bash
     ##########################
     #                        ＃
     #      生成ＣＡ   　　　　　＃
