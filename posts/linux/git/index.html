@@ -1,153 +1,50 @@
-<!doctype html><html lang=zh-cn>
-<head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=robots content="noodp">
-<meta http-equiv=x-ua-compatible content="IE=edge, chrome=1">
-<title>编译安装git - 星速</title><meta name=Description content="使用编译的方式在linux服务器上安装git"><meta property="og:title" content="编译安装git">
-<meta property="og:description" content="使用编译的方式在linux服务器上安装git">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://www.net-cc.com/posts/linux/git/"><meta property="og:image" content="https://www.net-cc.com/images/logo.png"><meta property="article:section" content="posts">
-<meta property="article:published_time" content="2020-08-30T01:37:56+08:00">
-<meta property="article:modified_time" content="2021-12-06T15:32:36+00:00">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:image content="https://www.net-cc.com/images/logo.png">
-<meta name=twitter:title content="编译安装git">
-<meta name=twitter:description content="使用编译的方式在linux服务器上安装git">
-<meta name=application-name content="星速">
-<meta name=apple-mobile-web-app-title content="星速"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico>
-<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.net-cc.com/posts/linux/git/><link rel=next href=https://www.net-cc.com/posts/linux/selinux/><link rel=alternate href=/posts/linux/git/index.xml type=application/rss+xml title=星速>
-<link rel=feed href=/posts/linux/git/index.xml type=application/rss+xml title=星速><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"编译安装git","inLanguage":"zh-cn","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.net-cc.com\/posts\/linux\/git\/"},"image":["https:\/\/www.net-cc.com\/images"],"genre":"posts","keywords":"linux","wordcount":149,"url":"https:\/\/www.net-cc.com\/posts\/linux\/git\/","datePublished":"2020-08-30T01:37:56+08:00","dateModified":"2021-12-06T15:32:36+00:00","publisher":{"@type":"Organization","name":"cc","logo":"https:\/\/www.net-cc.com"},"author":{"@type":"Person","name":"cc"},"description":"使用编译的方式在linux服务器上安装git"}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script>
-<div id=mask></div><div class=wrapper><header class=desktop id=header-desktop>
-<div class=header-wrapper>
-<div class=header-title>
-<a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a>
-</div><div class=menu>
-<div class=menu-inner><a class=menu-item href=/posts/> 所有文章 </a><a class=menu-item href=/tags/> 标签 </a><a class=menu-item href=/categories/> 分类 </a><a class=menu-item href=/about/ title=关于> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>编译安装git - 星速</title><meta name=Description content="使用编译的方式在linux服务器上安装git"><meta property="og:title" content="编译安装git"><meta property="og:description" content="使用编译的方式在linux服务器上安装git"><meta property="og:type" content="article"><meta property="og:url" content="https://www.net-cc.com/posts/linux/git/"><meta property="og:image" content="https://www.net-cc.com/images/logo.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-08-30T01:37:56+08:00"><meta property="article:modified_time" content="2022-06-09T20:44:23+08:00"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.net-cc.com/images/logo.png"><meta name=twitter:title content="编译安装git"><meta name=twitter:description content="使用编译的方式在linux服务器上安装git"><meta name=application-name content="星速"><meta name=apple-mobile-web-app-title content="星速"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.net-cc.com/posts/linux/git/><link rel=next href=https://www.net-cc.com/posts/linux/selinux/><link rel=alternate href=/posts/linux/git/index.xml type=application/rss+xml title=星速><link rel=feed href=/posts/linux/git/index.xml type=application/rss+xml title=星速><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"编译安装git","inLanguage":"zh-cn","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.net-cc.com\/posts\/linux\/git\/"},"image":["https:\/\/www.net-cc.com\/images"],"genre":"posts","keywords":"linux","wordcount":149,"url":"https:\/\/www.net-cc.com\/posts\/linux\/git\/","datePublished":"2020-08-30T01:37:56+08:00","dateModified":"2022-06-09T20:44:23+08:00","publisher":{"@type":"Organization","name":"cc","logo":"https:\/\/www.net-cc.com"},"author":{"@type":"Person","name":"cc"},"description":"使用编译的方式在linux服务器上安装git"}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/ title=关于>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
 <input type=text placeholder=搜索文章标题或内容 id=search-input-desktop>
-<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索>
-<i class="fas fa-search fa-fw"></i>
-</a>
-<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空>
-<i class="fas fa-times-circle fa-fw"></i>
-</a>
-<span class="search-button search-loading" id=search-loading-desktop>
-<i class="fas fa-spinner fa-fw fa-spin"></i>
-</span>
-</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
-<i class="fas fa-adjust fa-fw"></i>
-</a>
-</div></div></div></header><header class=mobile id=header-mobile>
-<div class=header-container>
-<div class=header-wrapper>
-<div class=header-title>
-<a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a>
-</div><div class=menu-toggle id=menu-toggle-mobile>
-<span></span><span></span><span></span>
-</div></div><div class=menu id=menu-mobile><div class=search-wrapper>
-<div class="search mobile" id=search-mobile>
-<input type=text placeholder=搜索文章标题或内容 id=search-input-mobile>
-<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索>
-<i class="fas fa-search fa-fw"></i>
-</a>
-<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空>
-<i class="fas fa-times-circle fa-fw"></i>
-</a>
-<span class="search-button search-loading" id=search-loading-mobile>
-<i class="fas fa-spinner fa-fw fa-spin"></i>
-</span>
-</div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>
-取消
-</a>
-</div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title=关于>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
-<i class="fas fa-adjust fa-fw"></i>
-</a></div></div></header><div class="search-dropdown desktop">
-<div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile">
-<div id=search-dropdown-mobile></div></div><main class=main>
-<div class=container><div class=toc id=toc-auto>
-<h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">编译安装git</h1><div class=post-meta>
-<div class=post-meta-line><span class=post-author><a href=https://www.net-cc.com title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>cc</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/linux/><i class="far fa-folder fa-fw"></i>linux</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-08-30>2020-08-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 149 字&nbsp;
-<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 1 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept>
-<div class="details-summary toc-title">
-<span>目录</span>
-<span><i class="details-icon fas fa-angle-right"></i></span>
-</div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents>
-<ul>
-<li><a href=#配置编译环境>配置编译环境</a>
-<ul>
-<li><a href=#下载源代码包>下载源代码包</a></li><li><a href=#安装依赖库文件>安装依赖库文件</a></li></ul></li><li><a href=#编译配置>编译配置</a>
-<ul>
-<li><a href=#编译>编译</a></li><li><a href=#设置环境变量>设置环境变量</a></li><li><a href=#测试>测试</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>使用编译的方式在linux服务器上安装git</p><h1 id=git学习笔记>git学习笔记</h1><h2 id=配置编译环境>配置编译环境</h2><h3 id=下载源代码包>下载源代码包</h3><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容 id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title=关于>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">编译安装git</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://www.net-cc.com title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>cc</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/linux/><i class="far fa-folder fa-fw"></i>linux</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-08-30>2020-08-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 149 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 1 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#配置编译环境>配置编译环境</a><ul><li><a href=#下载源代码包>下载源代码包</a></li><li><a href=#安装依赖库文件>安装依赖库文件</a></li></ul></li><li><a href=#编译配置>编译配置</a><ul><li><a href=#编译>编译</a></li><li><a href=#设置环境变量>设置环境变量</a></li><li><a href=#测试>测试</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>使用编译的方式在linux服务器上安装git</p><h1 id=git学习笔记>git学习笔记</h1><h2 id=配置编译环境>配置编译环境</h2><h3 id=下载源代码包>下载源代码包</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>mkdir ~/src
-</span></span><span class=line><span class=cl><span class=nb>cd</span> ~/src
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>mkdir ~/src
+</span></span><span class=line><span class=cl>cd ~/src
 </span></span><span class=line><span class=cl>wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.19.1.tar.gz
-</span></span></code></pre></td></tr></table></div></div><h3 id=安装依赖库文件>安装依赖库文件</h3><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>yum install curl-devel expat-devel openssl-devel zlib-devel asciidoc
-</span></span></code></pre></td></tr></table></div></div><h2 id=编译配置>编译配置</h2><h3 id=编译>编译</h3><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></span></code></pre></td></tr></table></div></div><h3 id=安装依赖库文件>安装依赖库文件</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>yum install curl-devel expat-devel openssl-devel zlib-devel asciidoc
+</span></span></code></pre></td></tr></table></div></div><h2 id=编译配置>编译配置</h2><h3 id=编译>编译</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>mkdir /opt/git
-</span></span><span class=line><span class=cl>make <span class=nv>prefix</span><span class=o>=</span>/opt/git/ all
-</span></span><span class=line><span class=cl>sudo make <span class=nv>prefix</span><span class=o>=</span>/opt/git/ install
-</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=nv>$?</span> <span class=c1># 查看是否编译安装完成</span>
-</span></span></code></pre></td></tr></table></div></div><h3 id=设置环境变量>设置环境变量</h3><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>mkdir /opt/git
+</span></span><span class=line><span class=cl>make prefix=/opt/git/ all
+</span></span><span class=line><span class=cl>sudo make prefix=/opt/git/ install
+</span></span><span class=line><span class=cl>echo $? # 查看是否编译安装完成
+</span></span></code></pre></td></tr></table></div></div><h3 id=设置环境变量>设置环境变量</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>mkdir /opt/bin
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>mkdir /opt/bin
 </span></span><span class=line><span class=cl>ln -s /opt/git/bin/* /opt/bin
-</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;export PATH=</span><span class=nv>$PATH</span><span class=s2>:/opt/bin/&#34;</span> &gt;&gt; /etc/profile
-</span></span><span class=line><span class=cl><span class=nb>source</span> /etc/profile
-</span></span></code></pre></td></tr></table></div></div><h3 id=测试>测试</h3><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></span><span class=line><span class=cl>echo &#34;export PATH=$PATH:/opt/bin/&#34; &gt;&gt; /etc/profile
+</span></span><span class=line><span class=cl>source /etc/profile
+</span></span></code></pre></td></tr></table></div></div><h3 id=测试>测试</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
 </span><span class=lnt>5
 </span><span class=lnt>6
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>git --version
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>git --version
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># 初始化</span>
-</span></span><span class=line><span class=cl>git config --global user.email <span class=s2>&#34;alex_zjf@163.com&#34;</span>
-</span></span><span class=line><span class=cl>git config --global user.name <span class=s2>&#34;cc&#34;</span>
-</span></span><span class=line><span class=cl>git config --global user.editor <span class=s2>&#34;vim&#34;</span>
-</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer>
-<div class=post-info>
-<div class=post-info-line>
-<div class=post-info-mod>
-<span>更新于 2021-12-06&nbsp;<a class=git-hash href=https://github.com/zccing/zccing.github.io/commit/f7e90a527baa175295a870d6f1a4035200a3dc6c target=_blank title="commit by Cc(alex_zjf@163.com) f7e90a527baa175295a870d6f1a4035200a3dc6c: 更换成LoveIt模板">
-<i class="fas fa-hashtag fa-fw"></i>f7e90a5</a></span>
-</div><div class=post-info-license></div></div><div class=post-info-line>
-<div class=post-info-md></div><div class=post-info-share>
-<span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.net-cc.com/posts/linux/git/ data-title=编译安装git><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.net-cc.com/posts/linux/git/ data-title=编译安装git><i class="fab fa-evernote fa-fw"></i></a></span>
-</div></div></div><div class=post-info-more>
-<section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/linux/>linux</a></section><section>
-<span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span>
-</section></div><div class=post-nav>
-<a href=/posts/linux/selinux/ class=next rel=next title=selinux的学习记录>selinux的学习记录<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer>
-<div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://www.net-cc.com target=_blank>cc</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br>
-<span class=icp><a rel=备案查询 href=https://beian.miit.gov.cn/ target=_blank>豫ICP备2021035180号</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部>
-<i class="fas fa-arrow-up fa-fw"></i>
-</a><a href=# id=view-comments class=fixed-button title=查看评论>
-<i class="fas fa-comment fa-fw"></i>
-</a>
-</div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/katex/copy-tex.min.css><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js></script><script type=text/javascript src=/lib/katex/auto-render.min.js></script><script type=text/javascript src=/lib/katex/copy-tex.min.js></script><script type=text/javascript src=/lib/katex/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:5},comment:{},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
+</span></span><span class=line><span class=cl># 初始化
+</span></span><span class=line><span class=cl>git config --global user.email &#34;alex_zjf@163.com&#34;
+</span></span><span class=line><span class=cl>git config --global user.name &#34;cc&#34;
+</span></span><span class=line><span class=cl>git config --global user.editor &#34;vim&#34;
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-06-09&nbsp;<a class=git-hash href=https://github.com/zccing/zccing.github.io/commit/72565e7a79d08d5949fee455123200f29e7b66e5 target=_blank title="commit by Cc(alex_zjf@163.com) 72565e7a79d08d5949fee455123200f29e7b66e5: 整理了下目录格式">
+<i class="fas fa-hashtag fa-fw"></i>72565e7</a></span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.net-cc.com/posts/linux/git/ data-title=编译安装git><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.net-cc.com/posts/linux/git/ data-title=编译安装git><i class="fab fa-evernote fa-fw"></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/linux/>linux</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/linux/selinux/ class=next rel=next title=selinux的学习记录>selinux的学习记录<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.2">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a></div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://www.net-cc.com target=_blank>cc</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br><span class=icp><a rel=备案查询 href=https://beian.miit.gov.cn/ target=_blank>豫ICP备2021035180号</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/katex/copy-tex.min.css><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js></script><script type=text/javascript src=/lib/katex/auto-render.min.js></script><script type=text/javascript src=/lib/katex/copy-tex.min.js></script><script type=text/javascript src=/lib/katex/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:5},comment:{},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

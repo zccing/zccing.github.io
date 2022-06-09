@@ -1,93 +1,15 @@
-<!doctype html><html lang=zh-cn>
-<head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=robots content="noodp">
-<meta http-equiv=x-ua-compatible content="IE=edge, chrome=1">
-<title>etcd安装与配置 - 星速</title><meta name=Description content="通过二进制方式安装高可用ETCD集群，并采用动态添加一个节点"><meta property="og:title" content="etcd安装与配置">
-<meta property="og:description" content="通过二进制方式安装高可用ETCD集群，并采用动态添加一个节点">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://www.net-cc.com/posts/containers/kubernetes/etcd-install/"><meta property="og:image" content="https://www.net-cc.com/images/logo.png"><meta property="article:section" content="posts">
-<meta property="article:published_time" content="2020-09-06T19:42:47+08:00">
-<meta property="article:modified_time" content="2022-03-07T22:40:15+08:00">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:image content="https://www.net-cc.com/images/logo.png">
-<meta name=twitter:title content="etcd安装与配置">
-<meta name=twitter:description content="通过二进制方式安装高可用ETCD集群，并采用动态添加一个节点">
-<meta name=application-name content="星速">
-<meta name=apple-mobile-web-app-title content="星速"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico>
-<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.net-cc.com/posts/containers/kubernetes/etcd-install/><link rel=prev href=https://www.net-cc.com/posts/containers/kubernetes/docker-install/><link rel=next href=https://www.net-cc.com/posts/containers/kubernetes/k8s-install/><link rel=alternate href=/posts/containers/kubernetes/etcd-install/index.xml type=application/rss+xml title=星速>
-<link rel=feed href=/posts/containers/kubernetes/etcd-install/index.xml type=application/rss+xml title=星速><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"etcd安装与配置","inLanguage":"zh-cn","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.net-cc.com\/posts\/containers\/kubernetes\/etcd-install\/"},"image":["https:\/\/www.net-cc.com\/images"],"genre":"posts","keywords":"k8s","wordcount":1424,"url":"https:\/\/www.net-cc.com\/posts\/containers\/kubernetes\/etcd-install\/","datePublished":"2020-09-06T19:42:47+08:00","dateModified":"2022-03-07T22:40:15+08:00","publisher":{"@type":"Organization","name":"cc","logo":"https:\/\/www.net-cc.com"},"author":{"@type":"Person","name":"cc"},"description":"通过二进制方式安装高可用ETCD集群，并采用动态添加一个节点"}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script>
-<div id=mask></div><div class=wrapper><header class=desktop id=header-desktop>
-<div class=header-wrapper>
-<div class=header-title>
-<a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a>
-</div><div class=menu>
-<div class=menu-inner><a class=menu-item href=/posts/> 所有文章 </a><a class=menu-item href=/tags/> 标签 </a><a class=menu-item href=/categories/> 分类 </a><a class=menu-item href=/about/ title=关于> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>etcd安装与配置 - 星速</title><meta name=Description content="通过二进制方式安装高可用ETCD集群，并采用动态添加一个节点"><meta property="og:title" content="etcd安装与配置"><meta property="og:description" content="通过二进制方式安装高可用ETCD集群，并采用动态添加一个节点"><meta property="og:type" content="article"><meta property="og:url" content="https://www.net-cc.com/posts/containers/kubernetes/etcd-install/"><meta property="og:image" content="https://www.net-cc.com/images/logo.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-09-06T19:42:47+08:00"><meta property="article:modified_time" content="2022-06-09T20:44:23+08:00"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.net-cc.com/images/logo.png"><meta name=twitter:title content="etcd安装与配置"><meta name=twitter:description content="通过二进制方式安装高可用ETCD集群，并采用动态添加一个节点"><meta name=application-name content="星速"><meta name=apple-mobile-web-app-title content="星速"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.net-cc.com/posts/containers/kubernetes/etcd-install/><link rel=prev href=https://www.net-cc.com/posts/containers/kubernetes/docker-install/><link rel=next href=https://www.net-cc.com/posts/containers/kubernetes/k8s-install/><link rel=alternate href=/posts/containers/kubernetes/etcd-install/index.xml type=application/rss+xml title=星速><link rel=feed href=/posts/containers/kubernetes/etcd-install/index.xml type=application/rss+xml title=星速><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"etcd安装与配置","inLanguage":"zh-cn","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.net-cc.com\/posts\/containers\/kubernetes\/etcd-install\/"},"image":["https:\/\/www.net-cc.com\/images"],"genre":"posts","keywords":"k8s","wordcount":1424,"url":"https:\/\/www.net-cc.com\/posts\/containers\/kubernetes\/etcd-install\/","datePublished":"2020-09-06T19:42:47+08:00","dateModified":"2022-06-09T20:44:23+08:00","publisher":{"@type":"Organization","name":"cc","logo":"https:\/\/www.net-cc.com"},"author":{"@type":"Person","name":"cc"},"description":"通过二进制方式安装高可用ETCD集群，并采用动态添加一个节点"}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/ title=关于>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
 <input type=text placeholder=搜索文章标题或内容 id=search-input-desktop>
-<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索>
-<i class="fas fa-search fa-fw"></i>
-</a>
-<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空>
-<i class="fas fa-times-circle fa-fw"></i>
-</a>
-<span class="search-button search-loading" id=search-loading-desktop>
-<i class="fas fa-spinner fa-fw fa-spin"></i>
-</span>
-</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
-<i class="fas fa-adjust fa-fw"></i>
-</a>
-</div></div></div></header><header class=mobile id=header-mobile>
-<div class=header-container>
-<div class=header-wrapper>
-<div class=header-title>
-<a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a>
-</div><div class=menu-toggle id=menu-toggle-mobile>
-<span></span><span></span><span></span>
-</div></div><div class=menu id=menu-mobile><div class=search-wrapper>
-<div class="search mobile" id=search-mobile>
-<input type=text placeholder=搜索文章标题或内容 id=search-input-mobile>
-<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索>
-<i class="fas fa-search fa-fw"></i>
-</a>
-<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空>
-<i class="fas fa-times-circle fa-fw"></i>
-</a>
-<span class="search-button search-loading" id=search-loading-mobile>
-<i class="fas fa-spinner fa-fw fa-spin"></i>
-</span>
-</div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>
-取消
-</a>
-</div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title=关于>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
-<i class="fas fa-adjust fa-fw"></i>
-</a></div></div></header><div class="search-dropdown desktop">
-<div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile">
-<div id=search-dropdown-mobile></div></div><main class=main>
-<div class=container><div class=toc id=toc-auto>
-<h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">etcd安装与配置</h1><div class=post-meta>
-<div class=post-meta-line><span class=post-author><a href=https://www.net-cc.com title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>cc</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E5%AE%B9%E5%99%A8/><i class="far fa-folder fa-fw"></i>容器</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-09-06>2020-09-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1424 字&nbsp;
-<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept>
-<div class="details-summary toc-title">
-<span>目录</span>
-<span><i class="details-icon fas fa-angle-right"></i></span>
-</div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents>
-<ul>
-<li><a href=#1-节点信息>1 节点信息</a></li><li><a href=#2-节点创建etcd账户和防火墙放行>2 节点创建etcd账户和防火墙放行</a></li><li><a href=#3-下载etcd二进制文件>3 下载etcd二进制文件</a></li><li><a href=#4-创建system服务>4 创建system服务</a></li><li><a href=#5-初始集群>5 初始集群</a>
-<ul>
-<li><a href=#52-创建配置文件>5.2 创建配置文件</a></li><li><a href=#53-启动etcd服务>5.3 启动ETCD服务</a></li><li><a href=#54-测试etcd>5.4 测试etcd</a></li></ul></li><li><a href=#6-动态添加集群成员>6 动态添加集群成员</a>
-<ul>
-<li><a href=#61-修改配置文件>6.1 修改配置文件</a></li><li><a href=#62-启动新节点>6.2 启动新节点</a></li><li><a href=#63-测试etcd>6.3 测试etcd</a></li></ul></li></ul></nav></div></div><div class=content id=content><h2 id=1-节点信息>1 节点信息</h2><table>
-<thead>
-<tr>
-<th>IP地址</th><th>主机名称</th><th>类型</th><th>系统</th></tr></thead><tbody>
-<tr>
-<td>192.168.122.10</td><td>node1</td><td>etcd</td><td>centos7</td></tr><tr>
-<td>192.168.122.11</td><td>node2</td><td>etcd</td><td>centos7</td></tr><tr>
-<td>192.168.122.12</td><td>node3</td><td>etcd</td><td>centos8</td></tr></tbody></table><h2 id=2-节点创建etcd账户和防火墙放行>2 节点创建etcd账户和防火墙放行</h2><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=星速><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>星速</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容 id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title=关于>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">etcd安装与配置</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://www.net-cc.com title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>cc</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E5%AE%B9%E5%99%A8/><i class="far fa-folder fa-fw"></i>容器</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-09-06>2020-09-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1424 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#1-节点信息>1 节点信息</a></li><li><a href=#2-节点创建etcd账户和防火墙放行>2 节点创建etcd账户和防火墙放行</a></li><li><a href=#3-下载etcd二进制文件>3 下载etcd二进制文件</a></li><li><a href=#4-创建system服务>4 创建system服务</a></li><li><a href=#5-初始集群>5 初始集群</a><ul><li><a href=#52-创建配置文件>5.2 创建配置文件</a></li><li><a href=#53-启动etcd服务>5.3 启动ETCD服务</a></li><li><a href=#54-测试etcd>5.4 测试etcd</a></li></ul></li><li><a href=#6-动态添加集群成员>6 动态添加集群成员</a><ul><li><a href=#61-修改配置文件>6.1 修改配置文件</a></li><li><a href=#62-启动新节点>6.2 启动新节点</a></li><li><a href=#63-测试etcd>6.3 测试etcd</a></li></ul></li></ul></nav></div></div><div class=content id=content><h2 id=1-节点信息>1 节点信息</h2><table><thead><tr><th>IP地址</th><th>主机名称</th><th>类型</th><th>系统</th></tr></thead><tbody><tr><td>192.168.122.10</td><td>node1</td><td>etcd</td><td>centos7</td></tr><tr><td>192.168.122.11</td><td>node2</td><td>etcd</td><td>centos7</td></tr><tr><td>192.168.122.12</td><td>node3</td><td>etcd</td><td>centos8</td></tr></tbody></table><h2 id=2-节点创建etcd账户和防火墙放行>2 节点创建etcd账户和防火墙放行</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -100,8 +22,7 @@
 </span><span class=lnt>11
 </span><span class=lnt>12
 </span><span class=lnt>13
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># 创建用户和目录</span>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 创建用户和目录</span>
 </span></span><span class=line><span class=cl>groupadd -r etcd
 </span></span><span class=line><span class=cl><span class=c1># -k MAIL_DIR=/dev/null参数不创建此用户的mail目录</span>
 </span></span><span class=line><span class=cl>useradd  -s /sbin/nologin -d /var/lib/etcd -g etcd -c <span class=s2>&#34;etcd user&#34;</span> -r -K <span class=nv>MAIL_DIR</span><span class=o>=</span>/dev/null etcd
@@ -114,9 +35,7 @@
 </span></span><span class=line><span class=cl>firewall-cmd --add-service<span class=o>=</span>etcd-server --permanent
 </span></span><span class=line><span class=cl>firewall-cmd --add-service<span class=o>=</span>etcd-client --permanent
 </span></span><span class=line><span class=cl>firewall-cmd --reload
-</span></span></code></pre></td></tr></table></div></div><h2 id=3-下载etcd二进制文件>3 下载etcd二进制文件</h2><p><strong>在所有节点上下载ETCD的二进制文件</strong></p><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></span></code></pre></td></tr></table></div></div><h2 id=3-下载etcd二进制文件>3 下载etcd二进制文件</h2><p><strong>在所有节点上下载ETCD的二进制文件</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -134,8 +53,7 @@
 </span><span class=lnt>16
 </span><span class=lnt>17
 </span><span class=lnt>18
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># etcd的版本</span>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># etcd的版本</span>
 </span></span><span class=line><span class=cl><span class=nv>ETCD_VER</span><span class=o>=</span>v3.4.13
 </span></span><span class=line><span class=cl><span class=c1># 通过github下载</span>
 </span></span><span class=line><span class=cl><span class=nv>GITHUB_URL</span><span class=o>=</span>https://github.com/etcd-io/etcd/releases/download
@@ -153,9 +71,7 @@
 </span></span><span class=line><span class=cl><span class=c1># 清理</span>
 </span></span><span class=line><span class=cl>rm -rf /tmp/etcd-download-test/
 </span></span><span class=line><span class=cl>rm -f /tmp/etcd-<span class=si>${</span><span class=nv>ETCD_VER</span><span class=si>}</span>-linux-amd64.tar.gz
-</span></span></code></pre></td></tr></table></div></div><h2 id=4-创建system服务>4 创建system服务</h2><p><strong>在所有节点上都需要创建</strong></p><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></span></code></pre></td></tr></table></div></div><h2 id=4-创建system服务>4 创建system服务</h2><p><strong>在所有节点上都需要创建</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -178,8 +94,7 @@
 </span><span class=lnt>21
 </span><span class=lnt>22
 </span><span class=lnt>23
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>cat &gt; /usr/lib/systemd/system/etcd.service<span class=s>&lt;&lt;EOF
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat &gt; /usr/lib/systemd/system/etcd.service<span class=s>&lt;&lt;EOF
 </span></span></span><span class=line><span class=cl><span class=s>[Unit]
 </span></span></span><span class=line><span class=cl><span class=s>Description=Etcd Server
 </span></span></span><span class=line><span class=cl><span class=s>After=network.target
@@ -202,11 +117,7 @@
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># 配置etcd的配置文件位置</span>
 </span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;ETCD_CONFIG_FILE=&#34;/opt/etcd/etc/etcd.conf&#34;&#39;</span> &gt; /opt/etcd/etc/config
-</span></span></code></pre></td></tr></table></div></div><h2 id=5-初始集群>5 初始集群</h2><p><strong>先使用node1和node2创建初始集群，等会在动态添加node3节点</strong></p><h3 id=52-创建配置文件>5.2 创建配置文件</h3><p>以下配置文件中选项的官方描述：<a href=https://etcd.io/docs/v3.4.0/op-guide/configuration/ target=_blank rel="noopener noreffer">https://etcd.io/docs/v3.4.0/op-guide/configuration</a></p><ul>
-<li>
-<p>node1配置文件</p><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></span></code></pre></td></tr></table></div></div><h2 id=5-初始集群>5 初始集群</h2><p><strong>先使用node1和node2创建初始集群，等会在动态添加node3节点</strong></p><h3 id=52-创建配置文件>5.2 创建配置文件</h3><p>以下配置文件中选项的官方描述：<a href=https://etcd.io/docs/v3.4.0/op-guide/configuration/ target=_blank rel="noopener noreffer">https://etcd.io/docs/v3.4.0/op-guide/configuration</a></p><ul><li><p>node1配置文件</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -229,8 +140,7 @@
 </span><span class=lnt>21
 </span><span class=lnt>22
 </span><span class=lnt>23
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>cat &gt; /opt/etcd/etc/etcd.conf<span class=s>&lt;&lt;EOF
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat &gt; /opt/etcd/etc/etcd.conf<span class=s>&lt;&lt;EOF
 </span></span></span><span class=line><span class=cl><span class=s>name: &#39;node1&#39;
 </span></span></span><span class=line><span class=cl><span class=s>data-dir: &#39;&#39;
 </span></span></span><span class=line><span class=cl><span class=s>wal-dir: &#39;&#39;
@@ -253,10 +163,7 @@
 </span></span></span><span class=line><span class=cl><span class=s>debug: false
 </span></span></span><span class=line><span class=cl><span class=s>logger: zap
 </span></span></span><span class=line><span class=cl><span class=s>EOF</span>
-</span></span></code></pre></td></tr></table></div></div></li><li>
-<p>node2配置文件</p><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></span></code></pre></td></tr></table></div></div></li><li><p>node2配置文件</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -279,8 +186,7 @@
 </span><span class=lnt>21
 </span><span class=lnt>22
 </span><span class=lnt>23
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>cat &gt; /opt/etcd/etc/etcd.conf<span class=s>&lt;&lt;EOF
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat &gt; /opt/etcd/etc/etcd.conf<span class=s>&lt;&lt;EOF
 </span></span></span><span class=line><span class=cl><span class=s>name: &#39;node1&#39;
 </span></span></span><span class=line><span class=cl><span class=s>data-dir: &#39;&#39;
 </span></span></span><span class=line><span class=cl><span class=s>wal-dir: &#39;&#39;
@@ -303,18 +209,13 @@
 </span></span></span><span class=line><span class=cl><span class=s>debug: false
 </span></span></span><span class=line><span class=cl><span class=s>logger: zap
 </span></span></span><span class=line><span class=cl><span class=s>EOF</span>
-</span></span></code></pre></td></tr></table></div></div></li></ul><h3 id=53-启动etcd服务>5.3 启动ETCD服务</h3><p>先启动node1，然后在启动node2，每个节点的目录权限别忘记更改</p><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></span></code></pre></td></tr></table></div></div></li></ul><h3 id=53-启动etcd服务>5.3 启动ETCD服务</h3><p>先启动node1，然后在启动node2，每个节点的目录权限别忘记更改</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>systemctl daemon-reload
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>systemctl daemon-reload
 </span></span><span class=line><span class=cl>systemctl start etcd.service
 </span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> etcd.service
-</span></span></code></pre></td></tr></table></div></div><h3 id=54-测试etcd>5.4 测试etcd</h3><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></span></code></pre></td></tr></table></div></div><h3 id=54-测试etcd>5.4 测试etcd</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -324,8 +225,7 @@
 </span><span class=lnt> 8
 </span><span class=lnt> 9
 </span><span class=lnt>10
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># 由于参数太多，所以添加etcdctl参数环境变量</span>
 </span></span><span class=line><span class=cl>cat &gt;&gt; ~/.bashrc<span class=s>&lt;&lt;EOF
 </span></span></span><span class=line><span class=cl><span class=s>export ETCDCTL_API=3
@@ -335,26 +235,21 @@
 </span></span></span><span class=line><span class=cl><span class=s>EOF</span>
 </span></span><span class=line><span class=cl><span class=nb>source</span> ~/.bashrc
 </span></span><span class=line><span class=cl>etcdctl endpoint health --write-out<span class=o>=</span>table
-</span></span></code></pre></td></tr></table></div></div><h2 id=6-动态添加集群成员>6 动态添加集群成员</h2><p>前边已经配置了两个成员的etcd集群，etcd集群成员少于三个没有冗余性的，下边我们动态添加一个成员。<strong>在已经添加到etcd集群的服务器（node1）通过etcdctl客户端动态添加成员</strong></p><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></span></code></pre></td></tr></table></div></div><h2 id=6-动态添加集群成员>6 动态添加集群成员</h2><p>前边已经配置了两个成员的etcd集群，etcd集群成员少于三个没有冗余性的，下边我们动态添加一个成员。<strong>在已经添加到etcd集群的服务器（node1）通过etcdctl客户端动态添加成员</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
 </span><span class=lnt>5
 </span><span class=lnt>6
 </span><span class=lnt>7
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>etcdctl member add node3  --peer-urls<span class=o>=</span>http://192.168.122.12:2380
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>etcdctl member add node3  --peer-urls<span class=o>=</span>http://192.168.122.12:2380
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># 以上命令执行成功会返回新集群的配置参数，如下，记录下来，等会修改集群配置</span>
 </span></span><span class=line><span class=cl><span class=nv>ETCD_NAME</span><span class=o>=</span><span class=s2>&#34;node3&#34;</span>
 </span></span><span class=line><span class=cl><span class=nv>ETCD_INITIAL_CLUSTER</span><span class=o>=</span><span class=s2>&#34;node1=http://192.168.122.10:2380,node2=http://192.168.122.11:2380,node3=https://192.168.122.12:2380&#34;</span>
 </span></span><span class=line><span class=cl><span class=nv>ETCD_INITIAL_ADVERTISE_PEER_URLS</span><span class=o>=</span><span class=s2>&#34;https://192.168.122.12:2380&#34;</span>
 </span></span><span class=line><span class=cl><span class=nv>ETCD_INITIAL_CLUSTER_STATE</span><span class=o>=</span><span class=s2>&#34;existing&#34;</span>
-</span></span></code></pre></td></tr></table></div></div><h3 id=61-修改配置文件>6.1 修改配置文件</h3><p>根据上边命令回显，node3添加配置如下，参数解析和node1一样</p><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></span></code></pre></td></tr></table></div></div><h3 id=61-修改配置文件>6.1 修改配置文件</h3><p>根据上边命令回显，node3添加配置如下，参数解析和node1一样</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -370,8 +265,7 @@
 </span><span class=lnt>14
 </span><span class=lnt>15
 </span><span class=lnt>16
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>cat &gt; /opt/etcd/etc/etcd.conf<span class=s>&lt;&lt;EOF
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat &gt; /opt/etcd/etc/etcd.conf<span class=s>&lt;&lt;EOF
 </span></span></span><span class=line><span class=cl><span class=s>name: $ETCD_NAME
 </span></span></span><span class=line><span class=cl><span class=s>data-dir: &#39;&#39;
 </span></span></span><span class=line><span class=cl><span class=s>wal-dir: &#39;&#39;
@@ -387,41 +281,17 @@
 </span></span></span><span class=line><span class=cl><span class=s>debug: false
 </span></span></span><span class=line><span class=cl><span class=s>logger: zap
 </span></span></span><span class=line><span class=cl><span class=s>EOF</span>
-</span></span></code></pre></td></tr></table></div></div><h3 id=62-启动新节点>6.2 启动新节点</h3><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></span></code></pre></td></tr></table></div></div><h3 id=62-启动新节点>6.2 启动新节点</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># 启动服务</span>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 启动服务</span>
 </span></span><span class=line><span class=cl>systemctl daemon-reload
 </span></span><span class=line><span class=cl>systemctl start etcd.service
 </span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> etcd.service
-</span></span></code></pre></td></tr></table></div></div><h3 id=63-测试etcd>6.3 测试etcd</h3><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td><td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>etcdctl endpoint health --write-out<span class=o>=</span>table
-</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer>
-<div class=post-info>
-<div class=post-info-line>
-<div class=post-info-mod>
-<span>更新于 2022-03-07&nbsp;<a class=git-hash href=https://github.com/zccing/zccing.github.io/commit/eccd9bbc558a89cd68712a31d8bb59ce750de2a3 target=_blank title="commit by Cc(alex_zjf@163.com) eccd9bbc558a89cd68712a31d8bb59ce750de2a3: 重新排版了文档结构">
-<i class="fas fa-hashtag fa-fw"></i>eccd9bb</a></span>
-</div><div class=post-info-license></div></div><div class=post-info-line>
-<div class=post-info-md></div><div class=post-info-share>
-<span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.net-cc.com/posts/containers/kubernetes/etcd-install/ data-title=etcd安装与配置><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.net-cc.com/posts/containers/kubernetes/etcd-install/ data-title=etcd安装与配置><i class="fab fa-evernote fa-fw"></i></a></span>
-</div></div></div><div class=post-info-more>
-<section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/k8s/>k8s</a></section><section>
-<span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span>
-</section></div><div class=post-nav><a href=/posts/containers/kubernetes/docker-install/ class=prev rel=prev title=centos安装docker><i class="fas fa-angle-left fa-fw"></i>centos安装docker</a>
-<a href=/posts/containers/kubernetes/k8s-install/ class=next rel=next title=二进制方式安装K8S>二进制方式安装K8S<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer>
-<div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://www.net-cc.com target=_blank>cc</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br>
-<span class=icp><a rel=备案查询 href=https://beian.miit.gov.cn/ target=_blank>豫ICP备2021035180号</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部>
-<i class="fas fa-arrow-up fa-fw"></i>
-</a><a href=# id=view-comments class=fixed-button title=查看评论>
-<i class="fas fa-comment fa-fw"></i>
-</a>
-</div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/katex/copy-tex.min.css><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js></script><script type=text/javascript src=/lib/katex/auto-render.min.js></script><script type=text/javascript src=/lib/katex/copy-tex.min.js></script><script type=text/javascript src=/lib/katex/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:5},comment:{},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
+</span></span></code></pre></td></tr></table></div></div><h3 id=63-测试etcd>6.3 测试etcd</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>etcdctl endpoint health --write-out<span class=o>=</span>table
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-06-09&nbsp;<a class=git-hash href=https://github.com/zccing/zccing.github.io/commit/72565e7a79d08d5949fee455123200f29e7b66e5 target=_blank title="commit by Cc(alex_zjf@163.com) 72565e7a79d08d5949fee455123200f29e7b66e5: 整理了下目录格式">
+<i class="fas fa-hashtag fa-fw"></i>72565e7</a></span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.net-cc.com/posts/containers/kubernetes/etcd-install/ data-title=etcd安装与配置><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.net-cc.com/posts/containers/kubernetes/etcd-install/ data-title=etcd安装与配置><i class="fab fa-evernote fa-fw"></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/k8s/>k8s</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/containers/kubernetes/docker-install/ class=prev rel=prev title=centos安装docker><i class="fas fa-angle-left fa-fw"></i>centos安装docker</a>
+<a href=/posts/containers/kubernetes/k8s-install/ class=next rel=next title=二进制方式安装K8S>二进制方式安装K8S<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.2">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a></div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://www.net-cc.com target=_blank>cc</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br><span class=icp><a rel=备案查询 href=https://beian.miit.gov.cn/ target=_blank>豫ICP备2021035180号</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/katex/copy-tex.min.css><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js></script><script type=text/javascript src=/lib/katex/auto-render.min.js></script><script type=text/javascript src=/lib/katex/copy-tex.min.js></script><script type=text/javascript src=/lib/katex/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:5},comment:{},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
