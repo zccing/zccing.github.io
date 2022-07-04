@@ -5,8 +5,8 @@ lastmod: 2020-08-30T01:37:56+08:00
 draft: false
 keywords: ['docker', 'linux', '容器']
 description: "使用centos系统如何安装docker容器，采用的是通过yum源方式进行安装，主要为了方便快速"
-tags: ['k8s']
-categories: ['容器']
+tags: ['kubernetes']
+categories: ['containers']
 ---
 
 <!--more-->

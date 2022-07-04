@@ -5,7 +5,7 @@ lastmod: 2020-09-24T13:44:07+08:00
 draft: false
 keywords: ['SSL证书','https证书']
 description: "使用openssl生成支持SAN扩展的证书笔记"
-tags: ['PKI']
+tags: ['linux']
 categories: ['linux']
 ---
 

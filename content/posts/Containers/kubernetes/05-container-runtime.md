@@ -5,8 +5,8 @@ lastmod: 2020-10-08T15:09:29+08:00
 draft: false
 keywords: ['k8s容器运行时介绍']
 description: "容器运行时笔记"
-tags: ['k8s']
-categories: ['容器']
+tags: ['kubernetes']
+categories: ['containers']
 autoCollapseToc: false
 ---
 

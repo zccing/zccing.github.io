@@ -1,11 +1,11 @@
 ---
-title: "Master_slave"
+title: "PostgreSQL 主从复制配置"
 date: 2022-03-05T19:51:22+08:00
 draft: false
 keywords: []
 description: ""
-tags: ['postgresql']
-categories: ['数据库']
+tags: ['PostgreSQL']
+categories: ['DB']
 author: "Cc"
 autoCollapseToc: false
 ---

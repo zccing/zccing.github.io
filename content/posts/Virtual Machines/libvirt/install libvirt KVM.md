@@ -6,7 +6,7 @@ draft: false
 keywords: ['KVM', 'libvirt','虚拟机','linux虚拟机']
 description: "介绍使用libvirt来管理Linux的KVM虚拟机"
 tags: ['libvirt']
-categories: ['虚拟化']
+categories: ['Virtual Machines']
 ---
 
 记录在linux系统上安装libvirt和qemu-kvm的过程

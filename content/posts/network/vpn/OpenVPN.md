@@ -6,7 +6,7 @@ draft: false
 keywords: ['openvpn', '编译安装openvpn','openvpn配置']
 description: "编译安装openvpn，并配置lan to lan"
 tags: ['vpn']
-categories: ['网络技术']
+categories: ['network']
 ---
 
 openvpn的安装配置记录

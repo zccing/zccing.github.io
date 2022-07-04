@@ -6,7 +6,7 @@ draft: false
 keywords: ['Nginx','Nginx配置', '安装Nginx','Linux安装nginx']
 description: "通过官方仓库安装nginx的最新版本，并做简单配置，并提供静态网页"
 tags: ['nginx']
-categories: ['网页服务器']
+categories: ['http server']
 author: ""
 ---
 

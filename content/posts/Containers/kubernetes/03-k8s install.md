@@ -5,8 +5,8 @@ lastmod: 2020-12-05T22:04:04+08:00
 draft: false
 keywords: ['k8s', '安装k8s','k8s集群','容器']
 description: "通过二进制方式安装k8s高可用集群"
-tags: ['k8s']
-categories: ['容器']
+tags: ['kubernetes']
+categories: ['containers']
 autoCollapseToc: true
 ---
 
@@ -117,7 +117,7 @@ sysctl --system  # 生效
 
 # 安装ETCD集群
 
-参考 [etcd安装配置]({{< relref "etcd install.md" >}}) , 拷贝客户端证书到kubernetes server节点的`/opt/kubernetes/ssl/`目录下；
+参考 [etcd安装配置]({{< relref "02-etcd install.md" >}}) , 拷贝客户端证书到kubernetes server节点的`/opt/kubernetes/ssl/`目录下；
 
 我的客户端证书：`etcd-client.crt` `etcd-client.key`  `etcd-ca.crt`
 
@@ -1082,7 +1082,7 @@ EOF
 
 Kubernetes 支持多个容器运行环境: Docker、 containerd、cri-o、 rktlet 以及任何实现 Kubernetes CRI (容器运行环境接口),我才用docker，毕竟常用
 
-参考我之前写的一篇文章来[安装docker]({{< relref "docker install.md" >}})
+参考我之前写的一篇文章来[安装docker]({{< relref "01-docker install.md" >}})
 
 两个worker节点上安装配置都一样
 

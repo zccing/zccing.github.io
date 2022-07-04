@@ -5,8 +5,8 @@ lastmod: 2020-12-05T22:07:25+08:00
 draft: true
 keywords: ['k8s', 'kubeadm安装k8s','k8s集群','容器']
 description: "使用kubeadm安装k8s高可用集群"
-tags: ['k8s']
-categories: ['容器']
+tags: ['kubernetes']
+categories: ['containers']
 autoCollapseToc: true
 ---
 

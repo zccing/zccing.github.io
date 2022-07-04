@@ -1,5 +1,5 @@
 ---
-title: "postgresql 备份"
+title: "备份与恢复PostgreSQL数据库"
 subtitle: ""
 date: 2022-03-25T20:22:45+08:00
 lastmod: 2022-03-25T20:22:45+08:00
@@ -7,9 +7,8 @@ draft: true
 author: ""
 authorLink: ""
 description: ""
-
-tags: []
-categories: []
+tags: ['PostgreSQL']
+categories: ['DB']
 
 hiddenFromHomePage: false
 hiddenFromSearch: false

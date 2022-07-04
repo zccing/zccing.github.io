@@ -1,11 +1,11 @@
 ---
-title: "Pgpool-II"
+title: "PostgreSQL中间件Pgpool-II安装配置"
 date: 2022-03-05T19:52:27+08:00
 draft: true
 keywords: []
 description: ""
-tags: ['postgresql']
-categories: ['数据库']
+tags: ['PostgreSQL']
+categories: ['DB']
 author: "Cc"
 autoCollapseToc: false
 ---

@@ -5,7 +5,7 @@ date: 2021-12-19T01:37:56+08:00
 keywords: ['hugo', 'hugo shortcodes']
 description: "LoveIt主题在Hugo内置的shortcode的基础上提供多个扩展的shortcode."
 tags: ['markdown']
-categories: ['编程语言']
+categories: ['code']
 ---
 
 <!--more-->

@@ -1,11 +1,11 @@
 ---
-title: "debian11发行版安装PostgreSQL13"
+title: "Debian11安装PostgreSQL13"
 date: 2022-03-05T19:50:37+08:00
 draft: false
 keywords: []
 description: ""
 tags: ['PostgreSQL']
-categories: ['数据库']
+categories: ['DB']
 author: ""
 autoCollapseToc: false
 ---
