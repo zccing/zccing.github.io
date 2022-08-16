@@ -1,7 +1,6 @@
 ---
 title: "linux安装GNS3的VPCS、dynamips、IOU支持"
-date: 2020-08-30T01:37:56+08:00
-lastmod: 2020-09-5T01:37:56+08:00
+Date: 2020-08-30T01:37:56+08:00
 draft: false
 keywords: ['git', '安装git','编译安装git','linux']
 description: "使用编译的方式在linux服务器上安装git"
@@ -14,14 +13,14 @@ linux安装GNS3的VPCS、dynamips、IOU支持，目前是使用fedora29来安装
 
 # gns3 安装使用
 
-## gns3 vpcs and dy 安装
+## 1 gns3 vpcs and dynamips 安装
 
-```bash
+```bas
 dnf copr enable athmane/gns3-extra
 dnf install vpcs dynamips
 ```
 
-## gns3 IOU for linux 安装
+## 2 gns3 IOU for linux 安装
 
 * `fedora 29`
 
