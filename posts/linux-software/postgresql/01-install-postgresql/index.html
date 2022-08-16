@@ -1,0 +1,258 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Debian11安装PostgreSQL13 - Cc</title><meta name=Description content="私人小网站，记录笔记和生活中的点点滴滴"><meta property="og:title" content="Debian11安装PostgreSQL13"><meta property="og:description" content="在debian 11系统上安装PostgreSQL13, 也可以通过本文档了解如何在其他linux发行版上安装PostgreSQL13"><meta property="og:type" content="article"><meta property="og:url" content="https://www.net-cc.com/posts/linux-software/postgresql/01-install-postgresql/"><meta property="og:image" content="https://www.net-cc.com/images/logo.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-03-05T19:50:37+08:00"><meta property="article:modified_time" content="2022-08-16T23:27:31+08:00"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.net-cc.com/images/logo.png"><meta name=twitter:title content="Debian11安装PostgreSQL13"><meta name=twitter:description content="在debian 11系统上安装PostgreSQL13, 也可以通过本文档了解如何在其他linux发行版上安装PostgreSQL13"><meta name=application-name content="Cc"><meta name=apple-mobile-web-app-title content="Cc"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://www.net-cc.com/posts/linux-software/postgresql/01-install-postgresql/><link rel=next href=https://www.net-cc.com/posts/linux-software/postgresql/02-postgresql-master_slave-replication/><link rel=alternate href=/posts/linux-software/postgresql/01-install-postgresql/index.xml type=application/rss+xml title=Cc><link rel=feed href=/posts/linux-software/postgresql/01-install-postgresql/index.xml type=application/rss+xml title=Cc><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Debian11安装PostgreSQL13","inLanguage":"zh-cn","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.net-cc.com\/posts\/linux-software\/postgresql\/01-install-postgresql\/"},"image":["https:\/\/www.net-cc.com\/images"],"genre":"posts","keywords":"PostgreSQL","wordcount":2776,"url":"https:\/\/www.net-cc.com\/posts\/linux-software\/postgresql\/01-install-postgresql\/","datePublished":"2022-03-05T19:50:37+08:00","dateModified":"2022-08-16T23:27:31+08:00","publisher":{"@type":"Organization","name":"cc","logo":"https:\/\/www.net-cc.com"},"author":{"@type":"Person","name":"cc"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=Cc><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>Cc</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/ title=关于>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容 id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=Cc><img class="lazyload logo" src=/svg/loading.min.svg data-src=/images/logo.png data-srcset="/images/logo.png, /images/logo.png 1.5x, /images/logo.png 2x" data-sizes=auto alt=/images/logo.png title=/images/logo.png>Cc</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容 id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title=关于>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Debian11安装PostgreSQL13</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://www.net-cc.com title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>cc</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/linux-software/><i class="far fa-folder fa-fw"></i>linux software</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2022-03-05>2022-03-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2776 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 6 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept=true><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#1-更新debian11的镜像源>1 更新debian11的镜像源</a></li><li><a href=#2-添加postgresql存储库>2 添加PostgreSQL存储库</a></li><li><a href=#3-下载postgresql>3 下载PostgreSQL</a></li><li><a href=#4-配置数据目录>4 配置数据目录</a></li><li><a href=#5-修改默认postgresql的密码>5 修改默认PostgreSQL的密码</a></li><li><a href=#6-客户端连接认证>6 客户端连接认证</a></li><li><a href=#7-安装timescale扩展>7 安装timescale扩展</a></li><li><a href=#8-postgresql参数优化>8 PostgreSQL参数优化</a></li></ul></nav></div></div><div class=content id=content><p>在debian 11系统上安装PostgreSQL13, 也可以通过本文档了解如何在其他linux发行版上安装PostgreSQL13</p><h2 id=1-更新debian11的镜像源>1 更新debian11的镜像源</h2><p>debian11默认的镜像源是国外的，下载比较慢，替换为国内的镜像源，这里用的是阿里云镜像源</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 优化内核参数</span>
+</span></span><span class=line><span class=cl>cat &gt; /etc/sysctl.d/PostgreSQL.conf<span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>vm.overcommit_memory=2
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>sysctl -p /etc/sysctl.d/PostgreSQL.conf
+</span></span><span class=line><span class=cl><span class=c1># 备份原来的镜像源</span>
+</span></span><span class=line><span class=cl>mv /etc/apt/sources.list /etc/apt/sources.list.bak
+</span></span><span class=line><span class=cl><span class=c1># 更新新的阿里云镜像源</span>
+</span></span><span class=line><span class=cl>cat &gt; /etc/apt/sources.list <span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>deb http://mirrors.aliyun.com/debian/ bullseye main non-free contrib
+</span></span></span><span class=line><span class=cl><span class=s>deb-src http://mirrors.aliyun.com/debian/ bullseye main non-free contrib
+</span></span></span><span class=line><span class=cl><span class=s>deb http://mirrors.aliyun.com/debian-security/ bullseye-security main
+</span></span></span><span class=line><span class=cl><span class=s>deb-src http://mirrors.aliyun.com/debian-security/ bullseye-security main
+</span></span></span><span class=line><span class=cl><span class=s>deb http://mirrors.aliyun.com/debian/ bullseye-updates main non-free contrib
+</span></span></span><span class=line><span class=cl><span class=s>deb-src http://mirrors.aliyun.com/debian/ bullseye-updates main non-free contrib 
+</span></span></span><span class=line><span class=cl><span class=s>deb http://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib
+</span></span></span><span class=line><span class=cl><span class=s>deb-src http://mirrors.aliyun.com/debian/ bullseye-backports main non-free contrib
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=2-添加postgresql存储库>2 添加PostgreSQL存储库</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 安装一些必要的工具</span>
+</span></span><span class=line><span class=cl>apt update <span class=o>&amp;&amp;</span> apt install -y gnupg2 wget
+</span></span><span class=line><span class=cl><span class=c1># 创建存储库</span>
+</span></span><span class=line><span class=cl>sudo sh -c <span class=s1>&#39;echo &#34;deb  [arch=amd64] https://mirrors.aliyun.com/postgresql/repos/apt $(lsb_release -cs)-pgdg main&#34; &gt; /etc/apt/sources.list.d/pgdg.list&#39;</span>
+</span></span><span class=line><span class=cl><span class=c1># 添加存储库的密钥</span>
+</span></span><span class=line><span class=cl>wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc <span class=p>|</span> sudo apt-key add -
+</span></span><span class=line><span class=cl><span class=c1># 更新存储库</span>
+</span></span><span class=line><span class=cl>apt update
+</span></span></code></pre></td></tr></table></div></div><h2 id=3-下载postgresql>3 下载PostgreSQL</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 安装指定版本,后续的配置都是基于此版本的， 如果要安装最新版的话，命令是`apt install PostgreSQL`</span>
+</span></span><span class=line><span class=cl>apt install PostgreSQL-13 -y
+</span></span><span class=line><span class=cl><span class=c1># 将PostgreSQL添加到开机启动</span>
+</span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> PostgreSQL
+</span></span></code></pre></td></tr></table></div></div><h2 id=4-配置数据目录>4 配置数据目录</h2><p>正常情况应该将数据存储到一个单独的磁盘中，和系统磁盘区分开；</p><p>我的环境中将<code>/data</code>目录挂载到一个单独的磁盘中，所以将数据保存到<code>/data/pgsql</code>目录中</p><ul><li><p>创建目录，并设置权限</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 创建目录</span>
+</span></span><span class=line><span class=cl>mkdir /data/pgsql
+</span></span><span class=line><span class=cl><span class=c1># 设置此目录的权限</span>
+</span></span><span class=line><span class=cl>chown postgres:postgres -R /data/pgsql
+</span></span></code></pre></td></tr></table></div></div></li><li><p>变更数据目录</p><blockquote><p>PostgreSQL支持一台机器多实例配置（相当于一台服务器多个虚拟机），我们通过删除默认实例，重新创建一个实例并指定实例的数据目录</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 停止并删除默认安装创建的实例</span>
+</span></span><span class=line><span class=cl>pg_dropcluster --stop <span class=m>13</span> main 
+</span></span><span class=line><span class=cl><span class=c1># 在`/data/pgsql`目录重新创建PostgreSQL实例，并初始化实例</span>
+</span></span><span class=line><span class=cl>pg_createcluster -d /data/pgsql <span class=m>13</span> main 
+</span></span><span class=line><span class=cl><span class=c1># 启动新创建的PostgreSQL实例</span>
+</span></span><span class=line><span class=cl>pg_ctlcluster <span class=m>13</span> main start
+</span></span></code></pre></td></tr></table></div></div></li><li><p>检查数据目录</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 切换到postgres用户，使用这个用户可以免密登录到pgsql</span>
+</span></span><span class=line><span class=cl>su - postgres
+</span></span><span class=line><span class=cl><span class=c1># 检查数据目录, 返回的结果中告诉了我们当前目录是`/data/pgsql`</span>
+</span></span><span class=line><span class=cl>psql -c <span class=s1>&#39;SHOW data_directory;&#39;</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><h2 id=5-修改默认postgresql的密码>5 修改默认PostgreSQL的密码</h2><p>PostgreSQL安装成功之后，会默认创建一个名为postgres的Linux用户</p><p>初始化PostgreSQL实例后，实例数据库中会创建一名超级用户<code>postgres</code>和一个名为<code>postgres</code>的数据库</p><p><code>postgres</code>的数据库中存储<code>PostgreSQL</code>的基础信息，例如用户信息等等，相当于MySQL中默认的名为mysql数据库</p><p>为了方便我们使用postgres账号进行管理和安全考虑，我们可以修改数据库和linux用户的账号的密码</p><ul><li><p>修改linux用户<code>postgres</code>的密码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>passwd postgres <span class=c1># 修改linux用户的密码，如果不明白，后边的也不要看了，看也看不懂</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>修改实例数据库的超级用户<code>postgres</code>的密码</p><blockquote><p>如果linux用户的名称和超级用户的名称相同，登录数据库是不需要密码的，这个权限是在<code>/etc/PostgreSQL/13/main/pg_hba.conf</code>中配置，后边会讲到此文件的用法</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 切换到postgres用户，并修改数据库超级用户的密码， ‘NewPassword’替换为你的密码即可</span>
+</span></span><span class=line><span class=cl>su - postgres
+</span></span><span class=line><span class=cl>psql -c <span class=s2>&#34;ALTER USER postgres WITH PASSWORD &#39;NewPassword&#39;;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>exit</span>  <span class=c1># 退出postgres用户，切换到root用户</span>
+</span></span><span class=line><span class=cl>psql -U postgres -h localhost <span class=c1># 输入刚刚更改的密码尝试连接</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><h2 id=6-客户端连接认证>6 客户端连接认证</h2><p>客户端认证是由一个<code>/etc/PostgreSQL/13/main/pg_hba.conf</code>配置文件控制（HBA表示基于主机的认证）；此文件在初始化数据目录时生成。</p><p><code>pg_hba.conf</code>文件的每一行是一条记录，空白行和<code>#</code>注释字符后面的任何文本都将被忽略。记录不能跨行。一条记录由空格或<code>table制表符</code>分隔的域组成。在数据库、用户或地址域中 关键字<code>all</code>、<code>replication</code>等有特殊含义，并且只是匹配一个有该名字的数据库、用户或主机。<a href=http://www.postgres.cn/docs/13/auth-pg-hba-conf.html target=_blank rel="noopener noreffer">官方</a></p><ul><li><p>允许所有<code>169.3.248.0/21</code>网段的所有用户通过密码访问数据库</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>cat &gt;&gt; /etc/PostgreSQL/13/main/pg_hba.conf &lt;&lt;EOF
+</span></span><span class=line><span class=cl>host    all             all             169.3.248.0/21          md5
+</span></span><span class=line><span class=cl>EOF
+</span></span></code></pre></td></tr></table></div></div></li></ul><h2 id=7-安装timescale扩展>7 安装timescale扩展</h2><p>PostgreSQL安装timescale扩展就可以变成一个时序数据库了,新的名字是<code>timescaledb</code>, 只是改变了存储和索引不影响PostgreSQL原有的主从架构和使用方式</p><ul><li><p>添加存储库</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 设置timescale的存储库</span>
+</span></span><span class=line><span class=cl>apt install gnupg PostgreSQL-common apt-transport-https lsb-release wget
+</span></span><span class=line><span class=cl>sh -c <span class=s2>&#34;echo &#39;deb https://packagecloud.io/timescale/timescaledb/debian/ </span><span class=k>$(</span>lsb_release -c -s<span class=k>)</span><span class=s2> main&#39; &gt; /etc/apt/sources.list.d/timescaledb.list&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 添加timescale的存储库密钥</span>
+</span></span><span class=line><span class=cl>curl -L https://packagecloud.io/timescale/timescaledb/gpgkey <span class=p>|</span> sudo apt-key add -
+</span></span></code></pre></td></tr></table></div></div></li><li><p>下载并安装timescale</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>apt install timescaledb-2-PostgreSQL-13
+</span></span></code></pre></td></tr></table></div></div></li><li><p>配置PostgreSQL支持timescale扩展</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 修改/etc/PostgreSQL/13/main/PostgreSQL.conf配置文件中的shared_preload_libraries参数，并去掉注释使其生效</span>
+</span></span><span class=line><span class=cl>vim /etc/postgresql/13/main/postgresql.conf
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>shared_preload_libraries</span> <span class=o>=</span> <span class=s1>&#39;timescaledb&#39;</span>  <span class=c1># 不区分大小写</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 修改好了以后重启服务，使其加载此扩展</span>
+</span></span><span class=line><span class=cl>systemctl restart postgresql
+</span></span></code></pre></td></tr></table></div></div></li><li><p>为数据库安装timescale扩展</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=o>#</span><span class=w> </span><span class=err>切换到</span><span class=n>postgres用户</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>su</span><span class=w> </span><span class=o>-</span><span class=w> </span><span class=n>postgres</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>#</span><span class=w> </span><span class=err>登录数据库</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>psql</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>#</span><span class=w> </span><span class=err>为所有已存在的数据库安装扩展</span><span class=p>,</span><span class=w> </span><span class=err>由于其他数据库不支持</span><span class=n>timescaledb</span><span class=p>,</span><span class=err>所以我没用这个命令</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>CREATE</span><span class=w> </span><span class=n>EXTENSION</span><span class=w> </span><span class=k>IF</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>EXISTS</span><span class=w> </span><span class=n>timescaledb</span><span class=w> </span><span class=k>CASCADE</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>#</span><span class=w> </span><span class=err>创建一个测试数据库</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>CREATE</span><span class=w> </span><span class=k>DATABASE</span><span class=w> </span><span class=n>timeseries_test</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>#</span><span class=w> </span><span class=err>查看数据库</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>\</span><span class=n>l</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>#</span><span class=w> </span><span class=err>进入数据库</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>\</span><span class=k>c</span><span class=w> </span><span class=n>timeseries_test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>#</span><span class=w> </span><span class=err>为当前进入的数据安装扩展</span><span class=p>,</span><span class=err>不影响其他数据库</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>CREATE</span><span class=w> </span><span class=n>EXTENSION</span><span class=w> </span><span class=n>timescaledb</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>#</span><span class=w> </span><span class=err>检查扩展</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>\</span><span class=n>dx</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SELECT</span><span class=w> </span><span class=n>default_version</span><span class=p>,</span><span class=w> </span><span class=n>installed_version</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>pg_available_extensions</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>name</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;timescaledb&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>#</span><span class=w> </span><span class=err>切换数据库</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=err>\</span><span class=k>c</span><span class=w> </span><span class=n>PostgreSQL</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=o>#</span><span class=w> </span><span class=err>删除测试数据库</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>DROP</span><span class=w> </span><span class=k>DATABASE</span><span class=w> </span><span class=n>timeseries_test</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li></ul><h2 id=8-postgresql参数优化>8 PostgreSQL参数优化</h2><p>整理了一些PostgreSQL参数的优化，仅供参考，请依照实际环境为准</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=c1># 我的PostgreSQL的实例配置文件(默认实例):/etc/PostgreSQL/13/main/PostgreSQL.conf</span>
+</span></span><span class=line><span class=cl><span class=c1># 新增或修改下列属性设置（使用命令“/”来查找）</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># （修改）监听所有IP</span>
+</span></span><span class=line><span class=cl><span class=na>listen_addresses</span> <span class=o>=</span> <span class=s>&#39;*&#39;</span>
+</span></span><span class=line><span class=cl><span class=c1># （修改）最大连接数，超过的话建议程序设置连接池减少开销</span>
+</span></span><span class=line><span class=cl><span class=na>max_connections</span> <span class=o>=</span> <span class=s>1000</span>
+</span></span><span class=line><span class=cl><span class=c1># (修改)缓冲数据到内存中，建议设置物理内存的1/4，根据服务器负载调整设置</span>
+</span></span><span class=line><span class=cl><span class=na>shared_buffers</span> <span class=o>=</span> <span class=s>8GB </span>
+</span></span><span class=line><span class=cl><span class=c1># （修改）主要用于Postgre查询优化器,建议设置物理内存的3/4,较高的值更有可能使用索引扫描，较低的值则有可能使用顺序扫描</span>
+</span></span><span class=line><span class=cl><span class=na>effective_cache_size</span> <span class=o>=</span> <span class=s>24GB </span>
+</span></span><span class=line><span class=cl><span class=c1># （修改）用于写入临时文件之前内部排序操作和散列表使用的内存量，增加work_mem参数将使PostgreSQL可以进行更大的内存排序，和max_connections有关，连接越多占用内存越多，合理分配</span>
+</span></span><span class=line><span class=cl><span class=c1># Total RAM * 0.25 / max_connections</span>
+</span></span><span class=line><span class=cl><span class=na>work_mem</span> <span class=o>=</span> <span class=s>64M</span>
+</span></span><span class=line><span class=cl><span class=c1># (修改)指定维护操作使用的最大内存量，例如（Vacuum、Create Index和Alter Table Add Foreign Key），默认值是64MB。由于通常正常运行的数据库中不会有大量并发的此类操作，可以设置的较大一些，提高清理和创建索引外键的速度。</span>
+</span></span><span class=line><span class=cl><span class=c1># Total RAM * 0.05</span>
+</span></span><span class=line><span class=cl><span class=na>maintenance_work_mem</span> <span class=o>=</span> <span class=s>2GB</span>
+</span></span></code></pre></td></tr></table></div></div><p>推荐一个工具<a href=https://github.com/jfcoz/PostgreSQLtuner target=_blank rel="noopener noreffer">PostgreSQLtuner</a>，使用此工具来优化参数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 下载</span>
+</span></span><span class=line><span class=cl>wget https://raw.githubusercontent.com/jfcoz/PostgreSQLtuner/master/PostgreSQLtuner.pl
+</span></span><span class=line><span class=cl>chmod u+x PostgreSQLtuner.pl
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 登录数据库，创建testdb库</span>
+</span></span><span class=line><span class=cl>psql -U postgres -h localhost -c <span class=s1>&#39;CREATE DATABASE testdb;&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 运行命令</span>
+</span></span><span class=line><span class=cl>PostgreSQLtuner.pl --host<span class=o>=</span>localhost --database<span class=o>=</span>testdb --user<span class=o>=</span>username --password<span class=o>=</span>qwerty
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 删除testdb库</span>
+</span></span><span class=line><span class=cl>psql -U postgres -h localhost -c <span class=s1>&#39;DROP DATABASE testdb;&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 根据结果调优自己的服务器和数据库吧</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-08-16&nbsp;<a class=git-hash href=https://github.com/zccing/zccing.github.io/commit/af360365fdeaf4f536a5ddfdf9425a2f9cd2e3f9 target=_blank title="commit by Cc(alex_zjf@163.com) af360365fdeaf4f536a5ddfdf9425a2f9cd2e3f9: 有一次闲的蛋疼，改了结构">
+<i class="fas fa-hashtag fa-fw"></i>af36036</a></span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://www.net-cc.com/posts/linux-software/postgresql/01-install-postgresql/ data-title=Debian11安装PostgreSQL13><i class="fab fa-weibo fa-fw"></i></a><a href=javascript:void(0); title="分享到 Evernote" data-sharer=evernote data-url=https://www.net-cc.com/posts/linux-software/postgresql/01-install-postgresql/ data-title=Debian11安装PostgreSQL13><i class="fab fa-evernote fa-fw"></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/postgresql/>PostgreSQL</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/linux-software/postgresql/02-postgresql-master_slave-replication/ class=next rel=next title="PostgreSQL 主从复制配置">PostgreSQL 主从复制配置<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.101.0">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a></div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://www.net-cc.com target=_blank>cc</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span><span class=icp-splitter>&nbsp;|&nbsp;</span><br class=icp-br><span class=icp><a rel=备案查询 href=https://beian.miit.gov.cn/ target=_blank>豫ICP备2021035180号</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><link rel=stylesheet href=/lib/katex/katex.min.css><link rel=stylesheet href=/lib/katex/copy-tex.min.css><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/sharer/sharer.min.js></script><script type=text/javascript src=/lib/katex/katex.min.js></script><script type=text/javascript src=/lib/katex/auto-render.min.js></script><script type=text/javascript src=/lib/katex/copy-tex.min.js></script><script type=text/javascript src=/lib/katex/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:5},comment:{},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
