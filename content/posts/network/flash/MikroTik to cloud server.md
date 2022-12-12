@@ -8,7 +8,7 @@ authorLink: "www.net-cc.com"
 description: "在各大云服务器厂商的现有Ubuntu系统的基础上重新安装MikroTik的CHR版本软路由系统"
 
 tags: ['flash']
-categories: ['Route Protocol']
+categories: ['network']
 
 hiddenFromHomePage: false
 hiddenFromSearch: false
