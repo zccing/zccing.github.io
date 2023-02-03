@@ -426,4 +426,4 @@ paginate = 10                                              # 首页每页显示�
   page = ["HTML", "RSS"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
-  taxonomyTerm = ["HTML"]
+  taxonomyTerm = ["HTML", "RSS"]
