@@ -277,7 +277,24 @@ paginate = 10                                              # 首页每页显示�
       Mix = false
     #  评论系统设置
     [params.page.comment]
-      enable = false
+      enable = true
+      # giscus comment 评论系统设置 (https://giscus.app/zh-CN)
+      [params.page.comment.giscus]
+        # 你可以参考官方文档来使用下列配置
+        enable = true
+        repo = "zccing/zccing.github.io"
+        repoId = "MDEwOlJlcG9zaXRvcnk0MDM5OTE3Nzk="
+        category = "General"
+        categoryId = "DIC_kwDOGBRs484CT-Lp"
+        # 为空时自动适配当前主题 i18n 配置
+        lang = ""
+        mapping = "title"
+        reactionsEnabled = "1"
+        emitMetadata = "0"
+        inputPosition = "bottom"
+        lazyLoading = false
+        lightTheme = "light"
+        darkTheme = "dark"
     #  页面 SEO 配置
     [params.page.seo]
       # 图片 URL
@@ -316,24 +333,6 @@ paginate = 10                                              # 首页每页显示�
       message = ""
       dismiss = ""
       link = ""
-
-# giscus comment 评论系统设置 (https://giscus.app/zh-CN)
-  [params.page.comment.giscus]
-    # 你可以参考官方文档来使用下列配置
-    enable = true
-    repo = "zccing/zccing.github.io"
-    repoId = "MDEwOlJlcG9zaXRvcnk0MDM5OTE3Nzk="
-    category = "General"
-    categoryId = "DIC_kwDOGBRs484CT-Lp"
-    # 为空时自动适配当前主题 i18n 配置
-    lang = ""
-    mapping = "title"
-    reactionsEnabled = "1"
-    emitMetadata = "0"
-    inputPosition = "bottom"
-    lazyLoading = false
-    lightTheme = "light"
-    darkTheme = "dark"
 
   #  第三方库文件的 CDN 设置
   [params.cdn]
