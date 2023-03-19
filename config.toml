@@ -1,6 +1,7 @@
 baseURL = "https://www.net-cc.com"
 languageCode = "zh-cn"
 defaultContentLanguage = "zh-cn"                             # en / zh-cn / ... (This field determines which i18n file to use)
+languageName = "简体中文"
 title = "Cc"
 enableRobotsTXT = true
 enableEmoji = true
@@ -8,34 +9,57 @@ theme = "LoveIt"
 enableGitInfo = true # use git commit log to generate lastmod record # 可根据 Git 中的提交生成最近更新记录。
 
 hasCJKLanguage = true     # has chinese/japanese/korean ? # 自动检测是否包含 中文\日文\韩文
-paginate = 10                                              # 首页每页显示的文章数
+paginate = 6                                              # 首页每页显示的文章数
 
 [menu]
   
   [[menu.main]]
-    name = "所有文章"
+    name = "文章"
     weight = 1
     identifier = "posts"
-    title = ""
+    title = "所有文章"
     url = "/posts/"
   [[menu.main]]
     name = "标签"
     weight = 2
     identifier = "tags"
-    title = ""
+    title = "所有标签"
     url = "/tags/"
   [[menu.main]]
     name = "分类"
     weight = 3
     identifier = "categories"
     url = "/categories/"
-    title = ""
+    title = "所有分类"
+
+  [[menu.main]]
+    name = "关于"
+    weight = 4
+    identifier = "about"
+    url = "/about/"
+    title = "关于我"
+
+  [[menu.main]]
+    identifier = "github"
+    pre = "<i class='fab fa-github fa-fw'></i>"
+    post = ""
+    name = ""
+    url = "https://github.com/zccing/zccing.github.io"
+    title = "GitHub"
+    weight = 7
+
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.62.0"
 
 [params]
   #  LoveIt 主题版本
   version = "0.2.X"
   # 网站描述
-  description = "私人小网站，记录笔记和生活中的点点滴滴"
+  description = "我的小破站，记录学习和生活中的点点滴滴"
+  # 网站标题, 用于 Open Graph 和 Twitter Cards
+  title = "我的小破站，记录学习和生活中的点点滴滴"
   # 网站关键词
   keywords = ["linux", "windows","network", "notes", "技术文档", "知识库"]
   # 网站默认主题样式 ("light", "dark", "auto")
@@ -122,7 +146,7 @@ paginate = 10                                              # 首页每页显示�
     # ICP 备案信息，仅在中国使用 (支持 HTML 格式)
     icp = '<a rel="备案查询" href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2021035180号</a>'
     # 许可协议信息 (支持 HTML 格式)
-    license = '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
+    license = '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">Creative Commons Zero v1.0 Universal</a>'
 
   #  Section (所有文章) 页面配置
   [params.section]
@@ -154,9 +178,9 @@ paginate = 10                                              # 首页每页显示�
       # 主页显示头像的 URL
       avatarURL = "/images/avatar.png"
       #  主页显示的网站标题 (支持 HTML 格式)
-      title = ""
+      title = "小破站 by Cc"
       # 主页显示的网站副标题
-      subtitle = "私人小网站，记录笔记和生活中的点点滴滴"
+      subtitle = "记录学习和生活中的点点滴滴"
       # 是否为副标题显示打字机动画
       typeit = true
       # 是否显示社交账号
@@ -168,9 +192,6 @@ paginate = 10                                              # 首页每页显示�
       enable = true
       # 主页每页显示文章数量
       paginate = 6
-      #  被 params.page 中的 hiddenFromHomePage 替代
-      # 当你没有在文章前置参数中设置 "hiddenFromHomePage" 时的默认行为
-      defaultHiddenFromHomePage = false
 
   # 作者的社交信息设置
   [params.social]
@@ -215,7 +236,7 @@ paginate = 10                                              # 首页每页显示�
       # 是否显示代码块的复制按钮
       copy = true
       # 默认展开显示的代码行数
-      maxShownLines = 5
+      maxShownLines = 20
     #  KaTeX 数学公式
     [params.page.math]
       enable = true
@@ -255,7 +276,7 @@ paginate = 10                                              # 首页每页显示�
       Pinterest = false
       Tumblr = false
       HackerNews = false
-      Reddit = false
+      Reddit = true
       VK = false
       Buffer = false
       Xing = false
@@ -284,7 +305,7 @@ paginate = 10                                              # 首页每页显示�
         enable = true
         repo = "zccing/zccing.github.io"
         repoId = "MDEwOlJlcG9zaXRvcnk0MDM5OTE3Nzk="
-        category = "General"
+        category = "Post Comments"
         categoryId = "DIC_kwDOGBRs484CT-Lp"
         # 为空时自动适配当前主题 i18n 配置
         lang = ""
@@ -301,8 +322,32 @@ paginate = 10                                              # 首页每页显示�
       images = []
       # 出版者信息
       [params.page.seo.publisher]
-        name = "cc"
+        name = "Cc"
         logoUrl = "https://www.net-cc.com"
+
+  # TypeIt 配置
+  [params.typeit]
+    # typing speed between each step (measured in milliseconds)
+    # 每一步的打字速度 (单位是毫秒)
+    speed = 100
+    # blinking speed of the cursor (measured in milliseconds)
+    # 光标的闪烁速度 (单位是毫秒)
+    cursorSpeed = 1000
+    # character used for the cursor (HTML format is supported)
+    # 光标的字符 (支持 HTML 格式)
+    cursorChar = "|"
+    # cursor duration after typing finishing (measured in milliseconds, "-1" means unlimited)
+    # 打字结束之后光标的持续时间 (单位是毫秒, "-1" 代表无限大)
+    duration = -1
+  
+  # Site verification code for Google/Bing/Yandex/Pinterest/Baidu
+  # 网站验证代码，用于 Google/Bing/Yandex/Pinterest/Baidu
+  [params.verification]
+    google = ""
+    bing = ""
+    yandex = ""
+    pinterest = ""
+    baidu = ""
 
   #  网站 SEO 配置
   [params.seo]
@@ -341,7 +386,7 @@ paginate = 10                                              # 首页每页显示�
     # 位于 "themes/LoveIt/assets/data/cdn/" 目录
     # 可以在你的项目下相同路径存放你自己的数据文件:
     # "assets/data/cdn/"
-    data = ""
+    data = "jsdelivr.yml"
 
   #  兼容性设置
   [params.compatibility]
@@ -382,7 +427,7 @@ paginate = 10                                              # 首页每页显示�
 
 # 作者配置
 [author]
-  name = "cc"
+  name = "Cc"
   email = "alex_zjf@hotmail.com"
   link = "https://www.net-cc.com"
 
