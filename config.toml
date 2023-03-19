@@ -306,14 +306,14 @@ paginate = 6                                              # 首页每页显示�
         repo = "zccing/zccing.github.io"
         repoId = "MDEwOlJlcG9zaXRvcnk0MDM5OTE3Nzk="
         category = "Post Comments"
-        categoryId = "DIC_kwDOGBRs484CT-Lp"
+        categoryId = "DIC_kwDOGBRs484CU-Z7"
         # 为空时自动适配当前主题 i18n 配置
         lang = ""
         mapping = "title"
         reactionsEnabled = "1"
         emitMetadata = "0"
         inputPosition = "bottom"
-        lazyLoading = false
+        lazyLoading = true
         lightTheme = "light"
         darkTheme = "dark"
     #  页面 SEO 配置
